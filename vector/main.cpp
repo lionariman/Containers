@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <exception>
 
 namespace ft
 {
@@ -13,6 +14,7 @@ namespace ft
     {
     public:
         typedef T typeValue;
+        typedef size_t size_type;
 
     private:
         T *_arr;
@@ -35,13 +37,56 @@ namespace ft
             return *this;
         }
 
-        void reserve(size_t n)
+        size_type max_size() const
         {
-            this->_cap = n;
-            this->_arr = this->_alloc.allocate(this->_cap);
-            std::cout << ">> array has been alocated by allocator <<" << std::endl;
-            this->_alloc.deallocate(this->_arr, this->_cap);
-            std::cout << ">> array has been dealocated by allocator <<" << std::endl;
+            // unsigned long bignum = 18446744073709551615U;
+            // return bignum / sizeof(typeValue);
+            return this->_alloc.max_size();
+        }
+
+        void reserve(size_type count)
+        {
+            std::cout << "max size: " << max_size() << '\n';
+            if (count < this->_cap)
+                return;
+            else if (count > max_size())
+                throw std::length_error("too big size than possible size of buffer");
+            this->_arr = this->_alloc.allocate(count);
+            this->_cap = count;
+        }
+
+/*
+
+Resizes the container to contain count elements.
+If the current size is greater than count, the container is reduced to its first count elements.
+If the current size is less than count,
+    1) additional default-inserted elements are appended
+    2) additional copies of value are appended.
+
+*/
+        void resize(size_type count)
+        {
+            if (this->_cap > count)
+            {
+                typeValue *temp = this->_arr;
+                reserve(count);
+                for (size_t i(0); i < this->_sz; i++)
+                    this->_alloc.construct(this->_arr + i, *(temp + i));
+                for (size_t i(0); i < this->_sz; i++)
+                    this->_alloc.destroy(temp + i);
+                this->_alloc.deallocate(temp, this->_sz);
+            }
+            else
+            {
+                typeValue *temp = this->_arr;
+                reserve(count);
+                for (size_t i(0); i > count; i++)
+                    this->_alloc.construct(this->_arr + i, *(temp + i));
+                for (size_t i(0); i < count; i++)
+                    this->_alloc.destroy(temp + i);
+                this->_alloc.deallocate(temp, this->_sz);
+                this->_sz = count;
+            }
         }
 
     };
@@ -54,13 +99,16 @@ void foo(void)
     {
         std::cout << "<====================>" << std::endl;
         ft::vector<std::string> box;
-        ft::vector<std::string> box2;
+        // ft::vector<int> box2;
+        std::vector<std::string> vec;
 
-        box.reserve(5);
+        // box.reserve(20);
+        box.resize(10);
+        
 
-        box2 = box;
+        // box2 = box;
 
-        box2.reserve(3);
+        // box2.reserve(3);
 
         std::cout << "<====================>" << std::endl;
 
