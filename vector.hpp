@@ -26,33 +26,54 @@ namespace ft
         size_type _size;
         size_type _capacity;
 
-        allocator_type alloc;
+        allocator_type _alloc;
 
     public:
 
         // ==================== COPLIEN ====================
-        vector() : _box(NULL), _size(0), _capacity(0) {}
 
+        // default
+        explicit vector(allocator_type const &alloc = allocator_type()) :
+            _box(0), _size(0), _capacity(0), _alloc(alloc) {}
 
+        // fill
+        // explicit vector(size_type n,
+        //                 value_type const &val = value_type(),
+        //                 allocator_type const &alloc = allocator_type())
+        // {
+        //     this->_box = _alloc.allocate(n);
+        //     this->_size = n;
+        //     this->_capacity = n;
+        //     for (size_t i(0); i < this->size(); i++)
+        //         _alloc.construct(this->_box + i, val);
+        // }
+
+        // range
+        // template < class InputIterator >
+        // vector(InputIterator first,
+        //        InputIterator last,
+        //        allocator_type const &alloc = allocator_type()) {}
+
+        // copy
         vector(vector const &other) { *this = other; }
 
-        vector(size_t const newSize)
+        vector(size_type n)
         {
-            this->_box = alloc.allocate(newSize);
-            this->_size = newSize;
-            this->_capacity = newSize;
+            this->_box = _alloc.allocate(n);
+            this->_size = n;
+            this->_capacity = n;
             for (size_t i(0); i < this->size(); i++)
-                alloc.construct(this->_box + i, value_type());
+                _alloc.construct(this->_box + i, value_type());
         }
 
         ~vector()
         {
-            if (this->_size)
+            if (this->_capacity)
             {
                 for (size_t i(0); i < this->_size; i++)
                     if (this->_box)
-                        alloc.destroy(this->_box + i);
-                alloc.deallocate(this->_box, this->_size);
+                        _alloc.destroy(this->_box + i);
+                _alloc.deallocate(this->_box, this->_size);
             }
         }
 
@@ -65,13 +86,13 @@ namespace ft
             {
                 for (size_t i(0); i < this->_size; i++)
                     if (this->_box)
-                        alloc.destroy(this->_box + i);
-                alloc.deallocate(this->_box, this->_size);
+                        _alloc.destroy(this->_box + i);
+                _alloc.deallocate(this->_box, this->_size);
             }
 
-            this->_box = alloc.allocate(other._size());
+            this->_box = _alloc.allocate(other._size());
             for (size_t i(0); i < other._size(); i++)
-                alloc.construct(this->_box + i, other[i]);
+                _alloc.construct(this->_box + i, other[i]);
             this->_size = other._size;
             this->_capacity = other._capacity;
 
@@ -82,7 +103,11 @@ namespace ft
 
         size_type size() { return this->_size; }
 
+        size_type capacity() { return this->_capacity; }
+
         reference &operator[](size_type n) { return this->_box[n]; }
+
+        bool empty() const { return this->_size; }
 
         reference at(size_type n)
         {
@@ -99,9 +124,32 @@ namespace ft
 
         void resize(size_type n, value_type val = value_type())
         {
+            if (n < this->_size)
+            {
+                for (; this->_size > n; this->_size--)
+                    _alloc.destroy(this->_box + this->_size);
+                return ;
+            }
             if (n > this->_size)
             {
-                std::cout << val << std::endl;
+                if (n > this->_capacity)
+                {
+                    value_type *tmp;
+
+                    this->_capacity = (this->_capacity ? this->_capacity * 2 : n);
+                    tmp = _alloc.allocate(this->_capacity);
+                    for (size_type i(0); i < this->_size; i++)
+                    {
+                        _alloc.construct(tmp + i, *(this->_box + i));
+                        _alloc.destroy(this->_box + i);
+                    }
+                    _alloc.deallocate(this->_box, this->_capacity / 2);
+                    this->_box = tmp;
+                    for (; this->_size < n; this->_size++)
+                        _alloc.construct(this->_box + this->_size, val);
+                    return ;
+                }
+                this->_size = n;
             }
         }
 

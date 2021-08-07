@@ -3,13 +3,6 @@
 
 #include "vector.hpp"
 
-enum Actions
-{
-    RESIZE,
-    RESERVE,
-    SHRINK_TO_FIT
-};
-
 template < typename T >
 void push_back_new_numbers(T &numbers, int numSize = int())
 {
@@ -17,43 +10,78 @@ void push_back_new_numbers(T &numbers, int numSize = int())
         numbers.push_back(i);
 }
 
-template < typename T >
-void capacity_tester(T &numbers)
+template < typename T1, typename T2 >
+void print_each_element_and_size(T1 &std_numbers, T2 &my_numbers, int how = int())
 {
-    std::cout << "capacity: " << numbers.capacity() << '\n';
-    std::cout << "    size: " << numbers.size() << '\n';
+    size_t i(0);
 
-    if (!numbers.empty())
+    std::cout << "\n[ ... Print each element and size ... ]\n\n";
+
+    if (how)
     {
-        for (size_t i(0); i < numbers.size(); i++)
-            std::cout << numbers[i] << ' ';
-        std::cout << '\n';
+        for (; i < std_numbers.size(); i++)
+            std::cout << std_numbers.at(i) << '\n';
+        std::cout << "[" << i << "]\n";
+        i = 0;
+        for (; i < my_numbers.size(); i++)
+            std::cout << my_numbers.at(i) << '\n';
+        std::cout << "[" << i << "]\n";
+        return ;
     }
+    for (; i < std_numbers.size(); i++)
+        std::cout << std_numbers.at(i) << ' ';
+    std::cout << " [" << i << "] \n";
+    i = 0;
+    for (; i < my_numbers.size(); i++)
+        std::cout << my_numbers.at(i) << ' ';
+    std::cout << " [" << i << "] \n";
 }
 
-template < typename T >
-void capacity_change(T &numbers, Actions action, int value = int(), int cnt = int())
+template < typename T1, typename T2 >
+void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
 {
-    switch (action)
-    {
-        case RESIZE:
-            if (cnt)
-                numbers.resize(value, cnt);
-            else
-                numbers.resize(value);
-            break;
 
-        case RESERVE:
-            numbers.reserve(value);
-            break;
+    std::cout << "\n[ ... Print size and capacity ... ]\n\n";
 
-        case SHRINK_TO_FIT:
-            numbers.shrink_to_fit();
-            break;
-        
-        default:
-            break;
-    }
+    std::cout << "    std size: " << std_numbers.size() << '\n'
+              << "     my size: " << my_numbers.size() << '\n'
+              << "std capacity: " << std_numbers.capacity() << '\n'
+              << " my capacity: " << my_numbers.capacity() << "\n\n";
+}
+
+void constructor_test()
+{
+        std::cout << ">> EMPTY VECTOR OF INTS <<\n";
+
+        std::vector<int> std_numbers;
+        ft::vector<int> my_numbers;
+
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        std::cout << "[ RESIZE ]\n";
+
+        std_numbers.resize(10, 1);
+        my_numbers.resize(10, 1);
+
+        print_each_element_and_size(std_numbers, my_numbers);
+
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        // std::cout << ">> FOUR INTS WITH VALUE 100 <<\n";
+
+        // std::vector<int> std_numbers;
+        // ft::vector<int> my_numbers;
+
+        // print_size_and_capacity(std_numbers, my_numbers);
+
+        // std::cout << "[ RESIZE ]\n";
+
+        // std_numbers.resize(10, 1);
+        // my_numbers.resize(10, 1);
+
+        // print_each_element_and_size(std_numbers, my_numbers);
+
+        // print_size_and_capacity(std_numbers, my_numbers);
 }
 
 int main()
@@ -61,37 +89,13 @@ int main()
 
     try
     {
-        std::vector<int> numbers(15);
-
-        // ft::vector<int> my_numbers(10);
-
-        // std::cout << "     my size: " << my_numbers.size() << '\n';
-        // std::cout << "    std size: " << numbers.size() << '\n';
-        // std::cout << " my max size: " << my_numbers.max_size() << '\n';
-        // std::cout << "std max size: " << numbers.max_size() << '\n';
-
-        // for (size_t i(0); i < my_numbers.size(); i++)
-        //     std::cout << "> " << my_numbers.at(i) << '\n';
-
-        push_back_new_numbers(numbers, 4);
-
-        capacity_tester(numbers);
-
-        // capacity_change(numbers, RESIZE, 11);
-
-        // capacity_tester(numbers);
-
-        // push_back_new_numbers(my_numbers);
-
-        // push_back_new_numbers(numbers, 5);
-        // capacity_tester(numbers);
+        std::cout << "\n<========== START ==========>\n\n";
+        constructor_test();
     }
     catch(std::exception const &e)
     {
         std::cerr << "Exception: " << e.what() << '\n';
     }
-    
-
 
     return (0);
 }
