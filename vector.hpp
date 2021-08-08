@@ -41,11 +41,11 @@ namespace ft
         //                 value_type const &val = value_type(),
         //                 allocator_type const &alloc = allocator_type())
         // {
-        //     this->_box = _alloc.allocate(n);
+        //     this->_box = this->_alloc.allocate(n);
         //     this->_size = n;
         //     this->_capacity = n;
         //     for (size_t i(0); i < this->size(); i++)
-        //         _alloc.construct(this->_box + i, val);
+        //         this->_alloc.construct(this->_box + i, val);
         // }
 
         // range
@@ -59,11 +59,11 @@ namespace ft
 
         vector(size_type n)
         {
-            this->_box = _alloc.allocate(n);
+            this->_box = this->_alloc.allocate(n);
             this->_size = n;
             this->_capacity = n;
             for (size_t i(0); i < this->size(); i++)
-                _alloc.construct(this->_box + i, value_type());
+                this->_alloc.construct(this->_box + i, value_type());
         }
 
         ~vector()
@@ -72,8 +72,8 @@ namespace ft
             {
                 for (size_t i(0); i < this->_size; i++)
                     if (this->_box)
-                        _alloc.destroy(this->_box + i);
-                _alloc.deallocate(this->_box, this->_size);
+                        this->_alloc.destroy(this->_box + i);
+                this->_alloc.deallocate(this->_box, this->_size);
             }
         }
 
@@ -86,13 +86,13 @@ namespace ft
             {
                 for (size_t i(0); i < this->_size; i++)
                     if (this->_box)
-                        _alloc.destroy(this->_box + i);
-                _alloc.deallocate(this->_box, this->_size);
+                        this->_alloc.destroy(this->_box + i);
+                this->_alloc.deallocate(this->_box, this->_size);
             }
 
-            this->_box = _alloc.allocate(other._size());
+            this->_box = this->_alloc.allocate(other._size());
             for (size_t i(0); i < other._size(); i++)
-                _alloc.construct(this->_box + i, other[i]);
+                this->_alloc.construct(this->_box + i, other[i]);
             this->_size = other._size;
             this->_capacity = other._capacity;
 
@@ -106,6 +106,10 @@ namespace ft
         size_type capacity() { return this->_capacity; }
 
         reference &operator[](size_type n) { return this->_box[n]; }
+        
+        reference front() { return this->_box[0]; }
+
+        reference back() { return this->_box[this->_size]; }
 
         bool empty() const { return this->_size; }
 
@@ -127,7 +131,7 @@ namespace ft
             if (n < this->_size)
             {
                 for (; this->_size > n; this->_size--)
-                    _alloc.destroy(this->_box + this->_size);
+                    this->_alloc.destroy(this->_box + this->_size);
                 return ;
             }
             if (n > this->_size)
@@ -137,22 +141,37 @@ namespace ft
                     value_type *tmp;
 
                     this->_capacity = (this->_capacity ? this->_capacity * 2 : n);
-                    tmp = _alloc.allocate(this->_capacity);
+                    tmp = this->_alloc.allocate(this->_capacity);
                     for (size_type i(0); i < this->_size; i++)
                     {
-                        _alloc.construct(tmp + i, *(this->_box + i));
-                        _alloc.destroy(this->_box + i);
+                        this->_alloc.construct(tmp + i, *(this->_box + i));
+                        this->_alloc.destroy(this->_box + i);
                     }
-                    _alloc.deallocate(this->_box, this->_capacity / 2);
+                    this->_alloc.deallocate(this->_box, this->_capacity / 2);
                     this->_box = tmp;
                     for (; this->_size < n; this->_size++)
-                        _alloc.construct(this->_box + this->_size, val);
+                        this->_alloc.construct(this->_box + this->_size, val);
                     return ;
                 }
                 this->_size = n;
             }
         }
 
+        void reserve(size_type n)
+        {
+            if (n <= this->_capacity)
+                return ;
+
+            value_type *tmp = this->_alloc.allocate(n);
+            for (size_type i(0); i < this->_size; i++)
+            {
+                this->_alloc.construct(tmp + i, *(this->_box + i));
+                this->_alloc.destroy(this->_box + i);
+            }
+            this->_alloc.deallocate(this->_box, this->_capacity);
+            this->_box = tmp;
+            this->_capacity = n;
+        }
 
 
     };

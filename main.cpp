@@ -58,14 +58,22 @@ void constructor_test()
 
         print_size_and_capacity(std_numbers, my_numbers);
 
-        std::cout << "[ RESIZE ]\n";
+        std::cout << "<================ RESIZE ================>\n";
 
         std_numbers.resize(10, 1);
         my_numbers.resize(10, 1);
 
         print_each_element_and_size(std_numbers, my_numbers);
-
         print_size_and_capacity(std_numbers, my_numbers);
+
+        std::cout << "<================ RESERVE ================>\n";
+
+        std_numbers.reserve(15);
+        my_numbers.reserve(15);
+
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
 
         // std::cout << ">> FOUR INTS WITH VALUE 100 <<\n";
 
@@ -89,7 +97,7 @@ int main()
 
     try
     {
-        std::cout << "\n<========== START ==========>\n\n";
+        std::cout << "\n<================ START ================>\n\n";
         constructor_test();
     }
     catch(std::exception const &e)
