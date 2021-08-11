@@ -212,43 +212,6 @@ namespace ft
             return big / sizeof(value_type);
         }
 
-        void resize(size_type n, value_type val = value_type())
-        {
-            // if (this->_size == 0 && this->_capacity == 0)
-            // {
-            //     this->_box = this->_alloc.allocate(1);
-            //     this->_alloc.construct(this->_box, val);
-            //     this->_capacity++;
-            //     this->_size++;
-            // }
-            if (n < this->_size)
-            {
-                for (; this->_size > n; this->_size--)
-                    this->_alloc.destroy(this->_box + this->_size);
-            }
-            else if (n > this->_capacity)
-            {
-                value_type *temp;
-                temp = this->_alloc.allocate(n);
-                for (size_type i(0); i < this->_size; i++)
-                {
-                    this->_alloc.construct(temp + i, *(this->_box + i));
-                    this->_alloc.destroy(this->_box + i);
-                }
-                this->_alloc.deallocate(this->_box, this->_capacity);
-                this->_box = temp;
-                for (; this->_size < n - 1; this->_size++)
-                    this->_alloc.construct(this->_box + this->_size, val);
-                this->_capacity = (this->_capacity ? this->_capacity * 2 : n);
-                this->_size = (this->_size ? this->_size + 1 : n);
-            }
-            else if (n >= this->_size)
-            {
-                for (; this->_size < n; this->_size++)
-                    this->_alloc.construct(this->_box + this->_size, val);
-            }
-        }
-
         void reserve(size_type n)
         {
             if (n <= this->_capacity)
@@ -265,19 +228,41 @@ namespace ft
             this->_capacity = n;
         }
 
+        void resize(size_type n, value_type val = value_type())
+        {
+            if (this->_capacity == 0)
+            {
+                reserve(n);
+                this->_capacity = n;
+            }
+            if (n > this->_capacity)
+                reserve(this->_capacity * 2);
+            for (; this->_size < n; this->_size++)
+                this->_alloc.construct(this->_box + this->_size, val);
+            if (n < this->_size)
+            {
+                for (; this->_size > n; this->_size--)
+                    this->_alloc.destroy(this->_box + this->_size);
+            }
+        }
+
         iterator begin() { return this->_box; }
         iterator end() { return this->_box + this->_size; }
 
         void push_back(value_type const &val)
         {
-            resize(++this->_count, val);
-            *(this->_box + this->_count - 1) = val;
-            // this->_count++;
-            // this->_size++
+            if (this->_capacity == 0 && this->_size == 0)
+            {
+                reserve(1);
+                this->_alloc.construct(this->_box, val);
+                this->_size++;
+                return ;
+            }
+            if (this->_capacity == this->_size)
+                reserve(2 * this->_capacity);
+            this->_alloc.construct(this->_box + this->_size, val);
+            this->_size++;
         }
-
-
-
 
     };
 
