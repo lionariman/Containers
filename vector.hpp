@@ -21,7 +21,6 @@
 
 # include <iostream>
 # include <memory>
-# include <iterator>
 
 namespace ft
 {
@@ -56,8 +55,8 @@ namespace ft
                 return *this;
             }
 
-            iterator        operator++()                        { this->_ptr++; return *this; } //prefix
-            iterator        operator--()                        { this->_ptr--; return *this; } //prefix
+            iterator        &operator++()                       { this->_ptr++; return *this; } //prefix
+            iterator        &operator--()                       { this->_ptr--; return *this; } //prefix
             iterator        operator++(int)                     { return this->_ptr++; } // postfix
             iterator        operator--(int)                     { return this->_ptr--; } // postfix
 
@@ -109,12 +108,8 @@ namespace ft
 
     private:
         value_type *_box;
-        size_type _size;
-        size_type _capacity;
-        size_type _count;
-
+        size_type _size, _capacity;
         allocator_type _alloc;
-
 
     public:
 
@@ -122,7 +117,7 @@ namespace ft
 
         // default
         explicit vector(allocator_type const &alloc = allocator_type()) :
-            _box(0), _size(0), _capacity(0), _count(0), _alloc(alloc) {}
+            _box(0), _size(0), _capacity(0), _alloc(alloc) {}
 
         // fill
         // explicit vector(size_type n,
@@ -197,6 +192,10 @@ namespace ft
 
         reference back() { return this->_box[this->_size]; }
 
+        iterator begin() { return this->_box; }
+
+        iterator end() { return this->_box + this->_size; }
+
         bool empty() const { return this->_size; }
 
         reference at(size_type n)
@@ -246,9 +245,6 @@ namespace ft
             }
         }
 
-        iterator begin() { return this->_box; }
-        iterator end() { return this->_box + this->_size; }
-
         void push_back(value_type const &val)
         {
             if (this->_capacity == 0 && this->_size == 0)
@@ -262,6 +258,14 @@ namespace ft
                 reserve(2 * this->_capacity);
             this->_alloc.construct(this->_box + this->_size, val);
             this->_size++;
+        }
+
+        void pop_back()
+        {
+            if (this->_size == 0)
+                return ;
+            this->_alloc.destroy(this->_box + this->_size);
+            this->_size--;
         }
 
     };

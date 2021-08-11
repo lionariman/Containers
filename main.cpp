@@ -54,8 +54,8 @@ void constructor_test()
 {
         // std::cout << GREEN << ">> EMPTY VECTOR OF INTS <<\n" << NCLR;
 
-        std::vector<int> std_numbers(15);
-        ft::vector<int> my_numbers(15);
+        std::vector<int> std_numbers;
+        ft::vector<int> my_numbers;
 
         std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
 
@@ -95,6 +95,12 @@ void constructor_test()
             std::cout << *myIterator << ' ';
 
         std::cout << "\n\n";
+
+        std_numbers.pop_back();
+        my_numbers.pop_back();
+
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
 }
 
 int main()
