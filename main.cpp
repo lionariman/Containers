@@ -6,6 +6,7 @@
 template < typename T >
 void push_back_new_numbers(T &numbers, int numSize = int())
 {
+    // std::cout << GREEN << "\n[ ... Push back new numbers (" << numSize << ") ... ]\n" << NCLR;
     for (int i(0); i < numSize; i++)
         numbers.push_back(i);
 }
@@ -15,7 +16,7 @@ void print_each_element_and_size(T1 &std_numbers, T2 &my_numbers, int how = int(
 {
     size_t i(0);
 
-    std::cout << GREEN << "\n[ ... Print each element and size ... ]\n\n" << NCLR;
+    // std::cout << YELLOW << "\n[ ... Print each element size ... ]\n\n" << NCLR;
 
     if (how)
     {
@@ -41,7 +42,7 @@ template < typename T1, typename T2 >
 void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
 {
 
-    std::cout << GREEN << "\n[ ... Print size and capacity ... ]\n\n" << NCLR;
+    // std::cout << YELLOW << "\n[ ... Print size and capacity ... ]\n\n" << NCLR;
 
     std::cout << "    std size: " << std_numbers.size() << '\n'
               << "     my size: " << my_numbers.size() << '\n'
@@ -51,79 +52,49 @@ void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
 
 void constructor_test()
 {
-        std::cout << GREEN << ">> EMPTY VECTOR OF INTS <<\n" << NCLR;
+        // std::cout << GREEN << ">> EMPTY VECTOR OF INTS <<\n" << NCLR;
 
-        std::vector<int> std_numbers;
-        ft::vector<int> my_numbers;
+        std::vector<int> std_numbers(15);
+        ft::vector<int> my_numbers(15);
 
+        std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
+
+        std_numbers.resize(10, 1);
+        my_numbers.resize(10, 1);
+
+        print_each_element_and_size(std_numbers, my_numbers);
         print_size_and_capacity(std_numbers, my_numbers);
 
-        // std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
+        std::cout << BLUE << "<================ RESERVE ================>\n" << NCLR;
 
-        // std_numbers.resize(10, 1);
-        // my_numbers.resize(10, 1);
+        std_numbers.reserve(16);
+        my_numbers.reserve(16);
 
-        // print_each_element_and_size(std_numbers, my_numbers);
-        // print_size_and_capacity(std_numbers, my_numbers);
-
-        // std::cout << BLUE << "<================ RESERVE ================>\n" << NCLR;
-
-        // std_numbers.reserve(15);
-        // my_numbers.reserve(15);
-
-        // print_each_element_and_size(std_numbers, my_numbers);
-        // print_size_and_capacity(std_numbers, my_numbers);
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
 
         std::cout << BLUE << "<================ ITERATOR ================>\n" << NCLR;
 
         push_back_new_numbers(std_numbers, 10);
         push_back_new_numbers(my_numbers, 10);
 
-        print_each_element_and_size(std_numbers, my_numbers);
-        print_size_and_capacity(std_numbers, my_numbers);
-
         std::vector<int>::iterator stdIterator;
         ft::vector<int>::iterator myIterator;
 
-        // stdIterator = std_numbers.begin();
-        // myIterator = my_numbers.begin();
+        stdIterator = std_numbers.begin();
+        myIterator = my_numbers.begin();
 
-        // std::cout << RED << "std begin: " << *stdIterator << '\n' << NCLR;
-        // std::cout << RED << " my begin: " << *myIterator << '\n' << NCLR;
+        std::cout << YELLOW << "[ std numbers ]\n" << NCLR;
+        for (stdIterator = std_numbers.begin(); stdIterator != std_numbers.end(); stdIterator++)
+            std::cout << *stdIterator << ' ';
 
-        // std::cout << '\n';
+        std::cout << '\n';
 
-        stdIterator = std_numbers.end();
-        myIterator = my_numbers.end();
+        std::cout << YELLOW << "[ my numbers ]\n" << NCLR;
+        for (myIterator = my_numbers.begin(); myIterator != my_numbers.end(); myIterator++)
+            std::cout << *myIterator << ' ';
 
-        std::cout << RED << "std end: " << *stdIterator << '\n' << NCLR;
-        std::cout << RED << " my end: " << *myIterator << '\n' << NCLR;
-
-        std_numbers.push_back(68);
-        my_numbers.push_back(45);
-
-        std_numbers.push_back(68);
-        my_numbers.push_back(45);
-
-        std_numbers.push_back(68);
-        my_numbers.push_back(45);
-
-        print_each_element_and_size(std_numbers, my_numbers);
-        print_size_and_capacity(std_numbers, my_numbers);
-        
-        // std::cout << '\n';
-
-        // std::cout << YELLOW << "[ std numbers ]\n" << NCLR;
-        // for (stdIterator = std_numbers.begin(); stdIterator != std_numbers.end(); stdIterator++)
-        //     std::cout << YELLOW << *stdIterator << ' ' << NCLR;
-
-        // std::cout << "\n\n";
-
-        // std::cout << YELLOW << "[ my numbers ]\n" << NCLR;
-        // for (myIterator = my_numbers.begin(); myIterator != my_numbers.end(); myIterator++)
-        //     std::cout << YELLOW << *myIterator << ' ' << NCLR;
-
-        // std::cout << '\n';
+        std::cout << "\n\n";
 }
 
 int main()
@@ -131,7 +102,7 @@ int main()
 
     try
     {
-        std::cout << B_BLUE << "\n################# START #################\n\n" << NCLR;
+        // std::cout << B_BLUE << "\n################# START #################\n\n" << NCLR;
         constructor_test();
     }
     catch(std::exception const &e)
