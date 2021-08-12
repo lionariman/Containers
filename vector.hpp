@@ -121,85 +121,92 @@ namespace ft
             _box(0), _size(0), _capacity(0), _alloc(alloc) {}
 
         // fill
-        // explicit vector(size_type n,
-        //                 value_type const &val = value_type(),
-        //                 allocator_type const &alloc = allocator_type())
-        // {
-        //     this->_box = this->_alloc.allocate(n);
-        //     this->_size = n;
-        //     this->_capacity = n;
-        //     for (size_t i(0); i < this->size(); i++)
-        //         this->_alloc.construct(this->_box + i, val);
-        // }
-
-        // range
-        // template < class InputIterator >
-        // vector(InputIterator first,
-        //        InputIterator last,
-        //        allocator_type const &alloc = allocator_type()) {}
-
-        // copy
-        vector(vector const &other) { *this = other; }
-
-        vector(size_type n)
+        explicit vector(size_type n, value_type const &val = value_type(),
+                        allocator_type const &alloc = allocator_type()) :
+            _box(0), _size(0), _capacity(0), _alloc(alloc)
         {
             this->_box = this->_alloc.allocate(n);
             this->_size = n;
             this->_capacity = n;
             for (size_t i(0); i < this->size(); i++)
-                this->_alloc.construct(this->_box + i, value_type());
+                this->_alloc.construct(this->_box + i, val);
         }
+
+        // range
+        // ...
+
+        // copy
+        vector(vector const &x) { *this = x; }
 
         ~vector()
         {
-            if (this->_capacity)
-            {
-                for (size_t i(0); i < this->_size; i++)
-                    if (this->_box)
-                        this->_alloc.destroy(this->_box + i);
-                this->_alloc.deallocate(this->_box, this->_size);
-            }
+            if (this->_box)
+                clear();
+            this->_alloc.deallocate(this->_box, this->_size);
+            this->_capacity = 0;
+            this->_size = 0;
         }
 
-        vector &operator=(vector const &other)
+        vector &operator=(vector const &x)
         {
-            if (this == &other)
+            if (this == &x)
                 return *this;
-
             if (this->_size)
             {
-                for (size_t i(0); i < this->_size; i++)
-                    if (this->_box)
-                        this->_alloc.destroy(this->_box + i);
+                clear();
                 this->_alloc.deallocate(this->_box, this->_size);
             }
-
-            this->_box = this->_alloc.allocate(other._size());
-            for (size_t i(0); i < other._size(); i++)
-                this->_alloc.construct(this->_box + i, other[i]);
-            this->_size = other._size;
-            this->_capacity = other._capacity;
+            this->_box = this->_alloc.allocate(x.size());
+            for (size_t i(0); i < x.size(); i++)
+                this->_alloc.construct(this->_box + i, x.at(i));
+            this->_size = x.size();
+            this->_capacity = x.capacity();
 
             return *this;
         }
 
-        size_type size() { return this->_size; }
+        // =================================================
 
-        size_type capacity() { return this->_capacity; }
+        size_type size() const { return this->_size; }
+
+        size_type capacity() const { return this->_capacity; }
 
         reference &operator[](size_type n) { return this->_box[n]; }
         
         reference front() { return this->_box[0]; }
 
+        const_reference front() const { return this->_box[0]; }
+
         reference back() { return this->_box[this->_size]; }
+
+        const_reference back() const { return this->_box[this->_size]; }
 
         iterator begin() { return this->_box; }
 
+        // const_iterator begin() const { return this->_box; }
+
         iterator end() { return this->_box + this->_size; }
+
+        // const_iterator end() const { return this->_box + this->_size; }
 
         bool empty() const { return this->_size; }
 
+        void clear()
+        {
+            if (this->_size == 0)
+                return ;
+            for (; this->_size != 0; this->_size--)
+                this->_alloc.destroy(this->_box + this->_size);
+        }
+
         reference at(size_type n)
+        {
+            if (n >= this->_size)
+                throw std::out_of_range("\nIndex out of range\nFunction: at");
+            return this->_box[n];
+        }
+
+        const_reference at(size_type n) const
         {
             if (n >= this->_size)
                 throw std::out_of_range("\nIndex out of range\nFunction: at");
