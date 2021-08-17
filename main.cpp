@@ -61,114 +61,115 @@ void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
               << " my capacity: " << my_numbers.capacity() << "\n\n";
 }
 
-// void test_one()
-// {
-//         // std::cout << GREEN << ">> EMPTY VECTOR OF INTS <<\n" << NCLR;
-
-// #if MY_ALLOCATOR
-//         std::cout << B_PURPLE << "... USING MY OWN ALLOCATOR ...\n" << NCLR;
-//         std::vector< int, ft::allocator<int> > std_numbers;
-//         ft::vector< int, ft::allocator<int> > my_numbers;
-// #else
-//         std::vector<int> std_numbers;
-//         ft::vector<int> my_numbers;
-// #endif
-
-//         std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
-
-// #if 1
-//         std_numbers.resize(10, 1);
-//         my_numbers.resize(10, 1);
-
-//         print_each_element_and_size(std_numbers, my_numbers);
-//         print_size_and_capacity(std_numbers, my_numbers);
-
-//         std::cout << BLUE << "<================ RESERVE ================>\n" << NCLR;
-
-//         std_numbers.reserve(16);
-//         my_numbers.reserve(16);
-
-//         print_each_element_and_size(std_numbers, my_numbers);
-//         print_size_and_capacity(std_numbers, my_numbers);
-
-//         std::cout << BLUE << "<================ ITERATOR ================>\n" << NCLR;
-
-//         push_back_numbers(std_numbers, 10);
-//         push_back_numbers(my_numbers, 10);
-
-//         std::vector<int>::iterator stdIterator = std_numbers.begin();
-//         ft::vector<int>::iterator myIterator = my_numbers.begin();
-
-//         std::cout << YELLOW << "[ std numbers ]\n" << NCLR;
-//         for (stdIterator = std_numbers.begin(); stdIterator != std_numbers.end(); stdIterator++)
-//             std::cout << *stdIterator << ' ';
-
-//         std::cout << '\n';
-
-//         std::cout << YELLOW << "[ my numbers ]\n" << NCLR;
-//         for (myIterator = my_numbers.begin(); myIterator != my_numbers.end(); myIterator++)
-//             std::cout << *myIterator << ' ';
-
-//         std::cout << "\n\n";
-// #endif
-
-// #if 1
-//         std::cout << BLUE << "<========== ASSIGNATION OPERATOR ==========>\n" << NCLR;
-
-//         push_back_numbers(std_numbers, 5);
-//         pop_back_numbers(my_numbers, 5);
-
-//         print_each_element_and_size(std_numbers, my_numbers);
-
-//         // my_numbers = std_numbers;
-//         // std_numbers = my_numbers;
-
-//         // print_each_element_and_size(std_numbers, my_numbers);
-
-// #endif
-
-// }
-
-void test_two()
+void test_one()
 {
+        // std::cout << GREEN << ">> EMPTY VECTOR OF INTS <<\n" << NCLR;
+
 #if MY_ALLOCATOR
         std::cout << B_PURPLE << "... USING MY OWN ALLOCATOR ...\n" << NCLR;
-        std::vector< std::string, ft::allocator<std::string> > std_strings;
-        ft::vector< std::string, ft::allocator<std::string> > my_strings;
-        ft::vector< std::string, ft::allocator<std::string> > my_strings2;
+        std::vector< int, ft::allocator<int> > std_numbers;
+        ft::vector< int, ft::allocator<int> > my_numbers;
 #else
-        std::vector<std::string> std_strings;
-        ft::vector<std::string> my_strings;
-        ft::vector<std::string> my_strings2;
+        std::vector<int> std_numbers;
+        ft::vector<int> my_numbers;
 #endif
 
-    for (size_t i(0); i < 10; i++)
-        std_strings.push_back("x");
+        std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
 
-    for (size_t i(0); i < 10; i++)
-        my_strings.push_back("x");
+#if 1
+        std_numbers.resize(10, 1);
+        my_numbers.resize(10, 1);
 
-    for (size_t i(0); i < 10; i++)
-        my_strings2.push_back("x");
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
 
-    // print_each_element_and_size(std_strings, my_strings);
+        std::cout << BLUE << "<================ RESERVE ================>\n" << NCLR;
 
-    std::cout << '\n';
+        std_numbers.reserve(16);
+        my_numbers.reserve(16);
 
-    my_strings.pop_back();
-    my_strings.pop_back();
-    my_strings.pop_back();
-    my_strings.pop_back();
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
 
-    print_each_element_and_size(my_strings, my_strings2);
-    print_size_and_capacity(my_strings, my_strings2);
+        std::cout << BLUE << "<================ ITERATOR ================>\n" << NCLR;
 
-    my_strings = my_strings2;
+        push_back_numbers(std_numbers, 10);
+        push_back_numbers(my_numbers, 10);
 
-    print_each_element_and_size(my_strings, my_strings2);
-    print_size_and_capacity(my_strings, my_strings2);
+        std::vector<int>::iterator stdIterator = std_numbers.begin();
+        ft::vector<int>::iterator myIterator = my_numbers.begin();
+
+        std::cout << YELLOW << "[ std numbers ]\n" << NCLR;
+        for (stdIterator = std_numbers.begin(); stdIterator != std_numbers.end(); stdIterator++)
+            std::cout << *stdIterator << ' ';
+
+        std::cout << '\n';
+
+        std::cout << YELLOW << "[ my numbers ]\n" << NCLR;
+        for (myIterator = my_numbers.begin(); myIterator != my_numbers.end(); myIterator++)
+            std::cout << *myIterator << ' ';
+
+        std::cout << "\n\n";
+#endif
+
+#if 1
+        std::cout << BLUE << "<========== ASSIGN ==========>\n" << NCLR;
+
+        std::cout << PURPLE << "... current vertors ... \n" << NCLR;
+
+        std_numbers.assign(5, 3);
+        my_numbers.assign(5, 3);
+
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        std::cout << PURPLE << "... new vertors ... \n" << NCLR;
+
+        std::vector<int> new_std_numbers;
+        ft::vector<int> new_my_numbers;
+
+        new_std_numbers.assign(15, 4);
+        new_my_numbers.assign(15, 4);
+
+        print_each_element_and_size(new_std_numbers, new_my_numbers);
+        print_size_and_capacity(new_std_numbers, new_my_numbers);
+
+#endif
 
 }
+
+// void test_two()
+// {
+// #if MY_ALLOCATOR
+//         std::cout << B_PURPLE << "... USING MY OWN ALLOCATOR ...\n" << NCLR;
+
+//         std::vector< std::string, ft::allocator<std::string> > std_strings;
+
+//         ft::vector< std::string, ft::allocator<std::string> > my_strings;
+//         ft::vector< std::string, ft::allocator<std::string> > my_strings2;
+// #else
+//         std::vector<std::string> std_strings;
+//         ft::vector<std::string> my_strings;
+//         ft::vector<std::string> my_strings2;
+// #endif
+
+//     for (size_t i(0); i < 10; i++)
+//         std_strings.push_back("x");
+
+//     for (size_t i(0); i < 10; i++)
+//         my_strings.push_back("x");
+
+//     for (size_t i(0); i < 10; i++)
+//         my_strings2.push_back("x");
+
+//     print_each_element_and_size(my_strings, my_strings2);
+//     print_size_and_capacity(my_strings, my_strings2);
+
+//     my_strings = my_strings2;
+
+//     print_each_element_and_size(my_strings, my_strings2);
+//     print_size_and_capacity(my_strings, my_strings2);
+// }
 
 int main()
 {
@@ -176,8 +177,8 @@ int main()
     try
     {
         // std::cout << B_BLUE << "\n################# START #################\n\n" << NCLR;
-        // test_one();
-        test_two();
+        test_one();
+        // test_two();
     }
     catch(std::exception const &e)
     {
