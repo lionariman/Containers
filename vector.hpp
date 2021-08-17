@@ -26,8 +26,6 @@
 
 namespace ft
 {
-    // ============================== ITERATOR =================================
-
     template < class T >
     class vector_iterator
     {
@@ -74,7 +72,6 @@ namespace ft
             bool            operator>(iterator const &v) const  { return this->_ptr > v._ptr; }
             bool            operator<=(iterator const &v) const { return this->_ptr <= v._ptr; }
             bool            operator>=(iterator const &v) const { return this->_ptr >= v._ptr; }
-
     };
 
     template< class T >
@@ -99,24 +96,24 @@ namespace ft
             vector_reverse_iterator(pointer ptr) : _ptr(ptr) {}
             ~vector_reverse_iterator() { this->_ptr = NULL; }
             
-            iterator &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
+            iterator        &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
 
-            pointer operator*() const { return *this->_ptr; }
-            pointer operator->() const { return this->_ptr; }
-            reference operator[](difference_type &n) { return this->_ptr[n]; }
+            pointer         operator*() const { return *this->_ptr; }
+            pointer         operator->() const { return this->_ptr; }
+            reference       operator[](difference_type &n) { return this->_ptr[n]; }
 
-            iterator &operator++() { this->_ptr--; return *this; }
-            iterator &operator--() { this->_ptr++; return *this; }
-            iterator operator++(int) { return this->_ptr--; }
-            iterator operator--(int) { return this->_ptr++; }
-            iterator operator+(size_type v) const { return this->_ptr - v; }
-            iterator operator+(difference_type v) const { return this->_ptr - v; }
+            iterator        &operator++() { this->_ptr--; return *this; }
+            iterator        &operator--() { this->_ptr++; return *this; }
+            iterator        operator++(int) { return this->_ptr--; }
+            iterator        operator--(int) { return this->_ptr++; }
+            iterator        operator+(size_type v) const { return this->_ptr - v; }
+            iterator        operator+(difference_type v) const { return this->_ptr - v; }
             difference_type operator+(iterator &other) const { return this->_ptr - other._ptr; }
-            iterator operator-(size_type v) const { return this->_ptr + v; }
-            iterator operator-(difference_type v) const { return this->_ptr + v; }
+            iterator        operator-(size_type v) const { return this->_ptr + v; }
+            iterator        operator-(difference_type v) const { return this->_ptr + v; }
             difference_type operator-(iterator &other) const { return this->_ptr + other._ptr; }
-            iterator &operator+=(difference_type &ptr) { this->_ptr -= ptr; return *this; }
-            iterator &operator-=(difference_type &ptr) { this->_ptr += ptr; return *this; }
+            iterator        &operator+=(difference_type &ptr) { this->_ptr -= ptr; return *this; }
+            iterator        &operator-=(difference_type &ptr) { this->_ptr += ptr; return *this; }
 
             bool            operator==(iterator const &v) const { return this->_ptr == v._ptr; }
             bool            operator!=(iterator const &v) const { return this->_ptr != v._ptr; }
@@ -124,18 +121,7 @@ namespace ft
             bool            operator>(iterator const &v) const  { return this->_ptr > v._ptr; }
             bool            operator<=(iterator const &v) const { return this->_ptr <= v._ptr; }
             bool            operator>=(iterator const &v) const { return this->_ptr >= v._ptr; }
-
     };
-
-    // =========================================================================
-
-
-
-
-
-
-
-    // =============================== VECTOR ==================================
 
     template <
         class T,
@@ -162,9 +148,6 @@ namespace ft
         allocator_type _alloc;
 
     public:
-
-        // ==================== COPLIEN ====================
-
         // default
         explicit vector(allocator_type const &alloc = allocator_type()) :
             _box(0), _size(0), _capacity(0), _alloc(alloc) {}
@@ -182,7 +165,20 @@ namespace ft
         }
 
         // range
-        // ...
+        // template < class InputIterator >
+        // vector(InputIterator first, InputIterator last,
+        //        allocator_type const &alloc = allocator_type()) :
+        //     _box(0), _size(0), _capacity(0), _alloc(alloc)
+        // {
+        //     size_type i(0);
+
+        //     this->_box = this->_alloc.allocate(last - first);
+        //     for (; first != last; first++)
+        //     {
+        //         this->_alloc.construct(this->_box + i, *first);
+        //         i++;
+        //     }
+        // }
 
         // copy
         vector(vector const &x) { *this = x; }
@@ -203,7 +199,7 @@ namespace ft
             if (this->_size)
             {
                 clear();
-                this->_alloc.deallocate(this->_box, this->_size);
+                this->_alloc.deallocate(this->_box, this->_capacity);
             }
             this->_box = this->_alloc.allocate(x.size());
             for (size_t i(0); i < x.size(); i++)
@@ -214,22 +210,25 @@ namespace ft
             return *this;
         }
 
-        // =================================================
-
         size_type size() const { return this->_size; }
         size_type capacity() const { return this->_capacity; }
         reference &operator[](size_type n) { return this->_box[n]; }
+
         reference front() { return this->_box[0]; }
-        const_reference front() const { return this->_box[0]; }
         reference back() { return this->_box[this->_size]; }
         const_reference back() const { return this->_box[this->_size]; }
+        const_reference front() const { return this->_box[0]; }
+
         iterator begin() { return this->_box; }
-
-        // const_iterator begin() const { return this->_box; }
-
         iterator end() { return this->_box + this->_size; }
-
-        // const_iterator end() const { return this->_box + this->_size; }
+        iterator rbegin() { return this->_box + this->_size; }
+        iterator rend() { return this->_box; }
+        const_iterator begin() const { return this->_box; }
+        const_iterator end() const { return this->_box + this->_size; }
+        const_iterator cbegin() const { return this->_box; }
+        const_iterator cend() const { return this->_box + this->_size; }
+        const_iterator crbegin() const { return this->_box + this->_size; }
+        const_iterator crend() const { return this->_box; }
 
         bool empty() const { return this->_size; }
 
@@ -318,9 +317,33 @@ namespace ft
             this->_size--;
         }
 
-    };
 
-    // =========================================================================
+        // assign
+
+        // 1) assigns new contents
+        // 2) replacing its current contents
+        // 3) modifying its size accordingly
+
+        // range
+        // template < class InputIterator >
+        // void assign(InputIterator first, InputIterator last)
+        // {
+            
+        // }
+
+        // fill
+        void assign(size_type n, value_type const &val)
+        {
+            clear();
+            if (n < this->_capacity)
+            {
+                for (; this->_size < n; this->_size++)
+                    this->_alloc.construct(this->_box + this->_size, val);
+                return ;
+            }
+            resize(n, val);
+        }
+    };
 }
 
 #endif
