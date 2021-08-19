@@ -26,6 +26,12 @@
 
 namespace ft
 {
+    template < bool B, class T = void >
+    struct enable_if {};
+
+    template < class T >
+    struct enable_if < true, T > { typedef T type; };
+
     template < class T >
     class vector_iterator
     {
@@ -53,13 +59,15 @@ namespace ft
             pointer         operator->() const                  { return this->_ptr; }
             reference       operator[](difference_type &n)      { return this->_ptr[n]; }
             
-            iterator        &operator++()                       { this->_ptr++; return *this; } //prefix
-            iterator        &operator--()                       { this->_ptr--; return *this; } //prefix
-            iterator        operator++(int)                     { return this->_ptr++; } // postfix
-            iterator        operator--(int)                     { return this->_ptr--; } // postfix
+            iterator        &operator++()                       { this->_ptr++; return *this; }
+            iterator        &operator--()                       { this->_ptr--; return *this; }
+            iterator        operator++(int)                     { return this->_ptr++; }
+            iterator        operator--(int)                     { return this->_ptr--; }
+            iterator        operator+(int v) const        { return this->_ptr + v; }
             iterator        operator+(size_type v) const        { return this->_ptr + v; }
             iterator        operator+(difference_type v) const  { return this->_ptr + v; }
             difference_type operator+(iterator &other) const    { return this->_ptr + other._ptr; }
+            iterator        operator-(int v) const        { return this->_ptr - v; }
             iterator        operator-(size_type v) const        { return this->_ptr - v; }
             iterator        operator-(difference_type v) const  { return this->_ptr - v; }
             difference_type operator-(iterator &other) const    { return this->_ptr - other._ptr; }
@@ -98,22 +106,24 @@ namespace ft
             
             iterator        &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
 
-            pointer         operator*() const { return *this->_ptr; }
+            reference       operator*() const { return *this->_ptr; }
             pointer         operator->() const { return this->_ptr; }
             reference       operator[](difference_type &n) { return this->_ptr[n]; }
 
-            iterator        &operator++() { this->_ptr--; return *this; }
-            iterator        &operator--() { this->_ptr++; return *this; }
-            iterator        operator++(int) { return this->_ptr--; }
-            iterator        operator--(int) { return this->_ptr++; }
-            iterator        operator+(size_type v) const { return this->_ptr - v; }
-            iterator        operator+(difference_type v) const { return this->_ptr - v; }
-            difference_type operator+(iterator &other) const { return this->_ptr - other._ptr; }
-            iterator        operator-(size_type v) const { return this->_ptr + v; }
-            iterator        operator-(difference_type v) const { return this->_ptr + v; }
-            difference_type operator-(iterator &other) const { return this->_ptr + other._ptr; }
-            iterator        &operator+=(difference_type &ptr) { this->_ptr -= ptr; return *this; }
-            iterator        &operator-=(difference_type &ptr) { this->_ptr += ptr; return *this; }
+            iterator        &operator++()                       { this->_ptr--; return *this; }
+            iterator        &operator--()                       { this->_ptr++; return *this; }
+            iterator        operator++(int)                     { return this->_ptr--; }
+            iterator        operator--(int)                     { return this->_ptr++; }
+            iterator        operator+(int v) const              { return this->_ptr - v; }
+            iterator        operator+(size_type v) const        { return this->_ptr - v; }
+            iterator        operator+(difference_type v) const  { return this->_ptr - v; }
+            difference_type operator+(iterator &other) const    { return this->_ptr - other._ptr; }
+            iterator        operator-(int v) const              { return this->_ptr + v; }
+            iterator        operator-(size_type v) const        { return this->_ptr + v; }
+            iterator        operator-(difference_type v) const  { return this->_ptr + v; }
+            difference_type operator-(iterator &other) const    { return this->_ptr + other._ptr; }
+            iterator        &operator+=(difference_type &ptr)   { this->_ptr -= ptr; return *this; }
+            iterator        &operator-=(difference_type &ptr)   { this->_ptr += ptr; return *this; }
 
             bool            operator==(iterator const &v) const { return this->_ptr == v._ptr; }
             bool            operator!=(iterator const &v) const { return this->_ptr != v._ptr; }
@@ -141,6 +151,17 @@ namespace ft
         typedef vector_iterator<const value_type> const_iterator;
         typedef vector_reverse_iterator<value_type> reverse_iterator;
         typedef vector_reverse_iterator<const value_type> const_reverse_iterator;
+        typedef std::ptrdiff_t difference_type;
+        
+
+    private:
+        template < class It >
+        difference_type distance(It first, It last)
+        {
+            difference_type i = 0;
+            for (; first != last; first++, i++);
+            return i;
+        }
 
     private:
         value_type *_box;
@@ -216,19 +237,18 @@ namespace ft
 
         reference front() { return this->_box[0]; }
         reference back() { return this->_box[this->_size]; }
-        const_reference back() const { return this->_box[this->_size]; }
         const_reference front() const { return this->_box[0]; }
+        const_reference back() const { return this->_box[this->_size]; }
 
         iterator begin() { return this->_box; }
         iterator end() { return this->_box + this->_size; }
-        iterator rbegin() { return this->_box + this->_size; }
-        iterator rend() { return this->_box; }
-        const_iterator begin() const { return this->_box; }
-        const_iterator end() const { return this->_box + this->_size; }
+        reverse_iterator rbegin() { return this->_box + this->_size - 1; }
+        reverse_iterator rend() { return this->_box - 1; }
+
         const_iterator cbegin() const { return this->_box; }
         const_iterator cend() const { return this->_box + this->_size; }
-        const_iterator crbegin() const { return this->_box + this->_size; }
-        const_iterator crend() const { return this->_box; }
+        const_reverse_iterator crbegin() const { return this->_box + this->_size - 1; }
+        const_reverse_iterator crend() const { return this->_box - 1; }
 
         bool empty() const { return this->_size; }
 
@@ -317,21 +337,6 @@ namespace ft
             this->_size--;
         }
 
-
-        // assign
-
-        // 1) assigns new contents
-        // 2) replacing its current contents
-        // 3) modifying its size accordingly
-
-        // range
-        // template < class InputIterator >
-        // void assign(InputIterator first, InputIterator last)
-        // {
-            
-        // }
-
-        // fill
         void assign(size_type n, value_type const &val)
         {
             clear();
@@ -343,7 +348,37 @@ namespace ft
             }
             resize(n, val);
         }
+
+        template < class InputIterator >
+        void assign(InputIterator first, InputIterator last,
+        typename ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
+        {
+            difference_type n = distance(first, last);
+            if (n == 0)
+                return ;
+            if (n < 0)
+                throw std::out_of_range("vector");
+            clear();
+            if (static_cast<size_type>(n) < this->_capacity)
+            {
+                for (; first != last; first++)
+                {
+                    this->_alloc.construct(this->_box + this->_size, *first);
+                    this->_size++;
+                }
+                return ;
+            }
+            this->_alloc.deallocate(this->_box, this->_capacity);
+            this->_box = this->_alloc.allocate(static_cast<size_type>(n));
+            for (; first != last; first++)
+            {
+                this->_alloc.construct(this->_box + this->_size, *first);
+                this->_size++;
+            }
+            this->_capacity = static_cast<size_type>(n);
+        }
     };
+
 }
 
 #endif
