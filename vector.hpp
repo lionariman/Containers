@@ -359,24 +359,61 @@ namespace ft
             if (n < 0)
                 throw std::out_of_range("vector");
             clear();
-            if (static_cast<size_type>(n) < this->_capacity)
+            if (static_cast<size_type>(n) > this->_capacity)
             {
-                for (; first != last; first++)
-                {
-                    this->_alloc.construct(this->_box + this->_size, *first);
-                    this->_size++;
-                }
-                return ;
+                this->_alloc.deallocate(this->_box, this->_capacity);
+                this->_box = this->_alloc.allocate(static_cast<size_type>(n));
+                this->_capacity = static_cast<size_type>(n);
             }
-            this->_alloc.deallocate(this->_box, this->_capacity);
-            this->_box = this->_alloc.allocate(static_cast<size_type>(n));
-            for (; first != last; first++)
-            {
+            for (; first != last; first++, this->_size++)
                 this->_alloc.construct(this->_box + this->_size, *first);
-                this->_size++;
-            }
-            this->_capacity = static_cast<size_type>(n);
         }
+
+
+        // =============== INSERT ==================
+
+        // single element
+
+        iterator insert(iterator position, value_type const &val)
+        {
+            if (this->_size > this->_capacity)
+            {
+                value_type *tmp = this->_alloc.allocate(this->_capacity * 2);
+                for (size_type i(0); i < this->_size; i++)
+                {
+                    this->_alloc.construct(tmp + i, *(this->_box + i));
+                    this->_alloc.destroy(this->_box + i);
+                }
+                this->_alloc.deallocate(this->_box, this->_capacity);
+                this->_box = tmp;
+                this->_capacity *= 2;
+            }
+            difference_type p = distance(begin(), position);
+            for (size_type i = this->_size - 1; i != static_cast<size_type>(p) - 1; i--)
+            {
+                this->_alloc.construct(this->_box + i + 1, *(this->_box + i));
+                this->_alloc.destroy(this->_box + i);
+            }
+            this->_alloc.construct(this->_box + static_cast<size_type>(p), val);
+            this->_size++;
+            return this->_box + static_cast<size_type>(p);
+        }
+
+        // fill
+
+        // void insert(iterator position, size_type n, value_type const &val)
+        // {
+
+        // }
+
+        // range
+
+        // template < class InputIterator >
+        // void insert(iterator position, InputIterator first, InputIterator last,
+        // ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
+        // {
+
+        // }
     };
 
 }
