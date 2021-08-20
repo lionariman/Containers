@@ -160,7 +160,7 @@ namespace ft
             difference_type i = 0;
             if (*first == 0 && *last == 0)
                 return 0;
-            for (; first != last; first++, i++);
+            for (; first != last; first++, i++) ;
             return i;
         }
 
@@ -248,8 +248,6 @@ namespace ft
 
         const_iterator cbegin() const { return this->_box; }
         const_iterator cend() const { return this->_box + this->_size; }
-        const_reverse_iterator crbegin() const { return this->_box + this->_size - 1; }
-        const_reverse_iterator crend() const { return this->_box - 1; }
 
         bool empty() const { return this->_size; }
 
@@ -429,12 +427,36 @@ namespace ft
 
         // range
 
-        // template < class InputIterator >
-        // void insert(iterator position, InputIterator first, InputIterator last,
-        // ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
-        // {
-
-        // }
+        template < class InputIterator >
+        void insert(iterator position, InputIterator first, InputIterator last,
+        typename ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
+        {
+            difference_type p = distance(first, last);
+            if (static_cast<size_type>(distance(begin(), position)) > this->_size)
+                return ;
+            if (this->_size + static_cast<size_type>(p) > this->_capacity)
+            {
+                value_type *tmp = this->_alloc.allocate(this->_size + static_cast<size_type>(p));
+                for (size_type i(0); i < this->_size; i++)
+                {
+                    this->_alloc.construct(tmp + i, *(this->_box + i));
+                    this->_alloc.destroy(this->_box + i);
+                }
+                this->_alloc.deallocate(this->_box, this->_capacity);
+                this->_box = tmp;
+                this->_capacity = this->_size + static_cast<size_type>(p);
+            }
+            difference_type pos = distance(begin(), position);
+            for (size_type i = this->_size - 1; i != static_cast<size_type>(pos) - 1; i--)
+            {
+                this->_alloc.construct(this->_box + i + static_cast<size_type>(p), *(this->_box + i));
+                this->_alloc.destroy(this->_box + i);
+            }
+            for (size_type i = static_cast<size_type>(pos);
+            first != last && i != this->_capacity + 1; first++, i++)
+                this->_alloc.construct(this->_box + i, *first);
+            this->_size += static_cast<size_type>(p);
+        }
     };
 
 }
