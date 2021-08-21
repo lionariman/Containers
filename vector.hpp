@@ -53,7 +53,7 @@ namespace ft
             vector_iterator(pointer ptr) : _ptr(ptr) {}
             ~vector_iterator() { this->_ptr = NULL; }
 
-            iterator &operator=(vector_iterator const &other) { this->_ptr = other._ptr; return *this; }
+            iterator &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
 
             reference       operator*() const                   { return *this->_ptr; }
             pointer         operator->() const                  { return this->_ptr; }
@@ -63,11 +63,11 @@ namespace ft
             iterator        &operator--()                       { this->_ptr--; return *this; }
             iterator        operator++(int)                     { return this->_ptr++; }
             iterator        operator--(int)                     { return this->_ptr--; }
-            iterator        operator+(int v) const        { return this->_ptr + v; }
+            iterator        operator+(int v) const              { return this->_ptr + v; }
             iterator        operator+(size_type v) const        { return this->_ptr + v; }
             iterator        operator+(difference_type v) const  { return this->_ptr + v; }
             difference_type operator+(iterator &other) const    { return this->_ptr + other._ptr; }
-            iterator        operator-(int v) const        { return this->_ptr - v; }
+            iterator        operator-(int v) const              { return this->_ptr - v; }
             iterator        operator-(size_type v) const        { return this->_ptr - v; }
             iterator        operator-(difference_type v) const  { return this->_ptr - v; }
             difference_type operator-(iterator &other) const    { return this->_ptr - other._ptr; }
@@ -187,20 +187,19 @@ namespace ft
         }
 
         // range
-        // template < class InputIterator >
-        // vector(InputIterator first, InputIterator last,
-        //        allocator_type const &alloc = allocator_type()) :
-        //     _box(0), _size(0), _capacity(0), _alloc(alloc)
-        // {
-        //     size_type i(0);
-
-        //     this->_box = this->_alloc.allocate(last - first);
-        //     for (; first != last; first++)
-        //     {
-        //         this->_alloc.construct(this->_box + i, *first);
-        //         i++;
-        //     }
-        // }
+        template < class InputIterator >
+        vector(InputIterator first, InputIterator last,
+               allocator_type const &alloc = allocator_type()) :
+            _box(0), _size(0), _capacity(0), _alloc(alloc)
+        {
+            difference_type p = last - first;
+            if (p < 0)
+                throw std::out_of_range("vector");
+            this->_capacity = static_cast<size_type>(p);
+            this->_box = this->_alloc.allocate(this->_capacity);
+            for (; first != last; first++, this->_size++)
+                this->_alloc.construct(this->_box + this->_size, *first);
+        }
 
         // copy
         vector(vector const &x) { *this = x; }
@@ -368,11 +367,6 @@ namespace ft
                 this->_alloc.construct(this->_box + this->_size, *first);
         }
 
-
-        // =============== INSERT ==================
-
-        // single element
-
         iterator insert(iterator position, value_type const &val)
         {
             if (this->_size + 1 > this->_capacity)
@@ -397,8 +391,6 @@ namespace ft
             this->_size++;
             return this->_box + static_cast<size_type>(p);
         }
-
-        // fill
 
         void insert(iterator position, size_type n, value_type const &val)
         {
@@ -425,18 +417,16 @@ namespace ft
             this->_size += n;
         }
 
-        // range
-
         template < class InputIterator >
         void insert(iterator position, InputIterator first, InputIterator last,
         typename ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
         {
-            difference_type p = distance(first, last);
-            if (static_cast<size_type>(distance(begin(), position)) > this->_size)
+            difference_type p = last - first;
+            if (p == 0 || p < 0)
                 return ;
             if (this->_size + static_cast<size_type>(p) > this->_capacity)
             {
-                value_type *tmp = this->_alloc.allocate(this->_size + static_cast<size_type>(p));
+                value_type *tmp = this->_alloc.allocate(this->_capacity * 2);
                 for (size_type i(0); i < this->_size; i++)
                 {
                     this->_alloc.construct(tmp + i, *(this->_box + i));
@@ -444,9 +434,10 @@ namespace ft
                 }
                 this->_alloc.deallocate(this->_box, this->_capacity);
                 this->_box = tmp;
-                this->_capacity = this->_size + static_cast<size_type>(p);
+                this->_capacity *= 2;
             }
-            difference_type pos = distance(begin(), position);
+            // difference_type pos = distance(begin(), position);
+            difference_type pos = position - begin();
             for (size_type i = this->_size - 1; i != static_cast<size_type>(pos) - 1; i--)
             {
                 this->_alloc.construct(this->_box + i + static_cast<size_type>(p), *(this->_box + i));
@@ -457,6 +448,12 @@ namespace ft
                 this->_alloc.construct(this->_box + i, *first);
             this->_size += static_cast<size_type>(p);
         }
+
+        // iterator erase(iterator position)
+        // {
+        //     difference_type p = position - begin();
+        //     this->_alloc.destroy(position);
+        // }
     };
 
 }
