@@ -236,9 +236,9 @@ namespace ft
         reference &operator[](size_type n) { return *(this->_box + n); }
 
         reference front() { return *this->_box; }
-        reference back() { return *(this->_box + this->size - 1); }
+        reference back() { return *(this->_box + this->_size - 1); }
         const_reference front() const { return *this->_box; }
-        const_reference back() const { return *(this->_box + this->size - 1); }
+        const_reference back() const { return *(this->_box + this->_size - 1); }
 
         iterator begin() { return this->_box; }
         iterator end() { return this->_box + this->_size; }
