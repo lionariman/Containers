@@ -2,6 +2,8 @@
 #include <string>
 
 #include "vector.hpp"
+#include "stack.hpp"
+#include <stack>
 
 #define MY_ALLOCATOR 0
 #define STATE 0
@@ -9,7 +11,7 @@
 template < typename T >
 void push_back_numbers(T &numbers, int numSize = int())
 {
-    std::cout << GREEN << "[ ... Push back numbers (" << numSize << ") ... ]\n" << NCLR;
+    // std::cout << GREEN << "[ ... Push back numbers (" << numSize << ") ... ]\n" << NCLR;
     for (int i(0); i < numSize; i++)
         numbers.push_back(i);
 }
@@ -74,9 +76,10 @@ void test_one()
         ft::vector<int> my_numbers;
 #endif
 
+
+#if 0
         std::cout << BLUE << "<================ RESIZE ================>\n" << NCLR;
 
-#if 1
         std_numbers.resize(10, 1);
         my_numbers.resize(10, 1);
 
@@ -112,27 +115,113 @@ void test_one()
         std::cout << "\n\n";
 #endif
 
-#if 1
+#if 0
         std::cout << BLUE << "<========== ASSIGN ==========>\n" << NCLR;
 
-        std::cout << PURPLE << "... current vertors ... \n" << NCLR;
-
-        std_numbers.assign(5, 3);
-        my_numbers.assign(5, 3);
-
+        push_back_numbers(std_numbers, 17);
+        push_back_numbers(my_numbers, 17);
         print_each_element_and_size(std_numbers, my_numbers);
         print_size_and_capacity(std_numbers, my_numbers);
 
+        std::cout << PURPLE << "... current vertors ... \n" << NCLR;
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        std::vector<int> new_s;
+        ft::vector<int> new_m;
+
         std::cout << PURPLE << "... new vertors ... \n" << NCLR;
 
-        std::vector<int> new_std_numbers;
-        ft::vector<int> new_my_numbers;
+        new_s.assign(std_numbers.crbegin(), std_numbers.crend());
+        new_m.assign(my_numbers.crbegin(), my_numbers.crend());
 
-        new_std_numbers.assign(15, 4);
-        new_my_numbers.assign(15, 4);
+        print_each_element_and_size(new_s, new_m);
+        print_size_and_capacity(new_s, new_m);
+#endif
 
-        print_each_element_and_size(new_std_numbers, new_my_numbers);
-        print_size_and_capacity(new_std_numbers, new_my_numbers);
+#if 0
+        std::cout << BLUE << "<========== INSERT ==========>\n" << NCLR;
+
+        push_back_numbers(std_numbers, 10);
+        push_back_numbers(my_numbers, 10);
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        std::cout << PURPLE << " ... after insert ... \n" << NCLR;
+
+        //                 [    position    ]   [        first         ]  [         last          ]
+        std_numbers.insert(std_numbers.begin(), std_numbers.begin() + 2, std_numbers.begin() + 8);
+        my_numbers.insert(my_numbers.begin(), my_numbers.begin() + 2, my_numbers.begin() + 8);
+        
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
+#endif
+
+#if 0
+        std::cout << BLUE << "<=========== ERASE ==========>\n" << NCLR;
+        push_back_numbers(std_numbers, 11);
+        push_back_numbers(my_numbers, 11);
+        print_each_element_and_size(std_numbers, my_numbers);
+        print_size_and_capacity(std_numbers, my_numbers);
+
+        // std_numbers.erase(std_numbers.begin(), std_numbers.begin() + 5);
+        // my_numbers.erase(my_numbers.begin(), my_numbers.begin() + 5);
+
+        // print_each_element_and_size(std_numbers, my_numbers);
+        // print_size_and_capacity(std_numbers, my_numbers);
+
+        std::cout << " ... vector comparison ...\n";
+
+        ft::vector<int> zzz;
+        std::vector<int> xxx;
+        push_back_numbers(zzz, 11);
+        push_back_numbers(xxx, 11);
+
+        print_each_element_and_size(xxx, zzz);
+        print_size_and_capacity(xxx, zzz);
+
+        std::cout << "zzz > my_numbers returns " << (zzz > zzz) << '\n';
+        std::cout << "xxx > std_numbers returns " << (xxx > xxx) << '\n';
+#endif
+
+#if 1
+        std::cout << BLUE << "<=========== STACK ==========>\n" << NCLR;
+
+        std::stack<int> sst;
+        ft::stack<int> mst;
+        ft::stack<int> xst;
+
+        sst.push(22);
+        sst.push(22);
+        sst.push(55);
+        sst.push(77);
+
+        mst.push(33);
+        mst.push(33);
+        mst.push(33);
+        mst.push(44);
+
+        xst.push(33);
+        xst.push(33);
+        xst.push(33);
+        xst.push(44);
+
+        std::cout << "________sst________\n";
+        std::cout << "TOP: " << sst.top() << '\n';
+        std::cout << "________mst________\n";
+        std::cout << "TOP: " << mst.top() << '\n';
+
+        sst.pop();
+        mst.pop();
+        xst.pop();
+
+        std::cout << "________sst________\n";
+        std::cout << "TOP: " << sst.top() << '\n';
+        std::cout << "________mst________\n";
+        std::cout << "TOP: " << mst.top() << '\n';
+
+        std::cout << "mst == xst returns " << (mst == xst) << '\n';
 
 #endif
 
