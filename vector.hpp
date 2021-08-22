@@ -436,8 +436,7 @@ namespace ft
                 this->_box = tmp;
                 this->_capacity *= 2;
             }
-            // difference_type pos = distance(begin(), position);
-            difference_type pos = position - begin();
+            difference_type pos = distance(begin(), position);
             for (size_type i = this->_size - 1; i != static_cast<size_type>(pos) - 1; i--)
             {
                 this->_alloc.construct(this->_box + i + static_cast<size_type>(p), *(this->_box + i));
@@ -449,11 +448,35 @@ namespace ft
             this->_size += static_cast<size_type>(p);
         }
 
-        // iterator erase(iterator position)
-        // {
-        //     difference_type p = position - begin();
-        //     this->_alloc.destroy(position);
-        // }
+        iterator erase(iterator position)
+        {
+            difference_type p = distance(begin(), position);
+            if (p < 0) p = 0;
+            this->_alloc.destroy(this->_box + static_cast<size_type>(p));
+            for (size_type i = static_cast<size_type>(p); i < this->_size; i++)
+            {
+                this->_alloc.construct(this->_box + i, *(this->_box + i + 1));
+                this->_alloc.destroy(this->_box + i + 1);
+            }
+            this->_size--;
+            return this->_box + static_cast<size_type>(p);
+        }
+
+        iterator erase(iterator first, iterator last)
+        {
+            difference_type ps = distance(begin(), first);
+            difference_type ds = distance(first, last);
+            if (ps < 0) ps = 0;
+            for (size_type i = static_cast<size_type>(ps); first != last; first++, i++)
+                this->_alloc.destroy(this->_box + i);
+            for (size_type i = static_cast<size_type>(ps); i < this->_size; i++)
+            {
+                this->_alloc.construct(this->_box + i, *(this->_box + i + static_cast<size_type>(ds)));
+                this->_alloc.destroy(this->_box + i + static_cast<size_type>(ds));
+            }
+            this->_size -= static_cast<size_type>(ds);
+            return this->_box + static_cast<size_type>(ps);
+        }
     };
 
 }
