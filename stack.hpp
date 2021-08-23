@@ -13,7 +13,7 @@ namespace ft
             typedef Container container_type;
             typedef size_t size_type;
 
-        protected:
+        private:
             container_type _cont;
 
         public:
@@ -69,120 +69,6 @@ namespace ft
 	{
 		return !(lhs < rhs);
 	}
-
-    // template <class T, class Container>
-	// bool operator==(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 != *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Container>
-	// bool operator!=(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() == rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 == *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Container>
-	// bool operator<(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 >= *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Container>
-	// bool operator>(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 <= *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Container>
-	// bool operator<=(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 > *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Container>
-	// bool operator>=(const stack<T, Container> &lhs, const stack<T, Container> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::stack<T, Container>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::stack<T, Container>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::stack<T, Container>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 < *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
 }
 
 
