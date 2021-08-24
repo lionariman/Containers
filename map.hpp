@@ -3,6 +3,7 @@
 
 # include <iostream>
 
+# define nl std::cout<<'\n'
 
 namespace ft
 {
@@ -15,6 +16,8 @@ namespace ft
 
     //     public:
     // }
+
+    // =================================== PAIR ===================================
 
     template < class T1, class T2 > struct pair
     {
@@ -56,7 +59,7 @@ namespace ft
     template < class T1, class T2 >
     bool operator<(const pair<T1, T2> &lhs, const pair<T1, T2> &rhs)
     {
-        return lhs.first < rhs.first || (!(lhs.first < lhs.first) && lhs.second < rhs.second);
+        return lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
     }
 
     template < class T1, class T2 >
@@ -77,6 +80,58 @@ namespace ft
         return !(lhs < rhs);
     }
 
+    // ============================================================================
+
+
+    // =================================== LESS ===================================
+
+    template <class Arg1, class Arg2, class Result>
+    struct binary_function
+    {
+        typedef Arg1 first_argument_type;
+        typedef Arg2 second_argument_type;
+        typedef Result result_type;
+    };
+    
+    template <class T>
+    struct less : ft::binary_function<T, T, bool>
+    {
+        bool operator()(const T &x, const T &y) const
+        {
+            return x < y;
+        }
+    };
+
+    template <class T>
+    struct greater : ft::binary_function<T, T, bool>
+    {
+        bool operator()(const T &x, const T &y) const
+        {
+            return x > y;
+        }
+    };
+
+    struct Compare : ft::binary_function<int, int, bool>
+    {
+        bool operator()(int a, int b)
+        {
+            return (a == b);
+        }
+    };
+    
+
+    // ============================================================================
+
+    /*
+    
+    Compare is a binary predicat that takes two element as arguments and returns a bool.
+    The expression "comp(a, b)" where "comp" is an object of this type and a and b are key values,
+    shall returns true if a is considered to go before b in strict weak ordering the function defines.
+
+    */
+
+    // =================================== MAP ====================================
+
     template <
         class Key,
         class T,
@@ -92,38 +147,10 @@ namespace ft
             typedef Compare key_compare;
             typedef typename std::size_t size_type;
             typedef Allocator allocator_type;
-            
-            // template < class Key, class T, class Compare, class Alloc >
-            // class map
-
-        private:
-            key_type *_key;
-            mapped_type *_val;
-            size_type _size, _capacity;
-            allocator_type _alloc;
-            key_compare _comp;
-
-        public:
-            // empty
-            explicit map(const key_compare &comp = key_compare(),
-                         const allocator_type &alloc = allocator_type()) :
-                         _key(0), _val(0), _size(0), _capacity(0), _alloc(alloc), _comp(comp) {}
-            
-            // range
-            // template < class InputIterator >
-            // map(InputIterator first, InputIterator last,
-            //     const key_compare &comp = key_compare(),
-            //     const allocator_type &alloc = allocator_type())
-            // {
-
-            // }
-
-            // copy
-            map(const map &x) { *this = x; }
-
-            // map &operator=(const map &x) {  }
 
     };
+
+    // ============================================================================
 }
 
 #endif
