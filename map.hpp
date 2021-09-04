@@ -16,12 +16,24 @@ namespace ft
     template < class U >
     struct Node
     {
-        U *data; /* pair: key, value */
-
-        Node *parent; /* reference to parent node */
-        Node *right; /* reference to right node */
-        Node *left; /* reference to left node */
+        U *data;
+        Node *parent;
+        Node *right;
+        Node *left;
         int height;
+
+        Node() :
+            parent(nullptr),
+            right(nullptr),
+            left(nullptr),
+            height(0) {}
+
+        Node(const U &val) :
+            data(ft::make_pair(val.first, val.second)),
+            parent(nullptr),
+            right(nullptr),
+            left(nullptr),
+            height(1) {}
     };
     
     template < class T >
@@ -56,8 +68,8 @@ namespace ft
 
             bool operator==(const map_iterator &rhs) const { return _ptr == rhs._ptr; }
             bool operator!=(const map_iterator &rhs) const { return _ptr != rhs._ptr; }
-            reference operator*() { return *_ptr; }
-            pointer operator->() { return _ptr; }
+            T &operator*() { return *(_ptr->data); }
+            T *operator->() { return _ptr->data; }
 
             pointer getNode() { return _ptr; }
         
@@ -112,8 +124,8 @@ namespace ft
 
             bool operator==(const map_reverse_iterator &rhs) const { return _ptr == rhs._ptr; }
             bool operator!=(const map_reverse_iterator &rhs) const { return _ptr != rhs._ptr; }
-            reference operator*() { return *_ptr; }
-            pointer operator->() { return _ptr; }
+            U &operator*() { return *(_ptr->data); }
+            U *operator->() { return _ptr->data; }
 
             pointer getNode() { return _ptr; }
 
@@ -189,13 +201,13 @@ namespace ft
 
             typedef typename allocator_type::template rebind<_node>::other node_allocator;
 
-            _node_pointer     _root;
-            _node_pointer     _begin;
-            _node_pointer     _end;
-            key_compare       _comp;
-            size_type         _size;
-            allocator_type    _alloc;
-            node_allocator    _alloc_node;
+            _node_pointer  _root;
+            _node_pointer  _begin;
+            _node_pointer  _end;
+            key_compare    _comp;
+            size_type      _size;
+            allocator_type _alloc;
+            node_allocator _alloc_node;
 
             _node_pointer createNode(const value_type &val)
             {
@@ -216,80 +228,189 @@ namespace ft
                 nd = nullptr;
             }
 
-            int getSize(_node_pointer nd)
+            // int getSize(_node_pointer nd)
+            // {
+            //     if (!nd) return 0;
+            //     return nd->height;
+            // }
+
+            // void correctHeight(_node_pointer nd)
+            // {
+            //     int heightLeft = getSize(nd->left);
+            //     int heightRight = getSize(nd->right);
+            //     nd->height = ((heightLeft > heightRight) ? heightLeft : heightRight) + 1;
+            // }
+
+            // int balanceFactor(_node_pointer nd)
+            // {
+            //     return getSize(nd->right) - getSize(nd->left);
+            // }
+
+            // _node_pointer rotateLeft(_node_pointer nd)
+            // {
+            //     _node_pointer pivot = nd->right;
+            //     pivot->parent = nd->parent;
+            //     if (nd->parent != nullptr)
+            //     {
+            //         if (nd->parent->left == nd)
+            //             nd->parent->left = pivot;
+            //         else
+            //             nd->parent->right = pivot;
+            //     }
+            //     nd->right = pivot->left;
+            //     if (pivot->left != nullptr)
+            //         pivot->left->parent = nd;
+            //     nd->parent = pivot;
+            //     pivot->left = nd;
+            //     return nd;
+            // }
+
+            // _node_pointer rotateRight(_node_pointer nd)
+            // {
+            //     _node_pointer pivot = nd->left;
+            //     pivot->parent = nd->parent;
+            //     if (nd->parent != nullptr)
+            //     {
+            //         if (nd->parent->left == nd)
+            //             nd->parent->left = pivot;
+            //         else
+            //             nd->parent->right = pivot;
+            //     }
+            //     nd->left = pivot->right;
+            //     if (pivot->right != nullptr)
+            //         pivot->right->parent = nd;
+            //     nd->parent = pivot;
+            //     pivot->right = nd;
+            //     return nd;
+            // }
+
+            // _node_pointer balance(_node_pointer nd)
+            // {
+            //     correctHeight(nd);
+            //     if (balanceFactor(nd) == 2)
+            //     {
+            //         if (balanceFactor(nd->right) < 0)
+            //             nd->right = rotateRight(nd->right);
+            //         return rotateLeft(nd);
+            //     }
+            //     if (balanceFactor(nd) == -2)
+            //     {
+            //         if (balanceFactor(nd->left) > 0)
+            //             nd->left = rotateLeft(nd->left);
+            //         return rotateRight(nd);
+            //     }
+            //     return nd;
+            // }
+
+            // int keyCompare(const key_type &x, const key_type &y) const
+            // {
+            //     return _comp(x, y) + _comp(y, x) * 2;
+            // }
+
+            // _node_pointer findNode(_node_pointer nd, key_type k)
+            // {
+            //     int compare = keyCompare(k, nd->data->first);
+            //     if (compare == 1)
+            //     {
+            //         if (nd->left and nd->left != _begin)
+            //             return findNode(nd->left, k);
+            //     }
+            //     else if (compare == 2)
+            //     {
+            //         if (nd->right and nd->right != _end)
+            //             return findNode(nd->right, k);
+            //     }
+            //     return nd;
+            // }
+
+            // _node_pointer putNode(_node_pointer nd, const value_type &val)
+            // {
+            //     if (!nd)
+            //         return nd = createNode(val);
+            //     if (nd->data->first > val.first)
+            //         nd->left = putNode(nd->left, val);
+            //     else if (nd->data->first < val.first)
+            //         nd->right = putNode(nd->right, val);
+            //     else if (nd->data->first == val.first)
+            //         nd->data->second = val.second;
+            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
+            //     return balance(nd);
+            // }
+
+            // _node_pointer deleteMin(_node_pointer nd)
+            // {
+            //     if (nd->left == nullptr) return nd->right;
+            //     nd->left = deleteMin(nd->left);
+            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
+            //     return nd;
+            // }
+
+            // _node_pointer getMin(_node_pointer nd)
+            // {
+            //     if (!nd->left) return nd;
+            //     return getMin(nd->left);
+            // }
+
+            // _node_pointer getMax(_node_pointer nd)
+            // {
+            //     if (!nd->right) return nd;
+            //     return getMax(nd->right);
+            // }
+
+            // _node_pointer deleteNode(_node_pointer nd, value_type &val)
+            // {
+            //     if (!nd) return nullptr;
+            //     if (nd->data->first > val.first) nd->left = deleteNode(nd->left, val);
+            //     else if (nd->data->first < val.first) nd->right = deleteNode(nd->right, val);
+            //     else
+            //     {
+            //         if (!nd->right) return nd->left;
+            //         if (!nd->left) return nd->right;
+            //         _node_pointer t = nd;
+            //         nd = getMin(t->right);
+            //         nd->right = deleteMin(t->right);
+            //         nd->left = t->left;
+            //         return balance(nd);
+            //     }
+            //     return balance(nd);
+            // }
+
+            // void deleteTree(_node_pointer nd)
+            // {
+            //     if (nd->left != nullptr)
+            //         deleteTree(nd->left);
+            //     if (nd->right != nullptr)
+            //         deleteTree(nd->right);
+            //     delete nd;
+            // }
+
+        public:
+            // empty constructor
+            explicit map(const key_compare &comp = key_compare(),
+                         const allocator_type &alloc = allocator_type()) :
+                _root(nullptr),
+                _comp(comp),
+                _size(0),
+                _alloc(alloc)
             {
-                if (!nd) return 0;
-                return nd->height;
+                // initMap();
             }
 
-            void correctHeight(_node_pointer nd)
-            {
-                int heightLeft = getSize(nd->left);
-                int heightRight = getSize(nd->right);
-                nd->height = ((heightLeft > heightRight) ? heightLeft : heightRight) + 1;
-            }
+            iterator begin() { return iterator(_begin); }
+            const_iterator cbegin() { return const_iterator(_begin); }
+            reverse_iterator rbegin() { return reverse_iterator(_end); }
+            const_reverse_iterator crbegin() { return const_reverse_iterator(_end); }
 
-            int balanceFactor(_node_pointer nd)
-            {
-                return getSize(nd->right) - getSize(nd->left);
-            }
+            iterator end() { return iterator(_begin); }
+            const_iterator cend() { return const_iterator(_begin); }
+            reverse_iterator rend() { return reverse_iterator(_end); }
+            const_reverse_iterator crend() { return const_reverse_iterator(_end); }
 
-            _node_pointer rotateLeft(_node_pointer nd)
-            {
-                _node_pointer pivot = nd->right;
-                pivot->parent = nd->parent;
-                if (nd->parent != nullptr)
-                {
-                    if (nd->parent->left == nd)
-                        nd->parent->left = pivot;
-                    else
-                        nd->parent->right = pivot;
-                }
-                nd->right = pivot->left;
-                if (pivot->left != nullptr)
-                    pivot->left->parent = nd;
-                nd->parent = pivot;
-                pivot->left = nd;
-                return nd;
-            }
-
-            _node_pointer rotateRight(_node_pointer nd)
-            {
-                _node_pointer pivot = nd->left;
-                pivot->parent = nd->parent;
-                if (nd->parent != nullptr)
-                {
-                    if (nd->parent->left == nd)
-                        nd->parent->left = pivot;
-                    else
-                        nd->parent->right = pivot;
-                }
-                nd->left = pivot->right;
-                if (pivot->right != nullptr)
-                    pivot->right->parent = nd;
-                nd->parent = pivot;
-                pivot->right = nd;
-                return nd;
-            }
-
-            _node_pointer balance(_node_pointer nd)
-            {
-                correctHeight(nd);
-                if (balanceFactor(nd) == 2)
-                {
-                    if (balanceFactor(nd->right) < 0)
-                        nd->right = rotateRight(nd->right);
-                    return rotateLeft(nd);
-                }
-                if (balanceFactor(nd) == -2)
-                {
-                    if (balanceFactor(nd->left) > 0)
-                        nd->left = rotateLeft(nd->left);
-                    return rotateRight(nd);
-                }
-                return nd;
-            }
-
+            bool empty() const { return _size; }
+            size_type size() const { return _size; }
+            size_type max_size() const { return _alloc.max_size() / 5; }
+            
+/*
             _node_pointer putNode(_node_pointer nd, const value_type &val)
             {
                 if (!nd)
@@ -304,80 +425,13 @@ namespace ft
                 return balance(nd);
             }
 
-            _node_pointer deleteMin(_node_pointer nd)
-            {
-                if (nd->left == nullptr) return nd->right;
-                nd->left = deleteMin(nd->left);
-                nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-                return nd;
-            }
-
-            _node_pointer getMin(_node_pointer nd)
-            {
-                if (!nd->left) return nd;
-                return getMin(nd->left);
-            }
-
-            _node_pointer getMax(_node_pointer nd)
-            {
-                if (!nd->right) return nd;
-                return getMax(nd->right);
-            }
-
-            _node_pointer deleteNode(_node_pointer nd, value_type &val)
-            {
-                if (!nd) return nullptr;
-                if (nd->data->first > val.first) nd->left = deleteNode(nd->left, val);
-                else if (nd->data->first < val.first) nd->right = deleteNode(nd->right, val);
-                else
-                {
-                    if (!nd->right) return nd->left;
-                    if (!nd->left) return nd->right;
-                    _node_pointer t = nd;
-                    nd = getMin(t->right);
-                    nd->right = deleteMin(t->right);
-                    nd->left = t->left;
-                    return balance(nd);
-                }
-                return balance(nd);
-            }
-
-        public:
-            // empty constructor
-            explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()) :
-                _root(nullptr),
-                _comp(comp),
-                _size(0),
-                _alloc(alloc)
-            {
-                // initMap();
-            }
-
-            iterator begin() { return _begin; }
-            const_iterator cbegin() { return _begin; }
-            reverse_iterator rbegin() { return _end; }
-            const_reverse_iterator crbegin() { return _end; }
-
-            iterator end() { return _end; }
-            const_iterator cend() { return _end; }
-            reverse_iterator rend() { return _begin; }
-            const_reverse_iterator crend() { return _begin; }
-
-            bool empty() const { return _size; }
-            size_type size() const { return _size; }
-            size_type max_size() const { return _alloc.max_size() / 5; }
-            
+*/
 
             std::pair<iterator, bool> insert(const value_type &val)
             {
                 _root = putNode(_root, val);
                 _size++;
-                return std::pair<iterator, bool>(_root, true);
-            }
-
-            void erase(iterator position)
-            {
-                deleteNode(position);
+                return std::pair<iterator, bool>(_begin, false);
             }
 
             // =============== FOR TESTS ================
