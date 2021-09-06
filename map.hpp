@@ -331,16 +331,39 @@ namespace ft
             //     return nd;
             // }
 
-            _node_pointer putNode(_node_pointer nd, const value_type &val)
+            _node_pointer putNode(_node_pointer nd, _node_pointer parent, const value_type &val)
             {
-                if (!nd)
+                if (nd and nd->isBegin)
                 {
-                    return nd = createNode(val);
+                    _node_pointer newNode = createNode(val);
+                    parent->left = newNode;
+                    newNode->parent = parent;
+                    newNode->left = nd;
+                    newNode->right = nullptr;
+                    nd->parent = newNode;
+                    return balance(parent);
+                }
+                else if (nd and nd->isEnd)
+                {
+                    _node_pointer newNode = createNode(val);
+                    parent->right = newNode;
+                    newNode->parent = parent;
+                    newNode->right = nd;
+                    newNode->left = nullptr;
+                    nd->parent = newNode;
+                    return balance(parent);
+                }
+                else if (!nd)
+                {
+                    nd = createNode(val);
+                    nd->parent = parent;
+                    nd->left = nullptr;
+                    nd->right = nullptr;
                 }
                 if (nd->data->first > val.first)
-                    nd->left = putNode(nd->left, val);
+                    nd->left = putNode(nd->left, nd, val);
                 else if (nd->data->first < val.first)
-                    nd->right = putNode(nd->right, val);
+                    nd->right = putNode(nd->right, nd, val);
                 else if (nd->data->first == val.first)
                     nd->data->second = val.second;
                 nd->height = 1 + getSize(nd->left) + getSize(nd->right);
@@ -420,34 +443,18 @@ namespace ft
             size_type size() const { return _size; }
             size_type max_size() const { return _alloc.max_size() / 5; }
 
-            // _node_pointer putNode(_node_pointer nd, const value_type &val)
-            // {
-            //     if (!nd)
-            //         return nd = createNode(val);
-            //     if (nd->data->first > val.first)
-            //         nd->left = putNode(nd->left, val);
-            //     else if (nd->data->first < val.first)
-            //         nd->right = putNode(nd->right, val);
-            //     else if (nd->data->first == val.first)
-            //         nd->data->second = val.second;
-            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-            //     return balance(nd);
-            // }
-
             std::pair<iterator, bool> insert(const value_type &val)
             {
-                // first of all we have to check whether the VAL has the same key in the map
-                // ifit has, we should return the pair with false second value
-
                 if (_size == 0)
                 {
+                    std::cout << "insert 1\n";
                     _root = createNode(val);
 
                     _begin = _alloc_node.allocate(1);
                     _end = _alloc_node.allocate(1);
 
-                    // _begin->data = _alloc.allocate(0);
-                    // _end->data = _alloc.allocate(0);
+                    _begin->data = _alloc.allocate(0);
+                    _end->data = _alloc.allocate(0);
 
                     _root->left = _begin;
                     _root->right = _end;
@@ -463,64 +470,21 @@ namespace ft
                     _begin->isBegin = true;
                     _end->isEnd = true;
 
-                    // std::cout << "\n\n ISBEGIN and ISEND\n\n";
-                    // std::cout << "root isbegin: " << _root->isBegin << '\n';
-                    // std::cout << "root isend: " << _root->isEnd << '\n';
-                    // std::cout << "begin isbegin: " << _begin->isBegin << '\n';
-                    // std::cout << "begin isend: " << _begin->isEnd << '\n';
-                    // std::cout << "end isbegin: " << _end->isBegin << '\n';
-                    // std::cout << "end isend: " << _end->isEnd << "\n\n\n";
-
-
+                    _root->height++;
                     _size++;
 
                     return std::pair<iterator, bool>(_root, true);
                 }
-
-                _node_pointer tmp = _root;
-
-                while (tmp)
-                {
-                    if (val.first < tmp->data->first)
-                    {
-                        std::cout << "<\n";
-                        tmp = tmp->left;
-                        if (tmp->isBegin)
-                        {
-                            tmp->left = _begin;
-                            tmp = createNode(val);
-                            _begin->parent = tmp;
-                            _begin->left = nullptr;
-                            _begin->right = nullptr;
-                            break;
-                        }
-                    }
-                    else if (val.first > tmp->data->first)
-                    {
-                        std::cout << ">\n";
-                        tmp = tmp->right;
-                        if (tmp->isEnd)
-                        {
-                            tmp->right = _end;
-                            tmp = createNode(val);
-                            _end->parent = tmp;
-                            _end->left = nullptr;
-                            _end->right = nullptr;
-                            break;
-                        }
-                    }
-                    else
-                        return std::pair<iterator, bool>(tmp, false);
-                }
-                if (!tmp and !tmp->isBegin and !tmp->isEnd)
-                {
-                    std::cout << "X\n";
-                    tmp = createNode(val);
-                }
-                return std::pair<iterator, bool>(tmp, true);
+                // bool yesnot = false;
+                if (_root->data->first > val.first)
+                    _root = putNode(_root->left, _root, val);
+                else if (_root->data->first < val.first)
+                    _root = putNode(_root->right, _root, val);
+                else if (_root->data->first == val.first)
+                    return std::pair<iterator, bool>(_root, false);
+                _size++;
+                return std::pair<iterator, bool>(_root, true);
             }
-
-
 
             // =============== FOR TESTS ================
             
