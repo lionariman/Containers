@@ -57,7 +57,7 @@ namespace ft
             pointer _ptr;
 
         public:
-            map_iterator(pointer ptr = pointer()) : _ptr(ptr) {}
+            map_iterator(pointer ptr = nullptr) : _ptr(ptr) {}
             map_iterator(const map_iterator &other) {
                 if (this == &other) return ;
                 *this = other;
@@ -113,7 +113,7 @@ namespace ft
             pointer _ptr;
 
         public:
-            map_reverse_iterator(pointer ptr = pointer()) : _ptr(ptr) {}
+            map_reverse_iterator(pointer ptr = nullptr) : _ptr(ptr) {}
             map_reverse_iterator(const map_reverse_iterator &other) {
                 if (this == &other) return ;
                 *this = other;
@@ -331,7 +331,10 @@ namespace ft
             //     return nd;
             // }
 
-            _node_pointer putNode(_node_pointer nd, _node_pointer parent, const value_type &val)
+            _node_pointer checkBeginEnd(_node_pointer nd,
+                                        _node_pointer parent,
+                                        const value_type &val,
+                                        _node_pointer ptr)
             {
                 if (nd and nd->isBegin)
                 {
@@ -341,7 +344,7 @@ namespace ft
                     newNode->left = nd;
                     newNode->right = nullptr;
                     nd->parent = newNode;
-                    return balance(parent);
+                    ptr = newNode;
                 }
                 else if (nd and nd->isEnd)
                 {
@@ -351,19 +354,31 @@ namespace ft
                     newNode->right = nd;
                     newNode->left = nullptr;
                     nd->parent = newNode;
-                    return balance(parent);
+                    ptr = newNode;
                 }
+                parent->height = 1 + getSize(parent->left) + getSize(parent->right);
+                return balance(parent);
+            }
+
+            _node_pointer putNode(_node_pointer nd,
+                                  _node_pointer parent,
+                                  const value_type &val,
+                                  _node_pointer ptr)
+            {
+                if (nd and (nd->isBegin or nd->isEnd))
+                    return checkBeginEnd(nd, parent, val, ptr);
                 else if (!nd)
                 {
                     nd = createNode(val);
                     nd->parent = parent;
                     nd->left = nullptr;
                     nd->right = nullptr;
+                    ptr = nd;
                 }
                 if (nd->data->first > val.first)
-                    nd->left = putNode(nd->left, nd, val);
+                    nd->left = putNode(nd->left, nd, val, ptr);
                 else if (nd->data->first < val.first)
-                    nd->right = putNode(nd->right, nd, val);
+                    nd->right = putNode(nd->right, nd, val, ptr);
                 else if (nd->data->first == val.first)
                     nd->data->second = val.second;
                 nd->height = 1 + getSize(nd->left) + getSize(nd->right);
@@ -414,8 +429,36 @@ namespace ft
             //         deleteTree(nd->left);
             //     if (nd->right != nullptr)
             //         deleteTree(nd->right);
-            //     delete nd;
+            //     if (nd->data)
+            //         _alloc.deallocate(nd->data, 1);
+            //     nd->data = nullptr;
+            //     nd->left = nullptr;
+            //     nd->right = nullptr;
+            //     _alloc_node.deallocate(nd, 1);
+            //     nd = nullptr;
             // }
+
+            std::pair<iterator, bool> initTop(const value_type &val)
+            {
+                _root = createNode(val);
+                _begin = _alloc_node.allocate(1);
+                _end = _alloc_node.allocate(1);
+                // _begin->data = _alloc.allocate(0);
+                // _end->data = _alloc.allocate(0);
+                _root->left = _begin;
+                _root->right = _end;
+                _begin->parent = _root;
+                _end->parent = _root;
+                _begin->left = nullptr;
+                _begin->right = nullptr;
+                _end->left = nullptr;
+                _end->right = nullptr;
+                _begin->isBegin = true;
+                _end->isEnd = true;
+                _root->height++;
+                _size++;
+                return std::pair<iterator, bool>(_root, true);
+            }
 
         public:
             // empty constructor
@@ -424,66 +467,68 @@ namespace ft
                 _root(nullptr),
                 _comp(comp),
                 _size(0),
-                _alloc(alloc)
-            {
-                // initMap();
-            }
+                _alloc(alloc) {}
 
             iterator begin() { return ++iterator(_begin); }
             // const_iterator cbegin() { return const_iterator(_begin); }
             // reverse_iterator rbegin() { return reverse_iterator(_end); }
             // const_reverse_iterator crbegin() { return const_reverse_iterator(_end); }
 
-            // iterator end() { return iterator(_begin); }
-            // const_iterator cend() { return const_iterator(_begin); }
-            // reverse_iterator rend() { return reverse_iterator(_end); }
-            // const_reverse_iterator crend() { return const_reverse_iterator(_end); }
+            iterator end() { return iterator(_end); }
+            // const_iterator cend() { return const_iterator(_end); }
+            // reverse_iterator rend() { return reverse_iterator(_begin); }
+            // const_reverse_iterator crend() { return const_reverse_iterator(_begin); }0
 
             bool empty() const { return _size; }
             size_type size() const { return _size; }
             size_type max_size() const { return _alloc.max_size() / 5; }
 
+            iterator find(const key_type &k)
+            {
+                _node_pointer tmp = _root;
+                while (tmp->data->first != k)
+                {
+                    if (tmp->data->first < k)
+                        tmp = tmp->left;
+                    else if (tmp->data->first > k)
+                        tmp = tmp->right;
+                    else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
+                        return iterator(_end);
+                }
+                return iterator(tmp);
+            }
+
+            const_iterator find(const key_type &k) const
+            {
+                _node_pointer tmp = _root;
+                while (tmp->data->first != k)
+                {
+                    if (tmp->data->first < k)
+                        tmp = tmp->left;
+                    else if (tmp->data->first > k)
+                        tmp = tmp->right;
+                    else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
+                        return iterator(_end);
+                }
+                return iterator(tmp);
+            }
+
             std::pair<iterator, bool> insert(const value_type &val)
             {
+
+                // iterator found = find(val.first);
+
                 if (_size == 0)
-                {
-                    std::cout << "insert 1\n";
-                    _root = createNode(val);
-
-                    _begin = _alloc_node.allocate(1);
-                    _end = _alloc_node.allocate(1);
-
-                    _begin->data = _alloc.allocate(0);
-                    _end->data = _alloc.allocate(0);
-
-                    _root->left = _begin;
-                    _root->right = _end;
-
-                    _begin->parent = _root;
-                    _end->parent = _root;
-
-                    _begin->left = nullptr;
-                    _begin->right = nullptr;
-                    _end->left = nullptr;
-                    _end->right = nullptr;
-
-                    _begin->isBegin = true;
-                    _end->isEnd = true;
-
-                    _root->height++;
-                    _size++;
-
-                    return std::pair<iterator, bool>(_root, true);
-                }
-                // bool yesnot = false;
+                    initTop(val);
+                _node_pointer ptr = nullptr;
                 if (_root->data->first > val.first)
-                    _root = putNode(_root->left, _root, val);
+                    _root = putNode(_root->left, _root, val, ptr);
                 else if (_root->data->first < val.first)
-                    _root = putNode(_root->right, _root, val);
+                    _root = putNode(_root->right, _root, val, ptr);
                 else if (_root->data->first == val.first)
                     return std::pair<iterator, bool>(_root, false);
                 _size++;
-                return std::pair<iterator, bool>(_root, true);
+                return std::pair<iterator, bool>(ptr, true);
             }
 
             // =============== FOR TESTS ================
