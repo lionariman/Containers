@@ -5,9 +5,20 @@
 # include <iterator>
 
 # include "allocator.hpp"
-# include "class_pair_and_functors.hpp"
+# include "utils.hpp"
 
 # define nl std::cout<<'\n'
+
+# define check0 std::cout<< "< CHECK 0 >\n"
+# define check1 std::cout<< "< CHECK 1 >\n"
+# define check2 std::cout<< "< CHECK 2 >\n"
+# define check3 std::cout<< "< CHECK 3 >\n"
+# define check4 std::cout<< "< CHECK 4 >\n"
+# define check5 std::cout<< "< CHECK 5 >\n"
+# define check6 std::cout<< "< CHECK 6 >\n"
+# define check7 std::cout<< "< CHECK 7 >\n"
+# define check8 std::cout<< "< CHECK 8 >\n"
+# define check9 std::cout<< "< CHECK 9 >\n"
 
 namespace ft
 {
@@ -315,6 +326,11 @@ namespace ft
             //     return _comp(x, y) + _comp(y, x) * 2;
             // }
 
+            // int valueCompare(const value_type &x, const value_type &y) const
+            // {
+            //     return keyCompare(x.first, y.first);
+            // }
+
             // _node_pointer findNode(_node_pointer nd, key_type k)
             // {
             //     int compare = keyCompare(k, nd->data->first);
@@ -366,7 +382,10 @@ namespace ft
                                   _node_pointer ptr)
             {
                 if (nd and (nd->isBegin or nd->isEnd))
+                {
+                    check9;
                     return checkBeginEnd(nd, parent, val, ptr);
+                }
                 else if (!nd)
                 {
                     nd = createNode(val);
@@ -376,11 +395,20 @@ namespace ft
                     ptr = nd;
                 }
                 if (nd->data->first > val.first)
+                {
+                    check6;
                     nd->left = putNode(nd->left, nd, val, ptr);
+                }
                 else if (nd->data->first < val.first)
+                {
+                    check7;
                     nd->right = putNode(nd->right, nd, val, ptr);
+                }
                 else if (nd->data->first == val.first)
+                {
+                    check8;
                     nd->data->second = val.second;
+                }
                 nd->height = 1 + getSize(nd->left) + getSize(nd->right);
                 return balance(nd);
             }
@@ -443,8 +471,13 @@ namespace ft
                 _root = createNode(val);
                 _begin = _alloc_node.allocate(1);
                 _end = _alloc_node.allocate(1);
-                // _begin->data = _alloc.allocate(0);
-                // _end->data = _alloc.allocate(0);
+
+                _begin->data = _alloc.allocate(1);
+                _end->data = _alloc.allocate(1);
+
+                // _begin->data = nullptr;
+                // _end->data = nullptr;
+
                 _root->left = _begin;
                 _root->right = _end;
                 _begin->parent = _root;
@@ -465,11 +498,13 @@ namespace ft
             explicit map(const key_compare &comp = key_compare(),
                          const allocator_type &alloc = allocator_type()) :
                 _root(nullptr),
+                _begin(nullptr),
+                _end(nullptr),
                 _comp(comp),
                 _size(0),
                 _alloc(alloc) {}
 
-            iterator begin() { return ++iterator(_begin); }
+            iterator begin() { return iterator(_begin->parent); }
             // const_iterator cbegin() { return const_iterator(_begin); }
             // reverse_iterator rbegin() { return reverse_iterator(_end); }
             // const_reverse_iterator crbegin() { return const_reverse_iterator(_end); }
@@ -477,7 +512,7 @@ namespace ft
             iterator end() { return iterator(_end); }
             // const_iterator cend() { return const_iterator(_end); }
             // reverse_iterator rend() { return reverse_iterator(_begin); }
-            // const_reverse_iterator crend() { return const_reverse_iterator(_begin); }0
+            // const_reverse_iterator crend() { return const_reverse_iterator(_begin); }
 
             bool empty() const { return _size; }
             size_type size() const { return _size; }
@@ -486,7 +521,7 @@ namespace ft
             iterator find(const key_type &k)
             {
                 _node_pointer tmp = _root;
-                while (tmp->data->first != k)
+                while (tmp->data->first and tmp->data->first != k)
                 {
                     if (tmp->data->first < k)
                         tmp = tmp->left;
@@ -501,7 +536,7 @@ namespace ft
             const_iterator find(const key_type &k) const
             {
                 _node_pointer tmp = _root;
-                while (tmp->data->first != k)
+                while (tmp->data->first and tmp->data->first != k)
                 {
                     if (tmp->data->first < k)
                         tmp = tmp->left;
@@ -513,22 +548,65 @@ namespace ft
                 return iterator(tmp);
             }
 
+            _node_pointer findNode(const key_type &k) const
+            {
+                _node_pointer tmp = _root;
+                while (tmp->data->first and tmp->data->first != k)
+                {
+                    if (tmp->data->first < k)
+                        tmp = tmp->left;
+                    else if (tmp->data->first > k)
+                        tmp = tmp->right;
+                    else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
+                        return nullptr;
+                }
+                return tmp;
+            }
+
             std::pair<iterator, bool> insert(const value_type &val)
             {
-
-                // iterator found = find(val.first);
-
                 if (_size == 0)
-                    initTop(val);
+                {
+                    check1;
+                    return initTop(val);
+                }
+                // _node_pointer found = findNode(val.first);
+                // if (_size and !found->data)
+                // {
+                //     check5;
+                //     return std::pair<iterator, bool>(iterator(found), false);
+                // }
                 _node_pointer ptr = nullptr;
                 if (_root->data->first > val.first)
+                {
+                    check2;
                     _root = putNode(_root->left, _root, val, ptr);
+                }
                 else if (_root->data->first < val.first)
+                {
+                    check3;
                     _root = putNode(_root->right, _root, val, ptr);
+                }
                 else if (_root->data->first == val.first)
+                {
+                    check4;
                     return std::pair<iterator, bool>(_root, false);
+                }
                 _size++;
-                return std::pair<iterator, bool>(ptr, true);
+                return std::pair<iterator, bool>(iterator(ptr), true);
+            }
+
+            iterator insert(iterator position, const value_type &val)
+            {
+                (void)position;
+                return insert(val).first;
+            }
+
+            template < class InputIterator >
+            void insert(InputIterator first, InputIterator last,
+            typename ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
+            {
+                for (; first != last; first++) insert(*first);
             }
 
             // =============== FOR TESTS ================

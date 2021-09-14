@@ -21,17 +21,13 @@
 
 # include <iostream>
 # include <memory>
+# include <iterator>
 
 # include "allocator.hpp"
+# include "utils.hpp"
 
 namespace ft
 {
-    template < bool B, class T = void >
-    struct enable_if {};
-
-    template < class T >
-    struct enable_if < true, T > { typedef T type; };
-
     template < class T >
     class vector_iterator
     {
@@ -41,9 +37,9 @@ namespace ft
             typedef std::ptrdiff_t difference_type;
             typedef T* pointer;
             typedef T& reference;
+            typedef vector_iterator<value_type> iterator;
             typedef std::random_access_iterator_tag iterator_category;
 
-            typedef vector_iterator<value_type> iterator;
         private:
             pointer _ptr;
         
@@ -91,9 +87,8 @@ namespace ft
             typedef std::ptrdiff_t difference_type;
             typedef T* pointer;
             typedef T& reference;
-            typedef std::random_access_iterator_tag iterator_category;
-
             typedef vector_reverse_iterator<value_type> iterator;
+            typedef std::random_access_iterator_tag iterator_category;
 
         private:
             pointer _ptr;
@@ -141,7 +136,7 @@ namespace ft
     {
     public:
         typedef typename std::size_t size_type;
-        // typedef typename std::ptrdiff_t difference_type;
+        typedef typename std::ptrdiff_t difference_type;
         typedef T value_type;
         typedef Allocator allocator_type;
         typedef typename allocator_type::reference reference;
@@ -152,7 +147,7 @@ namespace ft
         typedef ft::vector_iterator<const value_type> const_iterator;
         typedef ft::vector_reverse_iterator<value_type> reverse_iterator;
         typedef ft::vector_reverse_iterator<const value_type> const_reverse_iterator;
-        typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+        // typedef typename std::iterator_traits<iterator>::difference_type difference_type;
         
 
     private:
@@ -216,8 +211,7 @@ namespace ft
 
         vector &operator=(vector const &x)
         {
-            if (this == &x)
-                return *this;
+            if (this == &x) return *this;
             if (this->_size)
             {
                 clear();
@@ -484,9 +478,11 @@ namespace ft
             value_type *tmp_box = this->_box;
             size_type tmp_size = this->_size;
             size_type tmp_capacity = this->_capacity;
+
             this->_box = x._box;
             this->_size = x._size;
             this->_capacity = x._capacity;
+
             x._box = tmp_box;
             x._size = tmp_size;
             x._capacity = tmp_capacity;
@@ -506,120 +502,6 @@ namespace ft
     bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs > rhs;};
     template <class T, class Alloc>
     bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs >= rhs;};
-
-    // template <class T, class Alloc>
-	// bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 != *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Alloc>
-	// bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() == rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 == *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Alloc>
-	// bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 >= *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Alloc>
-	// bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 <= *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Alloc>
-	// bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 > *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
-
-    // template <class T, class Alloc>
-	// bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-	// {
-	// 	if (lhs.size() != rhs.size())
-	// 		return (false);
-	// 	typename ft::vector<T, Alloc>::const_iterator it1 = lhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite1 = lhs.cend();
-	// 	typename ft::vector<T, Alloc>::const_iterator it2 = rhs.cbegin();
-	// 	typename ft::vector<T, Alloc>::const_iterator ite2 = rhs.cend();
-	// 	while (it1 != ite1)
-	// 	{
-	// 		if (*it1 < *it2)
-	// 			return (false);
-	// 		++it1;
-	// 		++it2;
-	// 	}
-	// 	return (true);
-	// }
 
     template < class T, class Alloc >
     void swap(ft::vector<T, Alloc> &x, ft::vector<T, Alloc> &y) { x.swap(y); }
