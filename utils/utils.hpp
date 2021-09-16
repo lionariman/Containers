@@ -104,6 +104,23 @@ namespace ft
             return (a == b);
         }
     };
+
+    template < class T1, class T2 >
+    pair<T1, T2> make_pair(T1 x, T2 y)
+    {
+        return ft::pair<T1, T2>(x, y);
+    }
+    // ============================================================================
+
+
+    // =============================== ENABLE IF ==================================
+
+    template < bool B, class T = void >
+    struct enable_if {};
+
+    template < class T >
+    struct enable_if < true, T > { typedef T type; };
+
     // ============================================================================
 }
 
