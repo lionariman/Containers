@@ -7,6 +7,8 @@
 #include "stack.hpp"
 #include "map.hpp"
 
+#define CHECK std::cout<< "< CHECK >\n"
+
 #define MY_ALLOCATOR 0
 #define STATE 0
 
@@ -108,7 +110,7 @@ void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
 //         for (stdIterator = std_numbers.begin(); stdIterator != std_numbers.end(); stdIterator++)
 //             std::cout << *stdIterator << ' ';
 
-//         std::cout << '\n';
+//         nl;
 
 //         std::cout << YELLOW << "[ my numbers ]\n" << NCLR;
 //         for (myIterator = my_numbers.begin(); myIterator != my_numbers.end(); myIterator++)
@@ -221,61 +223,106 @@ void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
 //     print_size_and_capacity(my_strings, my_strings2);
 // }
 
-void test_three()
-{
-        std::cout << BLUE << "<=========== STACK ==========>\n" << NCLR;
+// void test_three()
+// {
+//         std::cout << BLUE << "<=========== STACK ==========>\n" << NCLR;
 
-        std::stack<int> sst;
-        ft::stack<int> mst;
-        ft::stack<int> xst;
+//         std::stack<int> sst;
+//         ft::stack<int> mst;
+//         ft::stack<int> xst;
 
-        sst.push(22);
-        sst.push(22);
-        sst.push(55);
-        sst.push(77);
+//         sst.push(22);
+//         sst.push(22);
+//         sst.push(55);
+//         sst.push(77);
 
-        mst.push(33);
-        mst.push(33);
-        mst.push(33);
-        mst.push(44);
+//         mst.push(33);
+//         mst.push(33);
+//         mst.push(33);
+//         mst.push(44);
 
-        xst.push(33);
-        xst.push(33);
-        xst.push(33);
-        xst.push(44);
+//         xst.push(33);
+//         xst.push(33);
+//         xst.push(33);
+//         xst.push(44);
 
-        std::cout << "________sst________\n";
-        std::cout << "TOP: " << sst.top() << '\n';
-        std::cout << "________mst________\n";
-        std::cout << "TOP: " << mst.top() << '\n';
+//         std::cout << "________sst________\n";
+//         std::cout << "TOP: " << sst.top() << '\n';
+//         std::cout << "________mst________\n";
+//         std::cout << "TOP: " << mst.top() << '\n';
 
-        sst.pop();
-        mst.pop();
-        xst.pop();
+//         sst.pop();
+//         mst.pop();
+//         xst.pop();
 
-        std::cout << "________sst________\n";
-        std::cout << "TOP: " << sst.top() << '\n';
-        std::cout << "________mst________\n";
-        std::cout << "TOP: " << mst.top() << '\n';
+//         std::cout << "________sst________\n";
+//         std::cout << "TOP: " << sst.top() << '\n';
+//         std::cout << "________mst________\n";
+//         std::cout << "TOP: " << mst.top() << '\n';
 
-        std::cout << "mst == xst returns " << (mst == xst) << '\n';
-}
+//         std::cout << "mst == xst returns " << (mst == xst) << '\n';
+// }
 
 void test_four()
 {
-    std::cout << BLUE << "<=========== STACK ==========>\n" << NCLR;
-    std::map<int, int> xmap;
+    std::cout << BLUE << "<============ MAP ===========>\n" << NCLR;
 
-    xmap.insert(std::pair<int, int>(23, 45));
+    std::map<int, int> smap;
 
-    // std::cout << ">> " << xmap.begin()->first << '\n';
-    // std::cout << ">> " << xmap.begin()->second << '\n';
+    // std::map<int, int> xmap;
+    ft::map<int, int> zmap;
+    
 
-    std::pair<int, int> xpair(2, 3);
-    ft::pair<int, int> zpair(2, 3);
+    smap.insert(std::pair<int, int>(50, 33)); // 1
+    // smap.insert(std::pair<int, int>(60, 33)); // 3
+    // smap.insert(std::pair<int, int>(70, 33)); // 3
+    // smap.insert(std::pair<int, int>(10, 33));
+    // smap.insert(std::pair<int, int>(40, 33)); // 2
+    // smap.insert(std::pair<int, int>(30, 33));
 
-    std::cout << ">> " << (xpair == xpair) << '\n';
-    std::cout << ">> " << (zpair == zpair) << '\n';
+    zmap.insert(std::pair<int, int>(50, 33)); // top
+    // zmap.insert(std::pair<int, int>(60, 33)); // top
+    // zmap.insert(std::pair<int, int>(70, 33)); // top
+    // zmap.insert(std::pair<int, int>(10, 33));
+    // zmap.insert(std::pair<int, int>(40, 33)); // top
+    // zmap.insert(std::pair<int, int>(30, 33)); // top
+
+    // xmap.insert(smap.begin(), smap.end());
+    // zmap.insert(smap.begin(), smap.end());
+
+    // xmap.insert(std::pair<int, int>(50, 33));
+    // xmap.insert(std::pair<int, int>(60, 33));
+    // xmap.insert(std::pair<int, int>(70, 33));
+    
+    // zmap.insert(std::pair<int, int>(50, 33)); // top
+    // zmap.insert(std::pair<int, int>(60, 33)); // check 2
+    // zmap.insert(std::pair<int, int>(70, 33)); // check 2
+
+
+
+    std::map<int, int>::iterator it = smap.begin();
+    ft::map<int, int>::iterator zit = zmap.begin();
+
+    std::cout << "\n___________BEGIN___________\n\n";
+    std::cout << "smap begin first: " << it->first << '\n';
+    std::cout << "smap begin second: " << it->second << '\n';
+
+    std::cout << "zmap begin first: " << zit->first << '\n';
+    std::cout << "zmap begin second: " << zit->second << '\n';
+
+    // std::cout << "\n____________END____________\n\n";
+
+    // it = xmap.end();
+    // zit = zmap.end();
+
+    // --it;
+    // --zit;
+
+    // std::cout << "xmap end first: " << it->first << '\n';
+    // std::cout << "xmap end second: " << it->second << '\n';
+
+    // std::cout << "zmap end first: " << zit->first << '\n';
+    // std::cout << "zmap end second: " << zit->second << '\n';
 }
 
 int main()
@@ -286,7 +333,7 @@ int main()
         // std::cout << B_BLUE << "\n################# START #################\n\n" << NCLR;
         // test_one();
         // test_two();
-        test_three();
+        // test_three();
         test_four();
     }
     catch(std::exception const &e)
