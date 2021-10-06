@@ -274,18 +274,18 @@ void test_four()
     
 
     smap.insert(std::pair<int, int>(50, 33)); // 1
-    // smap.insert(std::pair<int, int>(60, 33)); // 3
-    // smap.insert(std::pair<int, int>(70, 33)); // 3
-    // smap.insert(std::pair<int, int>(10, 33));
-    // smap.insert(std::pair<int, int>(40, 33)); // 2
-    // smap.insert(std::pair<int, int>(30, 33));
+    smap.insert(std::pair<int, int>(60, 33)); // 3
+    smap.insert(std::pair<int, int>(70, 33)); // 3
+    smap.insert(std::pair<int, int>(10, 33));
+    smap.insert(std::pair<int, int>(40, 33)); // 2
+    smap.insert(std::pair<int, int>(30, 33));
 
     zmap.insert(std::pair<int, int>(50, 33)); // top
-    // zmap.insert(std::pair<int, int>(60, 33)); // top
-    // zmap.insert(std::pair<int, int>(70, 33)); // top
-    // zmap.insert(std::pair<int, int>(10, 33));
-    // zmap.insert(std::pair<int, int>(40, 33)); // top
-    // zmap.insert(std::pair<int, int>(30, 33)); // top
+    zmap.insert(std::pair<int, int>(60, 33)); // top
+    zmap.insert(std::pair<int, int>(70, 33)); // top
+    zmap.insert(std::pair<int, int>(10, 33));
+    zmap.insert(std::pair<int, int>(40, 33)); // top
+    zmap.insert(std::pair<int, int>(30, 33)); // top
 
     // xmap.insert(smap.begin(), smap.end());
     // zmap.insert(smap.begin(), smap.end());
@@ -309,6 +309,10 @@ void test_four()
 
     std::cout << "zmap begin first: " << zit->first << '\n';
     std::cout << "zmap begin second: " << zit->second << '\n';
+
+    zmap.callInOrder();
+
+    std::cout << "size: " << zmap.size() << '\n';
 
     // std::cout << "\n____________END____________\n\n";
 
