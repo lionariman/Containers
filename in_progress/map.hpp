@@ -224,12 +224,12 @@ namespace ft
             allocator_type _alloc;
             node_allocator _alloc_node;
 
-            _node_pointer createNode(const value_type &val)
+            _node_pointer createNode(const value_type &val, _node_pointer parent, _node_pointer left, _node_pointer right)
             {
                 _node_pointer newNode = _alloc_node.allocate(1); // allocate memory for a new node with new value
-                newNode->parent = nullptr;
-                newNode->left = nullptr;
-                newNode->right = nullptr;
+                newNode->parent = parent;
+                newNode->left = left;
+                newNode->right = right;
                 newNode->data = _alloc.allocate(1);
                 _alloc.construct(newNode->data, val);
                 return newNode;
@@ -261,62 +261,6 @@ namespace ft
             //     return getSize(nd->right) - getSize(nd->left);
             // }
 
-            // _node_pointer rotateLeft(_node_pointer nd)
-            // {
-            //     _node_pointer pivot = nd->right;
-            //     pivot->parent = nd->parent;
-            //     if (nd->parent != nullptr)
-            //     {
-            //         if (nd->parent->left == nd)
-            //             nd->parent->left = pivot;
-            //         else
-            //             nd->parent->right = pivot;
-            //     }
-            //     nd->right = pivot->left;
-            //     if (pivot->left != nullptr)
-            //         pivot->left->parent = nd;
-            //     nd->parent = pivot;
-            //     pivot->left = nd;
-            //     return nd;
-            // }
-
-            // _node_pointer rotateRight(_node_pointer nd)
-            // {
-            //     _node_pointer pivot = nd->left;
-            //     pivot->parent = nd->parent;
-            //     if (nd->parent != nullptr)
-            //     {
-            //         if (nd->parent->left == nd)
-            //             nd->parent->left = pivot;
-            //         else
-            //             nd->parent->right = pivot;
-            //     }
-            //     nd->left = pivot->right;
-            //     if (pivot->right != nullptr)
-            //         pivot->right->parent = nd;
-            //     nd->parent = pivot;
-            //     pivot->right = nd;
-            //     return nd;
-            // }
-
-            // _node_pointer balance(_node_pointer nd)
-            // {
-            //     correctHeight(nd);
-            //     if (balanceFactor(nd) == 2)
-            //     {
-            //         if (balanceFactor(nd->right) < 0)
-            //             nd->right = rotateRight(nd->right);
-            //         return rotateLeft(nd);
-            //     }
-            //     if (balanceFactor(nd) == -2)
-            //     {
-            //         if (balanceFactor(nd->left) > 0)
-            //             nd->left = rotateLeft(nd->left);
-            //         return rotateRight(nd);
-            //     }
-            //     return nd;
-            // }
-
             // int keyCompare(const key_type &x, const key_type &y) const
             // {
             //     return _comp(x, y) + _comp(y, x) * 2;
@@ -341,77 +285,6 @@ namespace ft
             //             return findNode(nd->right, k);
             //     }
             //     return nd;
-            // }
-
-            // _node_pointer checkBeginEnd(_node_pointer nd,
-            //                             _node_pointer parent,
-            //                             const value_type &val,
-            //                             _node_pointer ptr)
-            // {
-            //     if (nd->isBegin)
-            //     {
-            //         _node_pointer newNode = createNode(val);
-            //         parent->left = newNode;
-            //         newNode->parent = parent;
-            //         newNode->left = nd;
-            //         newNode->right = nullptr;
-            //         nd->parent = newNode;
-            //         ptr = newNode;
-            //     }
-            //     else if (nd->isEnd)
-            //     {
-            //         _node_pointer newNode = createNode(val);
-            //         nd->parent->right = newNode;
-            //         newNode->parent = nd->parent;
-            //         newNode->right = nd;
-            //         newNode->left = nullptr;
-            //         nd->parent = newNode;
-            //         ptr = newNode;
-            //     }
-            //     parent->height = 1 + getSize(parent->left) + getSize(parent->right);
-            //     return balance(parent);
-            // }
-
-            // _node_pointer putNode(_node_pointer nd,
-            //                       _node_pointer parent,
-            //                       const value_type &val,
-            //                       _node_pointer ptr)
-            // {
-            //     if (nd and (nd->isBegin or nd->isEnd))
-            //     {
-            //         std::cout << "if next node is begin (" << nd->isBegin << ") or end (" << nd->isEnd << ")\n";
-            //         check9;
-            //         return checkBeginEnd(nd, parent, val, ptr);
-            //     }
-            //     if (!nd)
-            //     {
-            //         // std::cout<< "if next node is null\n";
-            //         nd = createNode(val);
-            //         nd->parent = parent;
-            //         nd->left = nullptr;
-            //         nd->right = nullptr;
-            //         ptr = nd;
-            //     }
-            //     if (nd->data->first > val.first)
-            //     {
-            //         std::cout << "check 6 first (" << nd->data->first << ")\n";
-            //         check6;
-            //         nd->left = putNode(nd->left, nd, val, ptr);
-            //     }
-            //     else if (nd->data->first < val.first)
-            //     {
-            //         std::cout << "check 7 first (" << nd->data->first << ")\n";
-            //         check7;
-            //         nd->right = putNode(nd->right, nd, val, ptr);
-            //     }
-            //     else if (nd->data->first == val.first)
-            //     {
-            //         // std::cout << "check 8 first (" << nd->data->first << ")\n";
-            //         check8;
-            //         nd->data->second = val.second;
-            //     }
-            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-            //     return balance(nd);
             // }
 
             // _node_pointer deleteMin(_node_pointer nd)
@@ -452,41 +325,26 @@ namespace ft
             //     return balance(nd);
             // }
 
-            // void deleteTree(_node_pointer nd)
-            // {
-            //     if (nd->left != nullptr)
-            //         deleteTree(nd->left);
-            //     if (nd->right != nullptr)
-            //         deleteTree(nd->right);
-            //     if (nd->data)
-            //         _alloc.deallocate(nd->data, 1);
-            //     nd->data = nullptr;
-            //     nd->left = nullptr;
-            //     nd->right = nullptr;
-            //     _alloc_node.deallocate(nd, 1);
-            //     nd = nullptr;
-            // }
-
             std::pair<iterator, bool> initTop(const value_type &val)
             {
-                _root = createNode(val); // first node is created
-                _begin = _alloc_node.allocate(1); // begin
-                _end = _alloc_node.allocate(1); // end
+                //                [val] [parent] [left] [right]
+                _root = createNode(val, nullptr, _begin, _end);
+
+                _begin = _alloc_node.allocate(1);
+                _end = _alloc_node.allocate(1);
+
+                _begin->parent = _root;
+                _end->parent = _root;
 
                 _begin->data = nullptr;
                 _end->data = nullptr;
 
-                _root->left = _begin;
-                _root->right = _end;
-
-                _begin->parent = _root;
-                _end->parent = _root;
                 _begin->left = nullptr;
-                _end->left = nullptr;
                 _begin->right = nullptr;
+                _end->left = nullptr;
                 _end->right = nullptr;
 
-                _root->height = 1;
+                _root->height = 0;
 
                 _size = 1;
 
@@ -504,6 +362,14 @@ namespace ft
                 _size(0),
                 _alloc(alloc) {}
 
+            ~map()
+            {
+                if (_root == nullptr) return ;
+                deleteTree(_root);
+                _size = 0;
+                _root->height = 0;
+            }
+
             iterator begin() { return iterator(_begin->parent); }
             // const_iterator cbegin() { return const_iterator(_begin); }
             // reverse_iterator rbegin() { return reverse_iterator(_end); }
@@ -518,140 +384,33 @@ namespace ft
             size_type size() const { return _size; }
             size_type max_size() const { return _alloc.max_size() / 5; }
 
-            // iterator find(const key_type &k)
-            // {
-            //     _node_pointer tmp = _root;
-            //     while (tmp->data->first and tmp->data->first != k)
-            //     {
-            //         if (tmp->data->first < k)
-            //             tmp = tmp->left;
-            //         else if (tmp->data->first > k)
-            //             tmp = tmp->right;
-            //         else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
-            //             return iterator(_end);
-            //     }
-            //     return iterator(tmp);
-            // }
-
-            // const_iterator find(const key_type &k) const
-            // {
-            //     _node_pointer tmp = _root;
-            //     while (tmp->data->first and tmp->data->first != k)
-            //     {
-            //         if (tmp->data->first < k)
-            //             tmp = tmp->left;
-            //         else if (tmp->data->first > k)
-            //             tmp = tmp->right;
-            //         else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
-            //             return iterator(_end);
-            //     }
-            //     return iterator(tmp);
-            // }
-
-            // _node_pointer findNode(const key_type &k) const
-            // {
-            //     _node_pointer tmp = _root;
-            //     while (tmp->data->first and tmp->data->first != k)
-            //     {
-            //         if (tmp->data->first < k)
-            //             tmp = tmp->left;
-            //         else if (tmp->data->first > k)
-            //             tmp = tmp->right;
-            //         else if (tmp == nullptr or tmp->isBegin or tmp->isEnd)
-            //             return nullptr;
-            //     }
-            //     return tmp;
-            // }
-
-            // std::pair<iterator, bool> insert(const value_type &val) // get key-value item
-            // {
-            //     if (_size == 0)
-            //     {
-            //         check1;
-            //         return initTop(val);
-            //     }
-            //     // _node_pointer found = findNode(val.first);
-            //     // if (_size and !found->data)
-            //     // {
-            //     //     check5;
-            //     //     return std::pair<iterator, bool>(iterator(found), false);
-            //     // }
-            //     _node_pointer ptr = nullptr;
-            //     if (_root->data->first > val.first)
-            //     {
-            //         check2;
-            //         _root = putNode(_root->left, _root, val, ptr);
-            //     }
-            //     else if (_root->data->first < val.first)
-            //     {
-            //         check3;
-            //         _root = putNode(_root->right, _root, val, ptr);
-            //     }
-            //     else if (_root->data->first == val.first)
-            //     {
-            //         check4;
-            //         return std::pair<iterator, bool>(_root, false);
-            //     }
-            //     _size++;
-            //     return std::pair<iterator, bool>(iterator(ptr), true);
-            // }
-
-            // iterator insert(iterator position, const value_type &val)
-            // {
-            //     (void)position;
-            //     return insert(val).first;
-            // }
-
-            // _node_pointer putNode(_node_pointer nd,
-            //                       _node_pointer parent,
-            //                       const value_type &val,
-            //                       _node_pointer ptr)
-            // {
-            //     if (nd and (nd->isBegin or nd->isEnd))
-            //     {
-            //         return checkBeginEnd(nd, parent, val, ptr);
-            //     }
-            //     if (!nd)
-            //     {
-            //         nd = createNode(val);
-            //         nd->parent = parent;
-            //         nd->left = nullptr;
-            //         nd->right = nullptr;
-            //         ptr = nd;
-            //     }
-            //     if (nd->data->first > val.first)
-            //     {
-            //         nd->left = putNode(nd->left, nd, val, ptr);
-            //     }
-            //     else if (nd->data->first < val.first)
-            //     {
-            //         nd->right = putNode(nd->right, nd, val, ptr);
-            //     }
-            //     else if (nd->data->first == val.first)
-            //     {
-            //         nd->data->second = val.second;
-            //     }
-            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-            //     return balance(nd);
-            // }
-
         private:
-        /*
+            void deleteTree(_node_pointer nd)
+            {
+                if (nd == nullptr) return ;
+                deleteTree(nd->left);
+                deleteTree(nd->right);
+                _alloc.destroy(nd->data);
+                _alloc.deallocate(nd->data, 1);
+                _alloc_node.deallocate(nd, 1);
+                nd = nullptr;
+            }
+            /*
         
-        T1, T2 and T3 are subtrees of the tree
-        rooted with y (on the left side) or x (on
-        the right side)
-             y                               x
-            / \     Right Rotation          /  \
-           x   T3   - - - - - - - >        T1   y
-          / \       < - - - - - - -            / \
-         T1  T2     Left Rotation            T2  T3
-        Keys in both of the above trees follow the
-        following order 
-         keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
-        So BST property is not violated anywhere.
+                T1, T2 and T3 are subtrees of the tree
+                rooted with y (on the left side) or x (on
+                the right side)
+                 y                                   x
+                / \       Right Rotation            /  \
+               x   T3     - - - - - - - >          T1   y
+                / \       < - - - - - - -              / \
+              T1   T2     Left Rotation              T2  T3
+                Keys in both of the above trees follow the
+                following order 
+                keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
+                So BST property is not violated anywhere.
         
-        */
+            */
 
             int getHeight(_node_pointer nd)
             {
@@ -663,7 +422,7 @@ namespace ft
                 return (a > b) ? a : b;
             }
 
-            int getBalance(_node_pointer nd)
+            int bfactor(_node_pointer nd)
             {
                 return getHeight(nd->right) - getHeight(nd->left);
             }
@@ -675,78 +434,119 @@ namespace ft
                 nd->height = (hl > hr ? hl : hr) + 1;
             }
 
-            _node_pointer rightRotate(_node_pointer y)
+            _node_pointer balance(_node_pointer p)
             {
-                _node_pointer x = y->left;
-                _node_pointer t2 = x->right;
-
-                // perform rotation
-                x->right = y;
-                y->left = t2;
-
-                // update heights
-                y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
-                x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
-
-                // return new root;
-                return x;
-            }
-
-            _node_pointer leftRotate(_node_pointer x)
-            {
-                _node_pointer y = x->right;
-                _node_pointer t2 = y->left;
-
-                // perform rotation
-                y->left = x;
-                x->right = t2;
-
-                // update heights
-                x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
-                y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
-
-                // return new root;
-                return y;
-            }
-
-            _node_pointer putNode(_node_pointer nd, const value_type &val) // recursion insert
-            {
-                if (val.first < nd->data->first) // LEFT SIDE
+                fixHeight(p);
+                if (bfactor(p) == 2)
                 {
-                    nd->left = putNode(nd->left, val);
+                    if (bfactor(p->right) < 0)
+                        p->right = rightRotate(p->right);
+                    return leftRotate(p);
                 }
-                else if (val.first > nd->data->first) // RIGHT SIDE
+                if (bfactor(p) == -2)
                 {
-                    nd->right = putNode(nd->right, val);
+                    if (bfactor(p->left) > 0)
+                        p->left = leftRotate(p->left);
+                    return rightRotate(p);
+                }
+                _root = p;
+                return p;
+            }
+
+            _node_pointer rightRotate(_node_pointer p)
+            {
+                _node_pointer q = p->left;
+                p->left = q->right;
+                q->right = p;
+                q->parent = p->parent;
+                p->parent = q;
+                fixHeight(p);
+                fixHeight(q);
+                return q;
+            }
+
+            _node_pointer leftRotate(_node_pointer q)
+            {
+                _node_pointer p = q->right;
+                q->right = p->left;
+                p->left = q;
+                p->parent = q->parent;
+                q->parent = p;
+                fixHeight(q);
+                fixHeight(p);
+                return p;
+            }
+
+
+            _node_pointer putNode(_node_pointer nd, _node_pointer parent, const value_type &val) // recursion insert
+            {
+                if (nd == nullptr)
+                {
+                    if ((nd = createNode(val, parent, nullptr, nullptr)) == nullptr)
+                    {
+                        std::cout << "ERROR: OUT OF SPACE\n";
+                        exit(1);
+                    }
                 }
                 else
-                    return nd;
+                {
+                    if (_comp(nd->data->first, val.first) == true)
+                    {
+                        nd->right = putNode(nd->right, nd, val);
+                    }
+                    else if (_comp(nd->data->first, val.first) == false and _comp(val.first, nd->data->first) == false)
+                    {
+                        std::cout << "element exist\n";
+                    }
+                    else
+                    {
+                        nd->left = putNode(nd->left, nd, val);
+                    }
+                }
+                fixHeight(nd);
+                return balance(nd);
+            }
 
-                // update height of this ancestor node
-                nd->height = 1 + max(getHeight(nd->left), getHeight(nd->right));
-
-                // get the balance factor of this ancestor node to check whether this node became unbalanced
-                int balance = getBalance(nd);
-
-                // if this node becomes unbalanced, then there are 4 cases
-
-                // left left case
-                // if (balance > 1 && val.first < nd->left->data->first) >>>>>>>>>>>>>>>>>>>>>> YOU ARE HERE <<<<<<<<<<<<<<<<<<<<<<<
-
-                return nd; // for end control
+            // RECURSIVE ALGORITHM TO PRINT ELEMENTS IN THE BINARY TREE
+            void inOrder(_node_pointer nd)
+            {
+                if (nd == nullptr) return ;
+                inOrder(nd->left);
+                std::cout << "\n--------------------------< l >------------------------\n";
+                if (nd->parent)
+                    std::cout << " ^ nd parent: " << nd->parent->data->first << '\n';
+                else
+                    std::cout << "root\n";
+                if (nd->data)
+                    std::cout << " . nd data: " << nd->data->first << '\n';
+                else
+                    std::cout << "...\n";
+                if (nd->left)
+                    std::cout << " <- nd left: " << nd->left->data->first << '\n';
+                else
+                    std::cout << "...\n";
+                if (nd->right)
+                    std::cout << " -> nd right: " << nd->right->data->first << '\n';
+                else
+                    std::cout << "...\n";
+                std::cout << "--------------------------< r >------------------------\n\n";
+                inOrder(nd->right);
             }
 
         public:
 
+            // =========== PRE ORDER CALLING ============
+            void callInOrder() { inOrder(_root); }
+            // =========== PRE ORDER CALLING ============
+
             std::pair<iterator, bool> insert(const value_type &val)
             {
-                (void)val;
                 if (_size == 0)
                 {
                     return initTop(val);
                 }
                 
-                _node_pointer ret = putNode(_root, val);
+                _node_pointer ret = putNode(_root, nullptr, val);
 
                 _size++;
                 return std::pair<iterator, bool>(iterator(ret), true);
