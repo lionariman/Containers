@@ -273,19 +273,19 @@ void test_four()
     ft::map<int, int> zmap;
     
 
-    smap.insert(std::pair<int, int>(50, 33)); // 1
-    smap.insert(std::pair<int, int>(60, 33)); // 3
-    smap.insert(std::pair<int, int>(70, 33)); // 3
+    smap.insert(std::pair<int, int>(50, 33));
+    smap.insert(std::pair<int, int>(60, 33));
+    smap.insert(std::pair<int, int>(70, 33));
     smap.insert(std::pair<int, int>(10, 33));
-    smap.insert(std::pair<int, int>(40, 33)); // 2
+    smap.insert(std::pair<int, int>(40, 33));
     smap.insert(std::pair<int, int>(30, 33));
 
-    zmap.insert(std::pair<int, int>(50, 33)); // top
-    zmap.insert(std::pair<int, int>(60, 33)); // top
-    zmap.insert(std::pair<int, int>(70, 33)); // top
+    zmap.insert(std::pair<int, int>(50, 33));
+    zmap.insert(std::pair<int, int>(60, 33));
+    zmap.insert(std::pair<int, int>(70, 33));
     zmap.insert(std::pair<int, int>(10, 33));
-    zmap.insert(std::pair<int, int>(40, 33)); // top
-    zmap.insert(std::pair<int, int>(30, 33)); // top
+    zmap.insert(std::pair<int, int>(40, 33));
+    zmap.insert(std::pair<int, int>(30, 33));
 
     // xmap.insert(smap.begin(), smap.end());
     // zmap.insert(smap.begin(), smap.end());
@@ -294,11 +294,9 @@ void test_four()
     // xmap.insert(std::pair<int, int>(60, 33));
     // xmap.insert(std::pair<int, int>(70, 33));
     
-    // zmap.insert(std::pair<int, int>(50, 33)); // top
+    // zmap.insert(std::pair<int, int>(50, 33));
     // zmap.insert(std::pair<int, int>(60, 33)); // check 2
     // zmap.insert(std::pair<int, int>(70, 33)); // check 2
-
-
 
     std::map<int, int>::iterator it = smap.begin();
     ft::map<int, int>::iterator zit = zmap.begin();
@@ -310,23 +308,39 @@ void test_four()
     std::cout << "zmap begin first: " << zit->first << '\n';
     std::cout << "zmap begin second: " << zit->second << '\n';
 
-    zmap.callInOrder();
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
 
-    std::cout << "size: " << zmap.size() << '\n';
+    // nl;
 
-    // std::cout << "\n____________END____________\n\n";
+    // НЕ РАБОТАЕТ ДА ЯХАААЭЭЭЭЭ ...
 
-    // it = xmap.end();
-    // zit = zmap.end();
+    // while (zit != zmap.end())
+    // {
+    //     std::cout << zit->first << ' ';
+    //     zit++;
+    // }
 
-    // --it;
-    // --zit;
+    // zmap.callInOrder();
 
-    // std::cout << "xmap end first: " << it->first << '\n';
-    // std::cout << "xmap end second: " << it->second << '\n';
+    // std::cout << "size: " << zmap.size() << '\n';
 
-    // std::cout << "zmap end first: " << zit->first << '\n';
-    // std::cout << "zmap end second: " << zit->second << '\n';
+    std::cout << "\n____________END____________\n\n";
+
+    it = smap.end();
+    zit = zmap.end();
+
+    --it;
+    --zit;
+
+    std::cout << "smap end first: " << it->first << '\n';
+    std::cout << "smap end second: " << it->second << '\n';
+
+    std::cout << "zmap end first: " << zit->first << '\n';
+    std::cout << "zmap end second: " << zit->second << '\n';
 }
 
 int main()
