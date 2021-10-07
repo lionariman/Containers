@@ -327,17 +327,18 @@ namespace ft
 
             std::pair<iterator, bool> initTop(const value_type &val)
             {
+                _begin = _alloc_node.allocate(1);
+                _end = _alloc_node.allocate(1);
+
                 //                [val] [parent] [left] [right]
                 _root = createNode(val, nullptr, _begin, _end);
 
-                _begin = _alloc_node.allocate(1);
-                _end = _alloc_node.allocate(1);
 
                 _begin->parent = _root;
                 _end->parent = _root;
 
-                _begin->data = nullptr;
-                _end->data = nullptr;
+                _begin->data = _alloc.allocate(1);
+                _end->data = _alloc.allocate(1);
 
                 _begin->left = nullptr;
                 _begin->right = nullptr;
@@ -366,6 +367,7 @@ namespace ft
             {
                 if (_root == nullptr) return ;
                 deleteTree(_root);
+                // deleteBeginEnd();
                 _size = 0;
                 _root->height = 0;
             }
@@ -385,9 +387,25 @@ namespace ft
             size_type max_size() const { return _alloc.max_size() / 5; }
 
         private:
+            void deleteBeginEnd()
+            {
+                // _alloc.destroy(_begin->data);
+                // _alloc.destroy(_end->data);
+                // _alloc.deallocate(_begin->data, 1);
+                // _alloc.deallocate(_end->data, 1);
+                _alloc_node.deallocate(_begin, 1);
+                _alloc_node.deallocate(_end, 1);
+            }
+
             void deleteTree(_node_pointer nd)
             {
                 if (nd == nullptr) return ;
+                else if (nd == _begin or nd == _end)
+                {
+                    _alloc.deallocate(nd->data, 1);
+                    _alloc_node.deallocate(nd, 1);
+                    return ;
+                }
                 deleteTree(nd->left);
                 deleteTree(nd->right);
                 _alloc.destroy(nd->data);
@@ -482,11 +500,17 @@ namespace ft
             {
                 if (nd == nullptr)
                 {
-                    if ((nd = createNode(val, parent, nullptr, nullptr)) == nullptr)
-                    {
-                        std::cout << "ERROR: OUT OF SPACE\n";
-                        exit(1);
-                    }
+                    nd = createNode(val, parent, nullptr, nullptr);
+                }
+                else if (nd == _begin)
+                {
+                    nd = createNode(val, parent, _begin, nullptr);
+                    _begin->parent = nd;
+                }
+                else if (nd == _end)
+                {
+                    nd = createNode(val, parent, nullptr, _end);
+                    _end->parent = nd;
                 }
                 else
                 {
