@@ -340,6 +340,9 @@ namespace ft
                 _begin->data = _alloc.allocate(1);
                 _end->data = _alloc.allocate(1);
 
+                // _begin->data = nullptr;
+                // _end->data = nullptr;
+
                 _begin->left = nullptr;
                 _begin->right = nullptr;
                 _end->left = nullptr;
@@ -367,7 +370,6 @@ namespace ft
             {
                 if (_root == nullptr) return ;
                 deleteTree(_root);
-                // deleteBeginEnd();
                 _size = 0;
                 _root->height = 0;
             }
@@ -387,15 +389,6 @@ namespace ft
             size_type max_size() const { return _alloc.max_size() / 5; }
 
         private:
-            void deleteBeginEnd()
-            {
-                // _alloc.destroy(_begin->data);
-                // _alloc.destroy(_end->data);
-                // _alloc.deallocate(_begin->data, 1);
-                // _alloc.deallocate(_end->data, 1);
-                _alloc_node.deallocate(_begin, 1);
-                _alloc_node.deallocate(_end, 1);
-            }
 
             void deleteTree(_node_pointer nd)
             {
@@ -413,22 +406,6 @@ namespace ft
                 _alloc_node.deallocate(nd, 1);
                 nd = nullptr;
             }
-            /*
-        
-                T1, T2 and T3 are subtrees of the tree
-                rooted with y (on the left side) or x (on
-                the right side)
-                 y                                   x
-                / \       Right Rotation            /  \
-               x   T3     - - - - - - - >          T1   y
-                / \       < - - - - - - -              / \
-              T1   T2     Left Rotation              T2  T3
-                Keys in both of the above trees follow the
-                following order 
-                keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
-                So BST property is not violated anywhere.
-        
-            */
 
             int getHeight(_node_pointer nd)
             {
@@ -461,7 +438,7 @@ namespace ft
                         p->right = rightRotate(p->right);
                     return leftRotate(p);
                 }
-                if (bfactor(p) == -2)
+                else if (bfactor(p) == -2)
                 {
                     if (bfactor(p->left) > 0)
                         p->left = leftRotate(p->left);
@@ -490,8 +467,8 @@ namespace ft
                 p->left = q;
                 p->parent = q->parent;
                 q->parent = p;
-                fixHeight(q);
                 fixHeight(p);
+                fixHeight(q);
                 return p;
             }
 
@@ -506,11 +483,13 @@ namespace ft
                 {
                     nd = createNode(val, parent, _begin, nullptr);
                     _begin->parent = nd;
+                    return nd;
                 }
                 else if (nd == _end)
                 {
                     nd = createNode(val, parent, nullptr, _end);
                     _end->parent = nd;
+                    return nd;
                 }
                 else
                 {
@@ -527,7 +506,6 @@ namespace ft
                         nd->left = putNode(nd->left, nd, val);
                     }
                 }
-                fixHeight(nd);
                 return balance(nd);
             }
 
@@ -559,9 +537,8 @@ namespace ft
 
         public:
 
-            // =========== PRE ORDER CALLING ============
+            // PRE-ORDER CALL
             void callInOrder() { inOrder(_root); }
-            // =========== PRE ORDER CALLING ============
 
             std::pair<iterator, bool> insert(const value_type &val)
             {
