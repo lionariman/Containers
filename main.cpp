@@ -314,15 +314,13 @@ void test_four()
         it++;
     }
 
-    // nl;
+    nl;
 
-    // НЕ РАБОТАЕТ ДА ЯХАААЭЭЭЭЭ ...
-
-    // while (zit != zmap.end())
-    // {
-    //     std::cout << zit->first << ' ';
-    //     zit++;
-    // }
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
 
     // zmap.callInOrder();
 
