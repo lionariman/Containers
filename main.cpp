@@ -268,35 +268,29 @@ void test_four()
     std::cout << BLUE << "<============ MAP ===========>\n" << NCLR;
 
     std::map<int, int> smap;
-
-    // std::map<int, int> xmap;
+    std::map<int, int> smap_copy;
     ft::map<int, int> zmap;
+    ft::map<int, int> zmap_copy;
     
 
-    smap.insert(std::pair<int, int>(50, 33));
-    smap.insert(std::pair<int, int>(60, 33));
-    smap.insert(std::pair<int, int>(70, 33));
-    smap.insert(std::pair<int, int>(10, 33));
-    smap.insert(std::pair<int, int>(40, 33));
-    smap.insert(std::pair<int, int>(30, 33));
+    smap.insert(std::pair<int, int>(50, 50));
+    smap.insert(std::pair<int, int>(60, 60));
+    smap.insert(std::pair<int, int>(70, 70));
+    smap.insert(std::pair<int, int>(10, 10));
+    smap.insert(std::pair<int, int>(20, 20));
+    smap.insert(std::pair<int, int>(40, 40));
+    smap.insert(std::pair<int, int>(30, 30));
 
-    zmap.insert(std::pair<int, int>(50, 33));
-    zmap.insert(std::pair<int, int>(60, 33));
-    zmap.insert(std::pair<int, int>(70, 33));
-    zmap.insert(std::pair<int, int>(10, 33));
-    zmap.insert(std::pair<int, int>(40, 33));
-    zmap.insert(std::pair<int, int>(30, 33));
+    zmap.insert(std::pair<int, int>(50, 50));
+    zmap.insert(std::pair<int, int>(60, 60));
+    zmap.insert(std::pair<int, int>(70, 70));
+    zmap.insert(std::pair<int, int>(10, 10));
+    zmap.insert(std::pair<int, int>(20, 20));
+    zmap.insert(std::pair<int, int>(40, 40));
+    zmap.insert(std::pair<int, int>(30, 30));
 
-    // xmap.insert(smap.begin(), smap.end());
-    // zmap.insert(smap.begin(), smap.end());
-
-    // xmap.insert(std::pair<int, int>(50, 33));
-    // xmap.insert(std::pair<int, int>(60, 33));
-    // xmap.insert(std::pair<int, int>(70, 33));
-    
-    // zmap.insert(std::pair<int, int>(50, 33));
-    // zmap.insert(std::pair<int, int>(60, 33)); // check 2
-    // zmap.insert(std::pair<int, int>(70, 33)); // check 2
+    std::cout << "smap size: " << smap.size() << '\n';
+    std::cout << "zmap size: " << zmap.size() << '\n';
 
     std::map<int, int>::iterator it = smap.begin();
     ft::map<int, int>::iterator zit = zmap.begin();
@@ -308,6 +302,10 @@ void test_four()
     std::cout << "zmap begin first: " << zit->first << '\n';
     std::cout << "zmap begin second: " << zit->second << '\n';
 
+    it = smap.begin();
+    zit = zmap.begin();
+
+    std::cout << "\n_______ALL ELEMENTS________\n\n";
     while (it != smap.end())
     {
         std::cout << it->first << ' ';
@@ -322,10 +320,6 @@ void test_four()
         zit++;
     }
 
-    // zmap.callInOrder();
-
-    // std::cout << "size: " << zmap.size() << '\n';
-
     std::cout << "\n____________END____________\n\n";
 
     it = smap.end();
@@ -339,6 +333,83 @@ void test_four()
 
     std::cout << "zmap end first: " << zit->first << '\n';
     std::cout << "zmap end second: " << zit->second << '\n';
+
+    std::cout << "\n____________FIND___________\n\n";
+
+    std::cout << "smap find 40: " << (*smap.find(40)).first << '\n';
+    std::cout << "zmap find 40: " << (*zmap.find(40)).first << '\n';
+
+    std::cout << "\n____________COPY___________\n\n";
+
+    smap_copy.insert(smap.begin(), smap.find(40));
+    zmap_copy.insert(zmap.begin(), zmap.find(40));
+
+    it = smap_copy.begin();
+    zit = zmap_copy.begin();
+
+    while (it != smap_copy.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
+
+    nl;
+
+    while (zit != zmap_copy.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    std::cout << "\n_____________[]____________\n\n";
+
+    std::cout << "smap [50]: " << smap[50] << '\n';
+
+    it = smap.begin();
+    zit = zmap.begin();
+
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
+
+
+    nl;
+
+    std::cout << "zmap [50]: " << zmap[50] << '\n';
+
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    std::cout << "\n_____________AT____________\n\n";
+
+    try
+    {
+        std::cout << "smap at 30: " << smap.at(30) << '\n';
+        std::cout << "smap at 90: " << smap.at(90) << '\n';
+        std::cout << "zmap at 30: " << zmap.at(30) << '\n';
+        std::cout << "zmap at 90: " << zmap.at(90) << '\n';
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "\n___________COUNT___________\n\n";
+
+    std::cout << "!!! NOT WORKED !!!\n";
+
+    // std::cout << "smap count 30: " << smap.count(30) << '\n';
+    // std::cout << "smap count 90: " << smap.count(90) << '\n';
+    // std::cout << "zmap count 30: " << zmap.count(30) << '\n';
+    // std::cout << "zmap count 90: " << zmap.count(90) << '\n';
+    
+    // zmap.callInOrder();
+    
 }
 
 int main()
