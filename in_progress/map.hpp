@@ -226,7 +226,7 @@ namespace ft
 
             _node_pointer createNode(const value_type &val, _node_pointer parent, _node_pointer left, _node_pointer right)
             {
-                _node_pointer newNode = _alloc_node.allocate(1); // allocate memory for a new node with new value
+                _node_pointer newNode = _alloc_node.allocate(1); // allocate memory for a new node with a new value
                 newNode->parent = parent;
                 newNode->left = left;
                 newNode->right = right;
@@ -375,12 +375,12 @@ namespace ft
             }
 
             iterator begin() { return iterator(_begin->parent); }
-            // const_iterator cbegin() { return const_iterator(_begin); }
+            const_iterator cbegin() { return const_iterator(_begin->parent); }
             // reverse_iterator rbegin() { return reverse_iterator(_end); }
             // const_reverse_iterator crbegin() { return const_reverse_iterator(_end); }
 
             iterator end() { return iterator(_end); }
-            // const_iterator cend() { return const_iterator(_end); }
+            const_iterator cend() { return const_iterator(_end); }
             // reverse_iterator rend() { return reverse_iterator(_begin); }
             // const_reverse_iterator crend() { return const_reverse_iterator(_begin); }
 
@@ -444,7 +444,6 @@ namespace ft
                         p->left = leftRotate(p->left);
                     return rightRotate(p);
                 }
-                _root = p;
                 return p;
             }
 
@@ -467,8 +466,8 @@ namespace ft
                 p->left = q;
                 p->parent = q->parent;
                 q->parent = p;
-                fixHeight(p);
                 fixHeight(q);
+                fixHeight(p);
                 return p;
             }
 
@@ -483,13 +482,11 @@ namespace ft
                 {
                     nd = createNode(val, parent, _begin, nullptr);
                     _begin->parent = nd;
-                    return nd;
                 }
                 else if (nd == _end)
                 {
                     nd = createNode(val, parent, nullptr, _end);
                     _end->parent = nd;
-                    return nd;
                 }
                 else
                 {
@@ -499,7 +496,8 @@ namespace ft
                     }
                     else if (_comp(nd->data->first, val.first) == false and _comp(val.first, nd->data->first) == false)
                     {
-                        std::cout << "element exist\n";
+                        _size--;
+                        return nd;
                     }
                     else
                     {
@@ -540,17 +538,62 @@ namespace ft
             // PRE-ORDER CALL
             void callInOrder() { inOrder(_root); }
 
+            iterator find(const key_type &k)
+            {
+                for (iterator it = _begin; it != _end; it++)
+                    if (_comp(it->first, k) == false and _comp(k, it->first) == false)
+                        return it;
+                return _end;
+            }
+
+            const_iterator find(const key_type &k) const
+            {
+                for (iterator it = _begin; it != _end; it++)
+                    if (_comp(it->first, k) == false and _comp(k, it->first) == false)
+                        return const_iterator(*it);
+                return cend();
+            }
+
             std::pair<iterator, bool> insert(const value_type &val)
             {
-                if (_size == 0)
-                {
-                    return initTop(val);
-                }
-                
-                _node_pointer ret = putNode(_root, nullptr, val);
-
+                if (_size == 0) return initTop(val);
+                iterator it = find(val.first);
+                if (it != _end) return std::pair<iterator, bool>(it, false);
+                _root = putNode(_root, nullptr, val);
                 _size++;
-                return std::pair<iterator, bool>(iterator(ret), true);
+                return std::pair<iterator, bool>(iterator(_root), true);
+            }
+
+            iterator insert(iterator position, const value_type &val)
+            {
+                (void)position;
+                insert(val);
+                return find(val.first);
+            }
+
+            template < class InputIterator >
+            void insert(InputIterator first, InputIterator last)
+            {
+                for (; first != last; first++)
+                    insert(*first);
+            }
+
+            mapped_type& operator[](const key_type &k)
+            {
+                return insert(_begin, std::make_pair(k, mapped_type()))->second;
+            }
+
+            mapped_type& at(const key_type &k)
+            {
+                iterator it = find(k);
+                if (it != _end)
+                    return it->second;
+                throw std::out_of_range("map::at: key not found");
+            }
+
+            size_type count(const key_type &k) const
+            {
+                return ((find(k) != _end) ? 1 : 0);
             }
 
     };
