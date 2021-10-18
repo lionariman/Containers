@@ -34,9 +34,6 @@ namespace ft
 
         int height;
 
-        // bool isBegin;
-        // bool isEnd;
-
         Node() :
             parent(nullptr),
             right(nullptr),
@@ -538,6 +535,59 @@ namespace ft
             // PRE-ORDER CALL
             void callInOrder() { inOrder(_root); }
 
+            //========================================================================================================
+            //========================================================================================================
+
+            size_type keycmp(const key_type &k1, const key_type &k2)
+            {
+                if (_comp(k1, k2) == true)                              return 1; // k1 < k2
+                if (_comp(k1, k2) == false)                             return 2; // k1 > k2
+                if (_comp(k1, k2) == false and _comp(k2, k1) == false)  return 0; // k1 == k2
+                return 3;
+            }
+
+            _node_pointer findNode(_node_pointer node, const key_type &k)
+            {
+                _node_pointer found = nullptr;
+                if (node and node != _begin and node != _end)
+                {
+                    if (keycmp(node->data->first, k) == 0)
+                    {
+                        std::cout << "FOUND NUBER: " << node->data->first << '\n';
+                        return found;
+                    }
+                    else if (keycmp(node->data->first, k) == 1)
+                    {
+                        if (node->right != nullptr)
+                            std::cout << "RIGHT SIDE NUMBER: " << node->right->data->first << '\n';
+                        found = findNode(node->right, k);
+                    }
+                    else if (keycmp(node->data->first, k) == 2)
+                    {
+                        if (node->left != nullptr)
+                            std::cout << "LEFT SIDE NUMBER: " << node->left->data->first << '\n';
+                        found = findNode(node->left, k);
+                    }
+                }
+                // std::cout << "< <<>> >\n";
+                return node;
+            }
+
+            void testFindNodeMethod(const key_type &k)
+            {
+                _node_pointer found;
+
+                std::cout << "ROOT >> " << _root->data->first << '\n';
+                found = findNode(_root, k);
+                if (found != nullptr)
+                    std::cout << "found Node has: " << found->data->first << '\n';
+                else
+                    std::cout << "found Node is empty" << '\n';
+            }
+
+            //========================================================================================================
+            //========================================================================================================
+
             iterator find(const key_type &k)
             {
                 for (iterator it = _begin; it != _end; it++)
@@ -595,6 +645,9 @@ namespace ft
             {
                 return ((find(k) != _end) ? 1 : 0);
             }
+
+            // 1. use recursive algorithm to find a node insdead of find method
+            // 2. implement erase method
 
     };
 
