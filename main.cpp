@@ -374,7 +374,6 @@ void test_four()
         it++;
     }
 
-
     nl;
 
     std::cout << "zmap [50]: " << zmap[50] << '\n';
@@ -391,6 +390,14 @@ void test_four()
     {
         std::cout << "smap at 30: " << smap.at(30) << '\n';
         std::cout << "smap at 90: " << smap.at(90) << '\n';
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    try
+    {
         std::cout << "zmap at 30: " << zmap.at(30) << '\n';
         std::cout << "zmap at 90: " << zmap.at(90) << '\n';
     }
@@ -401,15 +408,43 @@ void test_four()
 
     std::cout << "\n___________COUNT___________\n\n";
 
-    std::cout << "!!! NOT WORKED !!!\n";
+    // std::cout << "!!! NOT WORKED !!!\n";
 
-    // std::cout << "smap count 30: " << smap.count(30) << '\n';
-    // std::cout << "smap count 90: " << smap.count(90) << '\n';
-    // std::cout << "zmap count 30: " << zmap.count(30) << '\n';
-    // std::cout << "zmap count 90: " << zmap.count(90) << '\n';
-    
+    std::cout << "smap count 30: " << smap.count(30) << '\n';
+    std::cout << "smap count 90: " << smap.count(90) << '\n';
+    std::cout << "zmap count 30: " << zmap.count(30) << '\n';
+    std::cout << "zmap count 90: " << zmap.count(90) << '\n';
+
+    // std::cout << "\n_______FIND NODE TEST______\n\n";
+    // zmap.testFindNodeMethod(70);
     // zmap.callInOrder();
+
+    std::cout << "\n___________ERASE___________\n\n";
+
+    it = smap.begin();
+    zit = zmap.begin();
+
+    std::cout << "smap erase return val = " << smap.erase(70) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(70) << '\n';
     
+    it = smap.begin();
+    zit = zmap.begin();
+
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
+
+    nl;
+
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    // zmap.callInOrder();
 }
 
 int main()
