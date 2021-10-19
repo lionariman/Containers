@@ -22,7 +22,7 @@
 
 namespace ft
 {
-    // ================================ ITERATORS =================================
+    // ================================== NODE ====================================
 
     template < class U >
     struct Node
@@ -47,25 +47,29 @@ namespace ft
             left(nullptr),
             height(1) {}
     };
+
+    // ================================ ITERATORS =================================
     
     template < class T >
     class map_iterator
     {
         public:
             // t - value_type
-            typedef Node<T> *pointer;
-            typedef Node<T> &reference;
+            typedef Node<T> *_node_pointer;
+            typedef Node<T> &_node_reference;
             typedef std::bidirectional_iterator_tag iterator_category;
 
         private:
-            pointer _ptr;
+            _node_pointer _ptr;
 
         public:
-            map_iterator(pointer ptr = nullptr) : _ptr(ptr) {}
+            map_iterator() : _ptr(nullptr) {}
+            map_iterator(_node_pointer ptr) : _ptr(ptr) {}
             map_iterator(const map_iterator &other) {
                 if (this == &other) return ;
                 *this = other;
             }
+
             ~map_iterator() {}
 
             map_iterator &operator=(const map_iterator &other) {
@@ -83,7 +87,7 @@ namespace ft
             T &operator*() { return *(_ptr->data); }
             T *operator->() { return _ptr->data; }
 
-            pointer getNode() { return _ptr; }
+            _node_pointer getNode() { return _ptr; }
         
         private:
             void getNext() {
@@ -109,19 +113,21 @@ namespace ft
     class map_reverse_iterator
     {
         public:
-            typedef Node<U> *pointer;
-            typedef Node<U> &reference;
+            typedef Node<U> *_node_pointer;
+            typedef Node<U> &_node_reference;
             typedef std::bidirectional_iterator_tag iterator_category;
 
         private:
-            pointer _ptr;
+            _node_pointer _ptr;
 
         public:
-            map_reverse_iterator(pointer ptr = nullptr) : _ptr(ptr) {}
+            map_reverse_iterator() : _ptr(nullptr) {}
+            map_reverse_iterator(_node_pointer ptr) : _ptr(ptr) {}
             map_reverse_iterator(const map_reverse_iterator &other) {
                 if (this == &other) return ;
                 *this = other;
             }
+
             ~map_reverse_iterator() {}
 
             map_reverse_iterator &operator=(const map_reverse_iterator &other) {
@@ -139,7 +145,7 @@ namespace ft
             U &operator*() { return *(_ptr->data); }
             U *operator->() { return _ptr->data; }
 
-            pointer getNode() { return _ptr; }
+            _node_pointer getNode() { return _ptr; }
 
         private:
             void getNext() {
@@ -232,95 +238,37 @@ namespace ft
                 return newNode;
             }
 
-            // void deleteNode(_node_pointer nd)
-            // {
-            //     _alloc.destroy(nd->data, 1);
-            //     _alloc.deallocate(nd, 1);
-            //     _alloc_node.deallocate(nd, 1);
-            //     nd = nullptr;
-            // }
+            int getSize(_node_pointer nd)
+            {
+                if (!nd) return 0;
+                return nd->height;
+            }
 
-            // int getSize(_node_pointer nd)
-            // {
-            //     if (!nd) return 0;
-            //     return nd->height;
-            // }
+            int valcmp(const value_type &x, const value_type &y) const
+            {
+                return keyCompare(x.first, y.first);
+            }
 
-            // void correctHeight(_node_pointer nd)
-            // {
-            //     int heightLeft = getSize(nd->left);
-            //     int heightRight = getSize(nd->right);
-            //     nd->height = ((heightLeft > heightRight) ? heightLeft : heightRight) + 1;
-            // }
+            _node_pointer deleteMin(_node_pointer nd)
+            {
+                if (nd->left == nullptr) return nd->right;
+                nd->left = deleteMin(nd->left);
+                nd->height = 1 + getSize(nd->left) + getSize(nd->right);
+                return nd;
+            }
 
-            // int balanceFactor(_node_pointer nd)
-            // {
-            //     return getSize(nd->right) - getSize(nd->left);
-            // }
+            _node_pointer getMin(_node_pointer nd)
+            {
+                if (!nd->left) return nd;
+                return getMin(nd->left);
+            }
 
-            // int keyCompare(const key_type &x, const key_type &y) const
-            // {
-            //     return _comp(x, y) + _comp(y, x) * 2;
-            // }
+            _node_pointer getMax(_node_pointer nd)
+            {
+                if (!nd->right) return nd;
+                return getMax(nd->right);
+            }
 
-            // int valueCompare(const value_type &x, const value_type &y) const
-            // {
-            //     return keyCompare(x.first, y.first);
-            // }
-
-            // _node_pointer findNode(_node_pointer nd, key_type k)
-            // {
-            //     int compare = keyCompare(k, nd->data->first);
-            //     if (compare == 1)
-            //     {
-            //         if (nd->left and nd->left != _begin)
-            //             return findNode(nd->left, k);
-            //     }
-            //     else if (compare == 2)
-            //     {
-            //         if (nd->right and nd->right != _end)
-            //             return findNode(nd->right, k);
-            //     }
-            //     return nd;
-            // }
-
-            // _node_pointer deleteMin(_node_pointer nd)
-            // {
-            //     if (nd->left == nullptr) return nd->right;
-            //     nd->left = deleteMin(nd->left);
-            //     nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-            //     return nd;
-            // }
-
-            // _node_pointer getMin(_node_pointer nd)
-            // {
-            //     if (!nd->left) return nd;
-            //     return getMin(nd->left);
-            // }
-
-            // _node_pointer getMax(_node_pointer nd)
-            // {
-            //     if (!nd->right) return nd;
-            //     return getMax(nd->right);
-            // }
-
-            // _node_pointer deleteNode(_node_pointer nd, value_type &val)
-            // {
-            //     if (!nd) return nullptr;
-            //     if (nd->data->first > val.first) nd->left = deleteNode(nd->left, val);
-            //     else if (nd->data->first < val.first) nd->right = deleteNode(nd->right, val);
-            //     else
-            //     {
-            //         if (!nd->right) return nd->left;
-            //         if (!nd->left) return nd->right;
-            //         _node_pointer t = nd;
-            //         nd = getMin(t->right);
-            //         nd->right = deleteMin(t->right);
-            //         nd->left = t->left;
-            //         return balance(nd);
-            //     }
-            //     return balance(nd);
-            // }
 
             std::pair<iterator, bool> initTop(const value_type &val)
             {
@@ -371,15 +319,15 @@ namespace ft
                 _root->height = 0;
             }
 
-            iterator begin() { return iterator(_begin->parent); }
-            const_iterator cbegin() { return const_iterator(_begin->parent); }
-            // reverse_iterator rbegin() { return reverse_iterator(_end); }
-            // const_reverse_iterator crbegin() { return const_reverse_iterator(_end); }
+            iterator begin() { return _size ? iterator(_begin->parent) : iterator(_begin); }
+            const_iterator cbegin() const { return _size ? const_iterator(_begin->parent) : const_iterator(_begin); }
+            reverse_iterator rbegin() { return reverse_iterator(_end); }
+            const_reverse_iterator crbegin() const { return const_reverse_iterator(_end); }
 
             iterator end() { return iterator(_end); }
-            const_iterator cend() { return const_iterator(_end); }
-            // reverse_iterator rend() { return reverse_iterator(_begin); }
-            // const_reverse_iterator crend() { return const_reverse_iterator(_begin); }
+            const_iterator cend() const { return const_iterator(_end); }
+            reverse_iterator rend() { return _size ? reverse_iterator(_begin->parent) : reverse_iterator(_begin); }
+            const_reverse_iterator crend() const { return _size ? const_reverse_iterator(_begin->parent) : const_reverse_iterator(_begin); }
 
             bool empty() const { return _size; }
             size_type size() const { return _size; }
@@ -402,6 +350,29 @@ namespace ft
                 _alloc.deallocate(nd->data, 1);
                 _alloc_node.deallocate(nd, 1);
                 nd = nullptr;
+            }
+
+            void deleteNode(_node_pointer node)
+            {
+                _alloc.destroy(node->data);
+                _alloc.deallocate(node->data, 1);
+                _alloc_node.deallocate(node, 1);
+                node = nullptr;
+            }
+
+            size_type keycmp(const key_type &k1, const key_type &k2) const
+            {
+                return _comp(k1, k2) + _comp(k2, k1) * 2;
+            }
+
+            _node_pointer findNode(_node_pointer node, const key_type &k) const
+            {
+                int res = keycmp(node->data->first, k);
+                if (res == 1 and node->right and node != _end)
+                    return findNode(node->right, k);
+                else if (res == 2 and node->left and node != _begin)
+                    return findNode(node->left, k);
+                return node;
             }
 
             int getHeight(_node_pointer nd)
@@ -468,7 +439,6 @@ namespace ft
                 return p;
             }
 
-
             _node_pointer putNode(_node_pointer nd, _node_pointer parent, const value_type &val) // recursion insert
             {
                 if (nd == nullptr)
@@ -487,18 +457,18 @@ namespace ft
                 }
                 else
                 {
-                    if (_comp(nd->data->first, val.first) == true)
+                    if (keycmp(nd->data->first, val.first) == 1)
                     {
                         nd->right = putNode(nd->right, nd, val);
                     }
-                    else if (_comp(nd->data->first, val.first) == false and _comp(val.first, nd->data->first) == false)
+                    else if (keycmp(nd->data->first, val.first) == 2)
                     {
-                        _size--;
-                        return nd;
+                        nd->left = putNode(nd->left, nd, val);
                     }
                     else
                     {
-                        nd->left = putNode(nd->left, nd, val);
+                        _size--;
+                        return nd;
                     }
                 }
                 return balance(nd);
@@ -532,83 +502,43 @@ namespace ft
 
         public:
 
+
+            // ===============================================================================
+            // ================== TESTS ======================================================
             // PRE-ORDER CALL
             void callInOrder() { inOrder(_root); }
-
-            //========================================================================================================
-            //========================================================================================================
-
-            size_type keycmp(const key_type &k1, const key_type &k2)
-            {
-                if (_comp(k1, k2) == true)                              return 1; // k1 < k2
-                if (_comp(k1, k2) == false)                             return 2; // k1 > k2
-                if (_comp(k1, k2) == false and _comp(k2, k1) == false)  return 0; // k1 == k2
-                return 3;
-            }
-
-            _node_pointer findNode(_node_pointer node, const key_type &k)
-            {
-                _node_pointer found = nullptr;
-                if (node and node != _begin and node != _end)
-                {
-                    if (keycmp(node->data->first, k) == 0)
-                    {
-                        std::cout << "FOUND NUBER: " << node->data->first << '\n';
-                        return found;
-                    }
-                    else if (keycmp(node->data->first, k) == 1)
-                    {
-                        if (node->right != nullptr)
-                            std::cout << "RIGHT SIDE NUMBER: " << node->right->data->first << '\n';
-                        found = findNode(node->right, k);
-                    }
-                    else if (keycmp(node->data->first, k) == 2)
-                    {
-                        if (node->left != nullptr)
-                            std::cout << "LEFT SIDE NUMBER: " << node->left->data->first << '\n';
-                        found = findNode(node->left, k);
-                    }
-                }
-                // std::cout << "< <<>> >\n";
-                return node;
-            }
 
             void testFindNodeMethod(const key_type &k)
             {
                 _node_pointer found;
 
-                std::cout << "ROOT >> " << _root->data->first << '\n';
                 found = findNode(_root, k);
                 if (found != nullptr)
                     std::cout << "found Node has: " << found->data->first << '\n';
                 else
                     std::cout << "found Node is empty" << '\n';
             }
-
-            //========================================================================================================
-            //========================================================================================================
+            // ================== TESTS ======================================================
+            // ===============================================================================
 
             iterator find(const key_type &k)
             {
-                for (iterator it = _begin; it != _end; it++)
-                    if (_comp(it->first, k) == false and _comp(k, it->first) == false)
-                        return it;
-                return _end;
+                _node_pointer found = findNode(_root, k);
+                return (keycmp(found->data->first, k) == 0) ? iterator(found) : end();
             }
 
             const_iterator find(const key_type &k) const
             {
-                for (iterator it = _begin; it != _end; it++)
-                    if (_comp(it->first, k) == false and _comp(k, it->first) == false)
-                        return const_iterator(*it);
-                return cend();
+                _node_pointer found = findNode(_root, k);
+                return (keycmp(found->data->first, k) == 0) ? const_iterator(found) : cend();
             }
 
             std::pair<iterator, bool> insert(const value_type &val)
             {
                 if (_size == 0) return initTop(val);
-                iterator it = find(val.first);
-                if (it != _end) return std::pair<iterator, bool>(it, false);
+                _node_pointer node = findNode(_root, val.first);
+                if (keycmp(node->data->first, val.first) == 0)
+                    return std::pair<iterator, bool>(iterator(node), false);
                 _root = putNode(_root, nullptr, val);
                 _size++;
                 return std::pair<iterator, bool>(iterator(_root), true);
@@ -638,17 +568,111 @@ namespace ft
                 iterator it = find(k);
                 if (it != _end)
                     return it->second;
-                throw std::out_of_range("map::at: key not found");
+                throw std::out_of_range("map::at:  key not found");
             }
 
             size_type count(const key_type &k) const
             {
-                return ((find(k) != _end) ? 1 : 0);
+                return (keycmp(findNode(_root, k)->data->first, k) == 0) ? 1 : 0;
             }
 
-            // 1. use recursive algorithm to find a node insdead of find method
-            // 2. implement erase method
+            // ============================== ERASE ===========================================
 
+            _node_pointer destroyer(_node_pointer nd, value_type &val)
+            {
+                if (!nd) return nullptr;
+                if (nd->data->first > val.first) nd->left = deleteNode(nd->left, val);
+                else if (nd->data->first < val.first) nd->right = deleteNode(nd->right, val);
+                else
+                {
+                    if (!nd->right) return nd->left;
+                    if (!nd->left) return nd->right;
+                    _node_pointer t = nd;
+                    nd = getMin(t->right);
+                    nd->right = deleteMin(t->right);
+                    nd->left = t->left;
+                    return balance(nd);
+                }
+                return balance(nd);
+            }
+
+            void exterminator(_node_pointer victim)
+            {
+                if (victim->left == nullptr and victim->right == nullptr)
+                {
+                    if (keycmp(victim->parent->left->data->first, victim->data->first) == 0)
+                    {
+                        victim->parent->left = nullptr;
+                        deleteNode(victim);
+                    }
+                    else if (keycmp(victim->parent->right->data->first, victim->data->first) == 0)
+                    {
+                        victim->parent->right = nullptr;
+                        deleteNode(victim);
+                    }
+                }
+                else if (victim->left != _begin and victim->right != _end and victim->left != nullptr and victim->right != nullptr)
+                {
+                    
+                }
+                else if (victim->right != _end and (victim->left == nullptr or victim->left == _begin))
+                {
+                    if (victim->right != nullptr)
+                    {
+                        victim->parent->left = victim->right;
+                        victim->right->parent = victim->parent;
+                        victim->right->left = victim->left;
+                        _begin->parent = victim->right;
+                    }
+                    else
+                    {
+                        victim->parent->left = _begin;
+                        _begin->parent = victim->parent;
+                    }
+                }
+                else if (victim->left != _begin and (victim->right == nullptr or victim->right == _end))
+                {
+                    if (victim->left != nullptr)
+                    {
+                        victim->parent->right = victim->left;
+                        victim->left->parent = victim->parent;
+                        victim->left->right = victim->right;
+                        _end->parent = victim->parent;
+                    }
+                    else
+                    {
+                        victim->parent->right = _end;
+                        _end->parent = victim->parent;
+                    }
+                }
+                // _root = balance(victim->parent);
+            }
+
+            void erase(iterator position)
+            {
+                if (_size == 0)
+                    return ;
+                exterminator(position.getNode());
+                _size--;
+            }
+
+            size_type erase(const key_type &k)
+            {
+                if (_size == 0)
+                    return 0;
+                _node_pointer node = findNode(_root, k);
+                if (keycmp(node->data->first, k))
+                    return 0;
+                exterminator(node);
+                _size--;
+                return 1;
+            }
+
+            void erase(iterator first, iterator last)
+            {
+                for (; first != last; first++)
+                    erase(first);
+            }
     };
 
     // ============================================================================
