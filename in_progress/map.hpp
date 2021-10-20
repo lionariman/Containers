@@ -238,10 +238,10 @@ namespace ft
                 return newNode;
             }
 
-            int getSize(_node_pointer nd)
+            int getSize(_node_pointer node)
             {
-                if (!nd) return 0;
-                return nd->height;
+                if (!node) return 0;
+                return node->height;
             }
 
             int valcmp(const value_type &x, const value_type &y) const
@@ -249,24 +249,24 @@ namespace ft
                 return keyCompare(x.first, y.first);
             }
 
-            _node_pointer deleteMin(_node_pointer nd)
+            _node_pointer deleteMin(_node_pointer node)
             {
-                if (nd->left == nullptr) return nd->right;
-                nd->left = deleteMin(nd->left);
-                nd->height = 1 + getSize(nd->left) + getSize(nd->right);
-                return nd;
+                if (node->left == nullptr) return node->right;
+                node->left = deleteMin(node->left);
+                node->height = 1 + getSize(node->left) + getSize(node->right);
+                return node;
             }
 
-            _node_pointer getMin(_node_pointer nd)
+            _node_pointer getMin(_node_pointer node)
             {
-                if (!nd->left) return nd;
-                return getMin(nd->left);
+                if (!node->left) return node;
+                return getMin(node->left);
             }
 
-            _node_pointer getMax(_node_pointer nd)
+            _node_pointer getMax(_node_pointer node)
             {
-                if (!nd->right) return nd;
-                return getMax(nd->right);
+                if (!node->right) return node;
+                return getMax(node->right);
             }
 
 
@@ -335,27 +335,33 @@ namespace ft
 
         private:
 
-            void deleteTree(_node_pointer nd)
+            void deleteTree(_node_pointer node)
             {
-                if (nd == nullptr) return ;
-                else if (nd == _begin or nd == _end)
+                if (node == nullptr) return ;
+                else if (node == _begin or node == _end)
                 {
-                    _alloc.deallocate(nd->data, 1);
-                    _alloc_node.deallocate(nd, 1);
+                    _alloc.deallocate(node->data, 1);
+                    _alloc_node.deallocate(node, 1);
                     return ;
                 }
-                deleteTree(nd->left);
-                deleteTree(nd->right);
-                _alloc.destroy(nd->data);
-                _alloc.deallocate(nd->data, 1);
-                _alloc_node.deallocate(nd, 1);
-                nd = nullptr;
+                deleteTree(node->left);
+                deleteTree(node->right);
+                if (node->data)
+                {
+                    _alloc.destroy(node->data);
+                    _alloc.deallocate(node->data, 1);
+                }
+                _alloc_node.deallocate(node, 1);
+                node = nullptr;
             }
 
-            void deleteNode(_node_pointer node)
+            void freenode(_node_pointer node)
             {
-                _alloc.destroy(node->data);
-                _alloc.deallocate(node->data, 1);
+                if (node->data)
+                {
+                    _alloc.destroy(node->data);
+                    _alloc.deallocate(node->data, 1);
+                }
                 _alloc_node.deallocate(node, 1);
                 node = nullptr;
             }
@@ -375,9 +381,27 @@ namespace ft
                 return node;
             }
 
-            int getHeight(_node_pointer nd)
+            void copyContent(_node_pointer destination, _node_pointer source)
             {
-                return nd ? nd->height : 0;
+                _alloc.destroy(destination->data);
+                _alloc.deallocate(destination->data, 1);
+                destination->data = _alloc.allocate(1);
+                _alloc.construct(destination->data, *(source->data));
+            }
+
+            _node_pointer minValueNode(_node_pointer node)
+            {
+                _node_pointer current = node;
+
+                // loop down to find the leftmost leaf
+                while (current->left != nullptr)
+                    current = current->left;
+                return current;
+            }
+
+            int getHeight(_node_pointer node)
+            {
+                return node ? node->height : 0;
             }
 
             int max(int a, int b)
@@ -385,34 +409,34 @@ namespace ft
                 return (a > b) ? a : b;
             }
 
-            int bfactor(_node_pointer nd)
+            int bfactor(_node_pointer node)
             {
-                return getHeight(nd->right) - getHeight(nd->left);
+                return getHeight(node->right) - getHeight(node->left);
             }
 
-            void fixHeight(_node_pointer nd)
+            void fixHeight(_node_pointer node)
             {
-                int hl = getHeight(nd->left);
-                int hr = getHeight(nd->right);
-                nd->height = (hl > hr ? hl : hr) + 1;
+                int hl = getHeight(node->left);
+                int hr = getHeight(node->right);
+                node->height = (hl > hr ? hl : hr) + 1;
             }
 
-            _node_pointer balance(_node_pointer p)
+            _node_pointer balance(_node_pointer node)
             {
-                fixHeight(p);
-                if (bfactor(p) == 2)
+                fixHeight(node);
+                if (bfactor(node) == 2)
                 {
-                    if (bfactor(p->right) < 0)
-                        p->right = rightRotate(p->right);
-                    return leftRotate(p);
+                    if (bfactor(node->right) < 0)
+                            node->right = rightRotate(node->right);
+                    return leftRotate(node);
                 }
-                else if (bfactor(p) == -2)
+                else if (bfactor(node) == -2)
                 {
-                    if (bfactor(p->left) > 0)
-                        p->left = leftRotate(p->left);
-                    return rightRotate(p);
+                    if (bfactor(node->left) > 0)
+                            node->left = leftRotate(node->left);
+                    return rightRotate(node);
                 }
-                return p;
+                return node;
             }
 
             _node_pointer rightRotate(_node_pointer p)
@@ -439,65 +463,65 @@ namespace ft
                 return p;
             }
 
-            _node_pointer putNode(_node_pointer nd, _node_pointer parent, const value_type &val) // recursion insert
+            _node_pointer putNode(_node_pointer node, _node_pointer parent, const value_type &val) // recursion insert
             {
-                if (nd == nullptr)
+                if (node == nullptr)
                 {
-                    nd = createNode(val, parent, nullptr, nullptr);
+                    node = createNode(val, parent, nullptr, nullptr);
                 }
-                else if (nd == _begin)
+                else if (node == _begin)
                 {
-                    nd = createNode(val, parent, _begin, nullptr);
-                    _begin->parent = nd;
+                    node = createNode(val, parent, _begin, nullptr);
+                    _begin->parent = node;
                 }
-                else if (nd == _end)
+                else if (node == _end)
                 {
-                    nd = createNode(val, parent, nullptr, _end);
-                    _end->parent = nd;
+                    node = createNode(val, parent, nullptr, _end);
+                    _end->parent = node;
                 }
                 else
                 {
-                    if (keycmp(nd->data->first, val.first) == 1)
+                    if (keycmp(node->data->first, val.first) == 1)
                     {
-                        nd->right = putNode(nd->right, nd, val);
+                        node->right = putNode(node->right, node, val);
                     }
-                    else if (keycmp(nd->data->first, val.first) == 2)
+                    else if (keycmp(node->data->first, val.first) == 2)
                     {
-                        nd->left = putNode(nd->left, nd, val);
+                        node->left = putNode(node->left, node, val);
                     }
                     else
                     {
                         _size--;
-                        return nd;
+                        return node;
                     }
                 }
-                return balance(nd);
+                return balance(node);
             }
 
             // RECURSIVE ALGORITHM TO PRINT ELEMENTS IN THE BINARY TREE
-            void inOrder(_node_pointer nd)
+            void inOrder(_node_pointer node)
             {
-                if (nd == nullptr) return ;
-                inOrder(nd->left);
+                if (node == nullptr) return ;
+                inOrder(node->left);
                 std::cout << "\n--------------------------< l >------------------------\n";
-                if (nd->parent)
-                    std::cout << " ^ nd parent: " << nd->parent->data->first << '\n';
+                if (node->parent)
+                    std::cout << " ^ node parent: " << node->parent->data->first << '\n';
                 else
                     std::cout << "root\n";
-                if (nd->data)
-                    std::cout << " . nd data: " << nd->data->first << '\n';
+                if (node->data)
+                    std::cout << " . node data: " << node->data->first << '\n';
                 else
                     std::cout << "...\n";
-                if (nd->left)
-                    std::cout << " <- nd left: " << nd->left->data->first << '\n';
+                if (node->left)
+                    std::cout << " <- node left: " << node->left->data->first << '\n';
                 else
                     std::cout << "...\n";
-                if (nd->right)
-                    std::cout << " -> nd right: " << nd->right->data->first << '\n';
+                if (node->right)
+                    std::cout << " -> node right: " << node->right->data->first << '\n';
                 else
                     std::cout << "...\n";
                 std::cout << "--------------------------< r >------------------------\n\n";
-                inOrder(nd->right);
+                inOrder(node->right);
             }
 
         public:
@@ -578,83 +602,133 @@ namespace ft
 
             // ============================== ERASE ===========================================
 
-            _node_pointer destroyer(_node_pointer nd, value_type &val)
+            // _node_pointer destroyer(_node_pointer nd, value_type &val)
+            // {
+            //     if (!nd) return nullptr;
+            //     if (nd->data->first > val.first) nd->left = destroy(nd->left, val);
+            //     else if (nd->data->first < val.first) nd->right = destroy(nd->right, val);
+            //     else
+            //     {
+            //         if (!nd->right) return nd->left;
+            //         if (!nd->left) return nd->right;
+            //         _node_pointer t = nd;
+            //         nd = getMin(t->right);
+            //         nd->right = deleteMin(t->right);
+            //         nd->left = t->left;
+            //         return balance(nd);
+            //     }
+            //     return balance(nd);
+            // }
+
+            _node_pointer deleteNode(_node_pointer node, const key_type &k)
             {
-                if (!nd) return nullptr;
-                if (nd->data->first > val.first) nd->left = deleteNode(nd->left, val);
-                else if (nd->data->first < val.first) nd->right = deleteNode(nd->right, val);
+                if (node == nullptr)
+                {
+                    check0;
+                    return node;
+                }
+                else if (keycmp(node->data->first, k) == 1)
+                {
+                    check1;
+                    node->right = deleteNode(node->right, k);
+                }
+                else if (keycmp(node->data->first, k) == 2)
+                {
+                    check2;
+                    node->left = deleteNode(node->left, k);
+                }
                 else
                 {
-                    if (!nd->right) return nd->left;
-                    if (!nd->left) return nd->right;
-                    _node_pointer t = nd;
-                    nd = getMin(t->right);
-                    nd->right = deleteMin(t->right);
-                    nd->left = t->left;
-                    return balance(nd);
-                }
-                return balance(nd);
-            }
+                    // begin and end must be here ...
 
-            void exterminator(_node_pointer victim)
-            {
-                if (victim->left == nullptr and victim->right == nullptr)
-                {
-                    if (keycmp(victim->parent->left->data->first, victim->data->first) == 0)
+                    if (node->left == nullptr or node->right == nullptr)
                     {
-                        victim->parent->left = nullptr;
-                        deleteNode(victim);
-                    }
-                    else if (keycmp(victim->parent->right->data->first, victim->data->first) == 0)
-                    {
-                        victim->parent->right = nullptr;
-                        deleteNode(victim);
-                    }
-                }
-                else if (victim->left != _begin and victim->right != _end and victim->left != nullptr and victim->right != nullptr)
-                {
-                    
-                }
-                else if (victim->right != _end and (victim->left == nullptr or victim->left == _begin))
-                {
-                    if (victim->right != nullptr)
-                    {
-                        victim->parent->left = victim->right;
-                        victim->right->parent = victim->parent;
-                        victim->right->left = victim->left;
-                        _begin->parent = victim->right;
+                        _node_pointer temp = node->left ? node->left : node->right;
+                        if (temp == nullptr)
+                        {
+                            check3;
+                            temp = node;
+                            node = nullptr;
+                        }
+                        else
+                        {
+                            check4;
+                            copyContent(node, temp);
+                            if (node->right == temp) node->right = nullptr;
+                            else if (node->left == temp) node->left = nullptr;
+                        }
+                        freenode(temp);
                     }
                     else
                     {
-                        victim->parent->left = _begin;
-                        _begin->parent = victim->parent;
+                        check5;
+
+                        _node_pointer temp = minValueNode(node->right);
+
+                        copyContent(node, temp);
+
+                        node->right = deleteNode(node->right, temp->data->first);
                     }
                 }
-                else if (victim->left != _begin and (victim->right == nullptr or victim->right == _end))
-                {
-                    if (victim->left != nullptr)
-                    {
-                        victim->parent->right = victim->left;
-                        victim->left->parent = victim->parent;
-                        victim->left->right = victim->right;
-                        _end->parent = victim->parent;
-                    }
-                    else
-                    {
-                        victim->parent->right = _end;
-                        _end->parent = victim->parent;
-                    }
-                }
-                // _root = balance(victim->parent);
+                return balance(node);
+
+                // if (node->left == nullptr and node->right == nullptr)
+                // {
+                //     if (keycmp(node->parent->left->data->first, node->data->first) == 0)
+                //     {
+                //         node->parent->left = nullptr;
+                //         freenode(node);
+                //     }
+                //     else if (keycmp(node->parent->right->data->first, node->data->first) == 0)
+                //     {
+                //         node->parent->right = nullptr;
+                //         freenode(node);
+                //     }
+                // }
+                // else if (node->left != _begin and node->right != _end and node->left != nullptr and node->right != nullptr)
+                // {
+                //     // ...
+                // }
+                // else if (node->right != _end and (node->left == nullptr or node->left == _begin))
+                // {
+                //     if (node->right != nullptr)
+                //     {
+                //         node->parent->left = node->right;
+                //         node->right->parent = node->parent;
+                //         node->right->left = node->left;
+                //         _begin->parent = node->right;
+                //     }
+                //     else
+                //     {
+                //         node->parent->left = _begin;
+                //         _begin->parent = node->parent;
+                //     }
+                // }
+                // else if (node->left != _begin and (node->right == nullptr or node->right == _end))
+                // {
+                //     if (node->left != nullptr)
+                //     {
+                //         node->parent->right = node->left;
+                //         node->left->parent = node->parent;
+                //         node->left->right = node->right;
+                //         _end->parent = node->parent;
+                //     }
+                //     else
+                //     {
+                //         node->parent->right = _end;
+                //         _end->parent = node->parent;
+                //     }
+                // }
+                // _root = balance(node->parent);
             }
 
-            void erase(iterator position)
-            {
-                if (_size == 0)
-                    return ;
-                exterminator(position.getNode());
-                _size--;
-            }
+            // void erase(iterator position)
+            // {
+            //     if (_size == 0)
+            //         return ;
+            //     exterminator(position.getNode());
+            //     _size--;
+            // }
 
             size_type erase(const key_type &k)
             {
@@ -663,16 +737,16 @@ namespace ft
                 _node_pointer node = findNode(_root, k);
                 if (keycmp(node->data->first, k))
                     return 0;
-                exterminator(node);
+                _root = deleteNode(_root, k);
                 _size--;
                 return 1;
             }
 
-            void erase(iterator first, iterator last)
-            {
-                for (; first != last; first++)
-                    erase(first);
-            }
+            // void erase(iterator first, iterator last)
+            // {
+            //     for (; first != last; first++)
+            //         erase(first);
+            // }
     };
 
     // ============================================================================

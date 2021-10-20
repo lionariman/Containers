@@ -424,8 +424,8 @@ void test_four()
     it = smap.begin();
     zit = zmap.begin();
 
-    std::cout << "smap erase return val = " << smap.erase(70) << '\n';
-    std::cout << "zmap erase return val = " << zmap.erase(70) << '\n';
+    std::cout << "smap erase return val = " << smap.erase(40) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(40) << '\n';
     
     it = smap.begin();
     zit = zmap.begin();
