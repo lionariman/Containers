@@ -280,6 +280,9 @@ void test_four()
     smap.insert(std::pair<int, int>(20, 20));
     smap.insert(std::pair<int, int>(40, 40));
     smap.insert(std::pair<int, int>(30, 30));
+    smap.insert(std::pair<int, int>(65, 65));
+    smap.insert(std::pair<int, int>(100, 100));
+    smap.insert(std::pair<int, int>(5, 5));
 
     zmap.insert(std::pair<int, int>(50, 50));
     zmap.insert(std::pair<int, int>(60, 60));
@@ -288,6 +291,9 @@ void test_four()
     zmap.insert(std::pair<int, int>(20, 20));
     zmap.insert(std::pair<int, int>(40, 40));
     zmap.insert(std::pair<int, int>(30, 30));
+    zmap.insert(std::pair<int, int>(65, 65));
+    zmap.insert(std::pair<int, int>(100, 100));
+    zmap.insert(std::pair<int, int>(5, 5));
 
     std::cout << "smap size: " << smap.size() << '\n';
     std::cout << "zmap size: " << zmap.size() << '\n';
@@ -424,8 +430,17 @@ void test_four()
     it = smap.begin();
     zit = zmap.begin();
 
-    std::cout << "smap erase return val = " << smap.erase(40) << '\n';
-    std::cout << "zmap erase return val = " << zmap.erase(40) << '\n';
+    std::cout << "smap erase return val = " << smap.erase(100) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(100) << '\n';
+
+    // std::cout << "smap beg = " << smap.begin()->first << '\n';
+    // std::cout << "zmap beg = " << zmap.begin()->first << '\n';
+
+    // std::cout << "smap end = " << (--smap.end())->first << '\n';
+    // std::cout << "zmap end = " << (--zmap.end())->first << '\n';
+
+    smap.erase(smap.begin(), smap.end());
+    zmap.erase(zmap.begin(), zmap.end());
     
     it = smap.begin();
     zit = zmap.begin();
@@ -444,7 +459,7 @@ void test_four()
         zit++;
     }
 
-    // zmap.callInOrder();
+    zmap.callInOrder();
 }
 
 int main()
