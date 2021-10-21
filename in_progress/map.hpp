@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <iterator>
+# include <iomanip>
 
 # include "utils/allocator.hpp"
 # include "utils/utils.hpp"
@@ -392,8 +393,6 @@ namespace ft
             _node_pointer minValueNode(_node_pointer node)
             {
                 _node_pointer current = node;
-
-                // loop down to find the leftmost leaf
                 while (current->left != nullptr)
                     current = current->left;
                 return current;
@@ -411,6 +410,7 @@ namespace ft
 
             int bfactor(_node_pointer node)
             {
+                if (node == nullptr) return 0;
                 return getHeight(node->right) - getHeight(node->left);
             }
 
@@ -427,13 +427,13 @@ namespace ft
                 if (bfactor(node) == 2)
                 {
                     if (bfactor(node->right) < 0)
-                            node->right = rightRotate(node->right);
+                        node->right = rightRotate(node->right);
                     return leftRotate(node);
                 }
                 else if (bfactor(node) == -2)
                 {
                     if (bfactor(node->left) > 0)
-                            node->left = leftRotate(node->left);
+                        node->left = leftRotate(node->left);
                     return rightRotate(node);
                 }
                 return node;
@@ -446,6 +446,7 @@ namespace ft
                 q->right = p;
                 q->parent = p->parent;
                 p->parent = q;
+                if (q->right->left) q->right->left->parent = p;
                 fixHeight(p);
                 fixHeight(q);
                 return q;
@@ -458,6 +459,7 @@ namespace ft
                 p->left = q;
                 p->parent = q->parent;
                 q->parent = p;
+                if (p->left->right) p->left->right->parent = q;
                 fixHeight(q);
                 fixHeight(p);
                 return p;
@@ -468,27 +470,29 @@ namespace ft
                 if (node == nullptr)
                 {
                     node = createNode(val, parent, nullptr, nullptr);
+                    fixHeight(node);
+                    return node;
                 }
                 else if (node == _begin)
                 {
                     node = createNode(val, parent, _begin, nullptr);
                     _begin->parent = node;
+                    fixHeight(node);
+                    return node;
                 }
                 else if (node == _end)
                 {
                     node = createNode(val, parent, nullptr, _end);
                     _end->parent = node;
+                    fixHeight(node);
+                    return node;
                 }
                 else
                 {
                     if (keycmp(node->data->first, val.first) == 1)
-                    {
                         node->right = putNode(node->right, node, val);
-                    }
                     else if (keycmp(node->data->first, val.first) == 2)
-                    {
                         node->left = putNode(node->left, node, val);
-                    }
                     else
                     {
                         _size--;
@@ -498,38 +502,107 @@ namespace ft
                 return balance(node);
             }
 
-            // RECURSIVE ALGORITHM TO PRINT ELEMENTS IN THE BINARY TREE
+            _node_pointer deleteNode(_node_pointer node, const key_type &k)
+            {
+                if (node == nullptr)
+                    return node;
+                else if (keycmp(node->data->first, k) == 1)
+                    node->right = deleteNode(node->right, k);
+                else if (keycmp(node->data->first, k) == 2)
+                    node->left = deleteNode(node->left, k);
+                else
+                {
+                    if (node->left == nullptr or node->right == nullptr)
+                    {
+                        _node_pointer temp = node->left ? node->left : node->right;
+                        if (temp == nullptr or temp == _begin or temp == _end)
+                        {
+                            if (temp == _begin or temp == _end)
+                            {
+                                _node_pointer del = node;
+                                node = temp;
+                                if (node == _begin)
+                                {
+                                    del->parent->left = _begin;
+                                    _begin->parent = del->parent;
+                                }
+                                temp = del;
+                            }
+                            else
+                            {
+                                temp = node;
+                                node = nullptr;
+                            }
+                        }
+                        else
+                        {
+                            copyContent(node, temp);
+                            if (temp->left == _begin)
+                            {
+                                node->left = _begin;
+                                _begin->parent = node;
+                            }
+                            else if (temp->right == _end)
+                            {
+                                node->right = _end;
+                                _end->parent = node;
+                            }
+                            else if (node->right == temp)
+                                node->right = nullptr;
+                            else if (node->left == temp)
+                                node->left = nullptr;
+                        }
+                        freenode(temp);
+                    }
+                    else
+                    {
+                        _node_pointer temp = minValueNode(node->right);
+                        copyContent(node, temp);
+                        node->right = deleteNode(node->right, temp->data->first);
+                    }
+                }
+                return (node ? balance(node) : node);
+            }
+
+            void printNodeInfo(_node_pointer node)
+            {
+                if (node == nullptr)
+                {
+                    std::cout << "error: node is empty ...\n";
+                    return ;
+                }
+                if (node->parent != nullptr)
+                    std::cout << " ^ parent: " << node->parent->data->first << '\n';
+                else
+                    std::cout << "root\n";
+                if (node->data != nullptr)
+                    std::cout << " . data: " << node->data->first << '\n';
+                else
+                    std::cout << "...\n";
+                if (node->left != nullptr)
+                    std::cout << " <- left: " << node->left->data->first << '\n';
+                else
+                    std::cout << "...\n";
+                if (node->right != nullptr)
+                    std::cout << " -> right: " << node->right->data->first << '\n';
+                else
+                    std::cout << "...\n";
+            }
+
             void inOrder(_node_pointer node)
             {
                 if (node == nullptr) return ;
                 inOrder(node->left);
                 std::cout << "\n--------------------------< l >------------------------\n";
-                if (node->parent)
-                    std::cout << " ^ node parent: " << node->parent->data->first << '\n';
-                else
-                    std::cout << "root\n";
-                if (node->data)
-                    std::cout << " . node data: " << node->data->first << '\n';
-                else
-                    std::cout << "...\n";
-                if (node->left)
-                    std::cout << " <- node left: " << node->left->data->first << '\n';
-                else
-                    std::cout << "...\n";
-                if (node->right)
-                    std::cout << " -> node right: " << node->right->data->first << '\n';
-                else
-                    std::cout << "...\n";
+                printNodeInfo(node);
                 std::cout << "--------------------------< r >------------------------\n\n";
                 inOrder(node->right);
             }
 
         public:
 
-
-            // ===============================================================================
             // ================== TESTS ======================================================
-            // PRE-ORDER CALL
+
             void callInOrder() { inOrder(_root); }
 
             void testFindNodeMethod(const key_type &k)
@@ -542,7 +615,7 @@ namespace ft
                 else
                     std::cout << "found Node is empty" << '\n';
             }
-            // ================== TESTS ======================================================
+
             // ===============================================================================
 
             iterator find(const key_type &k)
@@ -600,135 +673,13 @@ namespace ft
                 return (keycmp(findNode(_root, k)->data->first, k) == 0) ? 1 : 0;
             }
 
-            // ============================== ERASE ===========================================
-
-            // _node_pointer destroyer(_node_pointer nd, value_type &val)
-            // {
-            //     if (!nd) return nullptr;
-            //     if (nd->data->first > val.first) nd->left = destroy(nd->left, val);
-            //     else if (nd->data->first < val.first) nd->right = destroy(nd->right, val);
-            //     else
-            //     {
-            //         if (!nd->right) return nd->left;
-            //         if (!nd->left) return nd->right;
-            //         _node_pointer t = nd;
-            //         nd = getMin(t->right);
-            //         nd->right = deleteMin(t->right);
-            //         nd->left = t->left;
-            //         return balance(nd);
-            //     }
-            //     return balance(nd);
-            // }
-
-            _node_pointer deleteNode(_node_pointer node, const key_type &k)
+            void erase(iterator position)
             {
-                if (node == nullptr)
-                {
-                    check0;
-                    return node;
-                }
-                else if (keycmp(node->data->first, k) == 1)
-                {
-                    check1;
-                    node->right = deleteNode(node->right, k);
-                }
-                else if (keycmp(node->data->first, k) == 2)
-                {
-                    check2;
-                    node->left = deleteNode(node->left, k);
-                }
-                else
-                {
-                    // begin and end must be here ...
-
-                    if (node->left == nullptr or node->right == nullptr)
-                    {
-                        _node_pointer temp = node->left ? node->left : node->right;
-                        if (temp == nullptr)
-                        {
-                            check3;
-                            temp = node;
-                            node = nullptr;
-                        }
-                        else
-                        {
-                            check4;
-                            copyContent(node, temp);
-                            if (node->right == temp) node->right = nullptr;
-                            else if (node->left == temp) node->left = nullptr;
-                        }
-                        freenode(temp);
-                    }
-                    else
-                    {
-                        check5;
-
-                        _node_pointer temp = minValueNode(node->right);
-
-                        copyContent(node, temp);
-
-                        node->right = deleteNode(node->right, temp->data->first);
-                    }
-                }
-                return balance(node);
-
-                // if (node->left == nullptr and node->right == nullptr)
-                // {
-                //     if (keycmp(node->parent->left->data->first, node->data->first) == 0)
-                //     {
-                //         node->parent->left = nullptr;
-                //         freenode(node);
-                //     }
-                //     else if (keycmp(node->parent->right->data->first, node->data->first) == 0)
-                //     {
-                //         node->parent->right = nullptr;
-                //         freenode(node);
-                //     }
-                // }
-                // else if (node->left != _begin and node->right != _end and node->left != nullptr and node->right != nullptr)
-                // {
-                //     // ...
-                // }
-                // else if (node->right != _end and (node->left == nullptr or node->left == _begin))
-                // {
-                //     if (node->right != nullptr)
-                //     {
-                //         node->parent->left = node->right;
-                //         node->right->parent = node->parent;
-                //         node->right->left = node->left;
-                //         _begin->parent = node->right;
-                //     }
-                //     else
-                //     {
-                //         node->parent->left = _begin;
-                //         _begin->parent = node->parent;
-                //     }
-                // }
-                // else if (node->left != _begin and (node->right == nullptr or node->right == _end))
-                // {
-                //     if (node->left != nullptr)
-                //     {
-                //         node->parent->right = node->left;
-                //         node->left->parent = node->parent;
-                //         node->left->right = node->right;
-                //         _end->parent = node->parent;
-                //     }
-                //     else
-                //     {
-                //         node->parent->right = _end;
-                //         _end->parent = node->parent;
-                //     }
-                // }
-                // _root = balance(node->parent);
+                if (_size == 0)
+                    return ;
+                _root = deleteNode(position.getNode(), position->first);
+                _size--;
             }
-
-            // void erase(iterator position)
-            // {
-            //     if (_size == 0)
-            //         return ;
-            //     exterminator(position.getNode());
-            //     _size--;
-            // }
 
             size_type erase(const key_type &k)
             {
@@ -742,11 +693,11 @@ namespace ft
                 return 1;
             }
 
-            // void erase(iterator first, iterator last)
-            // {
-            //     for (; first != last; first++)
-            //         erase(first);
-            // }
+            void erase(iterator first, iterator last)
+            {
+                for (; first != last; first++)
+                    erase(first);
+            }
     };
 
     // ============================================================================
