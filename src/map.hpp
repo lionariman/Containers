@@ -400,7 +400,7 @@ namespace ft
 
             int getHeight(_node_pointer node)
             {
-                return node ? node->height : 0;
+                return (node == _begin or node == _end or node == nullptr) ? 0 : node->height;
             }
 
             int max(int a, int b)
@@ -517,16 +517,31 @@ namespace ft
                         _node_pointer temp = node->left ? node->left : node->right;
                         if (temp == nullptr or temp == _begin or temp == _end)
                         {
-                            if (temp == _begin or temp == _end)
+                            if (_root->left == _begin and _root->right == _end)
+                            {
+                                temp = node;
+                                node = nullptr;
+                                _root = nullptr;
+                                _begin = nullptr;
+                                _end = nullptr;
+                            }
+                            else if (temp == _begin)
                             {
                                 _node_pointer del = node;
-                                node = temp;
-                                if (node == _begin)
-                                {
-                                    del->parent->left = _begin;
-                                    _begin->parent = del->parent;
-                                }
+                                node = _begin;
+                                del->parent->left = node;
+                                node->parent = del->parent;
                                 temp = del;
+                                del = nullptr;
+                            }
+                            else if (temp == _end)
+                            {
+                                _node_pointer del = node;
+                                node = _end;
+                                del->parent->right = node;
+                                node->parent = del->parent;
+                                temp = del;
+                                del = nullptr;
                             }
                             else
                             {
@@ -572,21 +587,21 @@ namespace ft
                     return ;
                 }
                 if (node->parent != nullptr)
-                    std::cout << " ^ parent: " << node->parent->data->first << '\n';
+                    std::cout << " ^  parent: " << node->parent->data->first << '\n';
                 else
                     std::cout << "root\n";
                 if (node->data != nullptr)
-                    std::cout << " . data: " << node->data->first << '\n';
+                    std::cout << " .  data:   " << node->data->first << '\n';
                 else
-                    std::cout << "...\n";
+                    std::cout << " .  data:   ...\n";
                 if (node->left != nullptr)
-                    std::cout << " <- left: " << node->left->data->first << '\n';
+                    std::cout << " <- left:   " << node->left->data->first << '\n';
                 else
-                    std::cout << "...\n";
+                    std::cout << " <- left:   ...\n";
                 if (node->right != nullptr)
-                    std::cout << " -> right: " << node->right->data->first << '\n';
+                    std::cout << " -> right:  " << node->right->data->first << '\n';
                 else
-                    std::cout << "...\n";
+                    std::cout << " -> right:  ...\n";
             }
 
             void inOrder(_node_pointer node)
@@ -595,28 +610,13 @@ namespace ft
                 inOrder(node->left);
                 std::cout << "\n--------------------------< l >------------------------\n";
                 printNodeInfo(node);
-                std::cout << "--------------------------< r >------------------------\n\n";
+                std::cout <<   "--------------------------< r >------------------------\n\n";
                 inOrder(node->right);
             }
 
         public:
 
-            // ================== TESTS ======================================================
-
             void callInOrder() { inOrder(_root); }
-
-            void testFindNodeMethod(const key_type &k)
-            {
-                _node_pointer found;
-
-                found = findNode(_root, k);
-                if (found != nullptr)
-                    std::cout << "found Node has: " << found->data->first << '\n';
-                else
-                    std::cout << "found Node is empty" << '\n';
-            }
-
-            // ===============================================================================
 
             iterator find(const key_type &k)
             {
@@ -696,7 +696,12 @@ namespace ft
             void erase(iterator first, iterator last)
             {
                 for (; first != last; first++)
+                {
+                    // std::cout << "\n---------------------------------------------------------------------\n";
+                    // printNodeInfo(_root);
+                    // std::cout << "---------------------------------------------------------------------\n";
                     erase(first);
+                }
             }
     };
 
