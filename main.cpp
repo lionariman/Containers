@@ -430,8 +430,35 @@ void test_four()
     it = smap.begin();
     zit = zmap.begin();
 
+    std::cout << "smap erase return val = " << smap.erase(5) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(5) << '\n';
+    
+    std::cout << "smap erase return val = " << smap.erase(10) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(10) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(20) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(20) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(30) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(30) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(40) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(40) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(50) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(50) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(60) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(60) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(65) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(65) << '\n';
+
     std::cout << "smap erase return val = " << smap.erase(100) << '\n';
     std::cout << "zmap erase return val = " << zmap.erase(100) << '\n';
+
+    std::cout << "smap erase return val = " << smap.erase(70) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(70) << '\n';
 
     // std::cout << "smap beg = " << smap.begin()->first << '\n';
     // std::cout << "zmap beg = " << zmap.begin()->first << '\n';
@@ -439,27 +466,32 @@ void test_four()
     // std::cout << "smap end = " << (--smap.end())->first << '\n';
     // std::cout << "zmap end = " << (--zmap.end())->first << '\n';
 
-    smap.erase(smap.begin(), smap.end());
-    zmap.erase(zmap.begin(), zmap.end());
-    
-    it = smap.begin();
-    zit = zmap.begin();
+    // smap.erase(smap.begin(), smap.end());
+    // zmap.erase(zmap.begin(), zmap.end());
 
-    while (it != smap.end())
-    {
-        std::cout << it->first << ' ';
-        it++;
-    }
+    // // std::cout << "smap size: " << smap.size() << '\n';
+    // // std::cout << "zmap size: " << zmap.size() << '\n';
+    
+    // it = smap.begin();
+    // zit = zmap.begin();
+
+    // while (it != smap.end())
+    // {
+    //     std::cout << it->first << ' ';
+    //     it++;
+    // }
+
+    // nl;
+
+    // while (zit != zmap.end())
+    // {
+    //     std::cout << zit->first << ' ';
+    //     zit++;
+    // }
 
     nl;
 
-    while (zit != zmap.end())
-    {
-        std::cout << zit->first << ' ';
-        zit++;
-    }
-
-    zmap.callInOrder();
+    // zmap.callInOrder();
 }
 
 int main()
