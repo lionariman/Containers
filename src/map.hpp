@@ -593,7 +593,7 @@ namespace ft
                 if (node->data != nullptr)
                     std::cout << " .  data:   " << node->data->first << '\n';
                 else
-                    std::cout << " .  data:   ...\n";
+                    std::cout << " .  data:   ...\n";  
                 if (node->left != nullptr)
                     std::cout << " <- left:   " << node->left->data->first << '\n';
                 else
@@ -617,6 +617,11 @@ namespace ft
         public:
 
             void callInOrder() { inOrder(_root); }
+
+            void clear()
+            {
+                deleteTree(_root);
+            }
 
             iterator find(const key_type &k)
             {
@@ -697,9 +702,9 @@ namespace ft
             {
                 for (; first != last; first++)
                 {
-                    // std::cout << "\n---------------------------------------------------------------------\n";
-                    // printNodeInfo(_root);
-                    // std::cout << "---------------------------------------------------------------------\n";
+                    std::cout << "----------------\n";
+                    printNodeInfo(first.getNode());
+                    std::cout << "----------------\n";
                     erase(first);
                 }
             }
