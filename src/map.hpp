@@ -528,20 +528,40 @@ namespace ft
                             else if (temp == _begin)
                             {
                                 _node_pointer del = node;
-                                node = _begin;
-                                del->parent->left = node;
-                                node->parent = del->parent;
-                                temp = del;
-                                del = nullptr;
+                                if (node->parent == nullptr)
+                                {
+                                    node = node->right;
+                                    node->parent = nullptr;
+                                    node->left = _begin;
+                                    _begin->parent = node;
+                                }
+                                else
+                                {
+                                    node = _begin;
+                                    del->parent->left = node;
+                                    node->parent = del->parent;
+                                    temp = del;
+                                    del = nullptr;
+                                }
                             }
                             else if (temp == _end)
                             {
                                 _node_pointer del = node;
-                                node = _end;
-                                del->parent->right = node;
-                                node->parent = del->parent;
-                                temp = del;
-                                del = nullptr;
+                                if (node->parent == nullptr)
+                                {
+                                    node = node->left;
+                                    node->parent = nullptr;
+                                    node->right = _end;
+                                    _end->parent = node;
+                                }
+                                else
+                                {
+                                    node = _end;
+                                    del->parent->right = node;
+                                    node->parent = del->parent;
+                                    temp = del;
+                                    del = nullptr;
+                                }
                             }
                             else
                             {
@@ -702,10 +722,16 @@ namespace ft
             {
                 for (; first != last; first++)
                 {
-                    std::cout << "----------------\n";
-                    printNodeInfo(first.getNode());
-                    std::cout << "----------------\n";
+                    // std::cout << "---- BEFORE ----\n";
+                    // printNodeInfo(first.getNode());
+                    // // std::cout << " |  height: " << first.getNode()->height << '\n';
+                    // std::cout << "----------------\n";
+                    // _node_pointer temp = first.getNode();
                     erase(first);
+                    // std::cout << "----- AFTER ----\n";
+                    // printNodeInfo(first.getNode());
+                    // std::cout << " |  height: " << first.getNode()->height << '\n';
+                    // std::cout << "----------------\n";
                 }
             }
     };
