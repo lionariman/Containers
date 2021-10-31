@@ -512,65 +512,77 @@ namespace ft
                     node->left = deleteNode(node->left, k);
                 else
                 {
-                    if (node->left == nullptr or node->right == nullptr)
+                    if (node->left == nullptr or node->right == nullptr or node->left == _begin or node->right == _end)
                     {
-                        _node_pointer temp = node->left ? node->left : node->right;
-                        if (temp == nullptr or temp == _begin or temp == _end)
+                        _node_pointer temp;
+                        if (node->left == _begin)
+                            temp = node->right;
+                        else if (node->right == _end)
+                            temp = node->left;
+                        else
+                            temp = (node->left ? node->left : node->right);
+                        if (node->left == _begin and node->right == _end)
                         {
-                            if (_root->left == _begin and _root->right == _end)
+                            node->left = nullptr;
+                            node->right = nullptr;
+                            temp = node;
+                            node = nullptr;
+                            _begin->parent = nullptr;
+                            _begin = nullptr;
+                            _end->parent = nullptr;
+                            _end = nullptr;
+                        }
+                        else if (node->left == _begin and node->right == nullptr)
+                        {
+                            _node_pointer del = node;
+                            if (node->parent == nullptr)
                             {
-                                temp = node;
-                                node = nullptr;
-                                _root = nullptr;
-                                _begin = nullptr;
-                                _end = nullptr;
-                            }
-                            else if (temp == _begin)
-                            {
-                                _node_pointer del = node;
-                                if (node->parent == nullptr)
-                                {
-                                    node = node->right;
-                                    node->parent = nullptr;
-                                    node->left = _begin;
-                                    _begin->parent = node;
-                                }
-                                else
-                                {
-                                    node = _begin;
-                                    del->parent->left = node;
-                                    node->parent = del->parent;
-                                    temp = del;
-                                    del = nullptr;
-                                }
-                            }
-                            else if (temp == _end)
-                            {
-                                _node_pointer del = node;
-                                if (node->parent == nullptr)
-                                {
-                                    node = node->left;
-                                    node->parent = nullptr;
-                                    node->right = _end;
-                                    _end->parent = node;
-                                }
-                                else
-                                {
-                                    node = _end;
-                                    del->parent->right = node;
-                                    node->parent = del->parent;
-                                    temp = del;
-                                    del = nullptr;
-                                }
+                                node = node->right;
+                                node->parent = nullptr;
+                                node->left = _begin;
+                                _begin->parent = node;
+                                temp = del;
+                                del = nullptr;
                             }
                             else
                             {
-                                temp = node;
-                                node = nullptr;
+                                node = _begin;
+                                del->parent->left = node;
+                                node->parent = del->parent;
+                                temp = del;
+                                del = nullptr;
                             }
+                        }
+                        else if (node->right == _end and node->left == nullptr)
+                        {
+                            _node_pointer del = node;
+                            if (node->parent == nullptr)
+                            {
+                                node = node->left;
+                                node->parent = nullptr;
+                                node->right = _end;
+                                _end->parent = node;
+                                temp = del;
+                                del = nullptr;
+                            }
+                            else
+                            {
+                                node = _end;
+                                del->parent->right = node;
+                                node->parent = del->parent;
+                                temp = del;
+                                del = nullptr;
+                            }
+                        }
+                        else if (node->left == nullptr and node->right == nullptr)
+                        {
+                            temp = node;
+                            node = nullptr;
                         }
                         else
                         {
+                            // printNodeInfo(temp);
+                            // exit(0);
                             copyContent(node, temp);
                             if (temp->left == _begin)
                             {
@@ -720,19 +732,23 @@ namespace ft
 
             void erase(iterator first, iterator last)
             {
+                // printNodeInfo(first.getNode());
+                // printNodeInfo(last.getNode());
+                // exit(0);
                 for (; first != last; first++)
                 {
-                    // std::cout << "---- BEFORE ----\n";
+                    if (first.getNode()->left != nullptr and first.getNode()->right != nullptr and
+                        first.getNode()->left != _begin and first.getNode()->right != _end)
+                        --first;
+
+                    // std::cout << "------------------------------------------------\n";
                     // printNodeInfo(first.getNode());
-                    // // std::cout << " |  height: " << first.getNode()->height << '\n';
-                    // std::cout << "----------------\n";
-                    // _node_pointer temp = first.getNode();
-                    erase(first);
-                    // std::cout << "----- AFTER ----\n";
-                    // printNodeInfo(first.getNode());
-                    // std::cout << " |  height: " << first.getNode()->height << '\n';
-                    // std::cout << "----------------\n";
+                    // std::cout << "------------------------------------------------\n";
+
+                    erase(first->first);
                 }
+                // exit(0);
+                erase((--first)->first);
             }
     };
 
