@@ -393,7 +393,7 @@ namespace ft
             _node_pointer minValueNode(_node_pointer node)
             {
                 _node_pointer current = node;
-                while (current->left != nullptr)
+                while (current->left != nullptr or current->left != _begin)
                     current = current->left;
                 return current;
             }
@@ -502,6 +502,160 @@ namespace ft
                 return balance(node);
             }
 
+            // ============================================================================================================================================
+            // ============================================================================================================================================
+            // ============================================================================================================================================
+
+            _node_pointer deleteNodeTest(_node_pointer node, const key_type &k)
+            {
+                if (node != nullptr and node != _begin and node != _end)
+                {
+                    std::cout << "\nBEGIN\n\n";
+                    std::cout << "node = " << node->data->first << '\n';
+                    // if the node is found
+                    if (keycmp(node->data->first, k) == 0)
+                    {
+                        std::cout << "node == key\n";
+
+                        // replace root node with its left child
+
+                        // if (node->left == _begin and node->right == nullptr)
+                        // {
+                        // }
+                        // else if (node->right == _end and node->left == nullptr)
+                        // {
+                        // }
+                        // if (node->left == _begin and node->right != nullptr)
+                        // {
+                        //     std::cout << "left is begin and right is something\n";
+                        //     if (node->parent != nullptr)
+                        //     {
+                        //         node->parent->left = node->right;
+                        //         node->right->left = _begin;
+                        //         _begin->parent = node->left;
+                        //         fixHeight(node->parent);
+                        //     }
+                        //     node->right->parent = node->parent;
+                        //     node->right = balance(node->right);
+                        //     return node->right;
+                        // }
+                        // else if (node->right == _end and node->left != nullptr)
+                        // {
+                        //     std::cout << "right is end and left is something\n";
+                        //     if (node->parent != nullptr)
+                        //     {
+                        //         node->parent->right = node->left;
+                        //         node->left->left = _end;
+                        //         _end->parent = node->left;
+                        //         fixHeight(node->parent);
+                        //     }
+                        //     node->left->parent = node->parent;
+                        //     node->left = balance(node->left);
+                        //     return node->left;
+                        // }
+                        // if (node->left == _begin and node->right == nullptr)
+                        // {
+                        //     std::cout << "node left is BEGIN and node right is NULL\n";
+                        //     if (node->parent != nullptr)
+                        //     {
+                        //         node->parent->left = _begin;
+                        //         _begin->parent = node->parent;
+                        //     }
+                        //     node->right = balance(node->right);
+                        //     return node->right;
+                        // }
+                        if ((node->left == nullptr or node->left == _begin) and node->right != nullptr) // replace root node with its right child
+                        {
+                            std::cout << "node->left == null and node->right != null or end\n";
+                            if (node->parent != nullptr)
+                            {
+                                if (keycmp(node->data->first, node->parent->data->first) == 1) // if node > node.parent
+                                    node->parent->right = node->right;
+                                else
+                                    node->parent->left = node->right;
+                                fixHeight(node->parent);
+                            }
+                            node->right->parent = node->parent;
+                            node->right = balance(node->right);
+                            return node->right;
+                        }
+                        else if ((node->right == nullptr or node->right == _end) and node->left != nullptr)
+                        {
+                            std::cout << "node->right == null and node->left != null or begin\n";
+                            if (node->parent != nullptr)
+                            {
+                                if (keycmp(node->data->first, node->parent->data->first) == 1) // if node > node.parent
+                                    node->parent->right = node->left;
+                                else
+                                    node->parent->left = node->left;
+                                fixHeight(node->parent);
+                            }
+                            node->left->parent = node->parent;
+                            node->left = balance(node->left);
+                            return node->left;
+                        }
+                        else if (node->left == nullptr and node->right == nullptr) // remove the references of the current node
+                        {
+                            std::cout << "node->left == null and node->right == null\n";
+                            if (keycmp(node->data->first, node->parent->data->first) == 1) // if node > node.parent
+                                node->parent->right = nullptr;
+                            else
+                                node->parent->left = nullptr;
+                            if (node->parent != nullptr)
+                                fixHeight(node->parent);
+                            node = nullptr;
+                            return nullptr;
+                        }
+                        else if (node->left != nullptr and node->left != _begin and node->right != nullptr and node->right != _end)
+                        {
+                            _node_pointer tmp = node;
+                            tmp = tmp->right;
+                            while (tmp->left != nullptr)
+                            node->right = deleteNodeTest(node->right, tmp->data->first);
+                            copyContent(node, tmp);
+                            node = balance(node);
+                            tmp = nullptr;
+                        }
+                        else // otherwise, replace the current node with its successor and then recursively call delete()
+                        {
+                            std::cout << "OTHERWISE\n";
+                            _node_pointer tmp = node;
+                            tmp = tmp->right;
+                            while (tmp->left != nullptr)
+                            node->right = deleteNodeTest(node->right, tmp->data->first);
+                            copyContent(node, tmp);
+                            node = balance(node);
+                        }
+                    }
+                    else if (keycmp(k, node->data->first) == 1) // if k > node
+                    {
+                        std::cout << "---------->\n";
+                        node->right = deleteNodeTest(node->right, k);
+                        node = balance(node);
+                    }
+                    else if (keycmp(node->data->first, k) == 1) // if node > k
+                    {
+                        std::cout << "<----------\n";
+                        node->left = deleteNodeTest(node->left, k);
+                        node = balance(node);
+                    }
+
+                    // update the height of the root node
+                    if (node != nullptr and node != _begin and node != _end)
+                    {
+                        std::cout << "node != null and begin and end";
+                        fixHeight(node);
+                    }
+                }
+                else
+                    std::cout << "\nKey to be deleted could not be found\n\n";
+                return node;
+            }
+
+            // ============================================================================================================================================
+            // ============================================================================================================================================
+            // ============================================================================================================================================
+
             _node_pointer deleteNode(_node_pointer node, const key_type &k)
             {
                 if (node == nullptr)
@@ -581,8 +735,6 @@ namespace ft
                         }
                         else
                         {
-                            // printNodeInfo(temp);
-                            // exit(0);
                             copyContent(node, temp);
                             if (temp->left == _begin)
                             {
@@ -714,6 +866,7 @@ namespace ft
             {
                 if (_size == 0)
                     return ;
+                // _root = deleteNodeTest(position.getNode(), position->first);
                 _root = deleteNode(position.getNode(), position->first);
                 _size--;
             }
@@ -725,6 +878,7 @@ namespace ft
                 _node_pointer node = findNode(_root, k);
                 if (keycmp(node->data->first, k))
                     return 0;
+                // _root = deleteNodeTest(_root, k);
                 _root = deleteNode(_root, k);
                 _size--;
                 return 1;
