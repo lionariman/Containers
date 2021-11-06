@@ -281,8 +281,8 @@ void test_four()
     smap.insert(std::pair<int, int>(40, 40));
     smap.insert(std::pair<int, int>(30, 30));
     smap.insert(std::pair<int, int>(65, 65));
-    smap.insert(std::pair<int, int>(100, 100));
-    smap.insert(std::pair<int, int>(5, 5));
+    // smap.insert(std::pair<int, int>(100, 100));
+    // smap.insert(std::pair<int, int>(5, 5));
     // smap.insert(std::pair<int, int>(120, 120));
     // smap.insert(std::pair<int, int>(34, 34));
 
@@ -294,8 +294,8 @@ void test_four()
     zmap.insert(std::pair<int, int>(40, 40));
     zmap.insert(std::pair<int, int>(30, 30));
     zmap.insert(std::pair<int, int>(65, 65));
-    zmap.insert(std::pair<int, int>(100, 100));
-    zmap.insert(std::pair<int, int>(5, 5));
+    // zmap.insert(std::pair<int, int>(100, 100));
+    // zmap.insert(std::pair<int, int>(5, 5));
     // zmap.insert(std::pair<int, int>(120, 120));
     // zmap.insert(std::pair<int, int>(34, 34));
 
@@ -477,24 +477,24 @@ void test_four()
     // // std::cout << "smap size: " << smap.size() << '\n';
     // // std::cout << "zmap size: " << zmap.size() << '\n';
     
-    // it = smap.begin();
-    // zit = zmap.begin();
+    it = smap.begin();
+    zit = zmap.begin();
 
-    // while (it != smap.end())
-    // {
-    //     std::cout << it->first << ' ';
-    //     it++;
-    // }
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
 
-    // nl;
+    nl;
 
-    // while (zit != zmap.end())
-    // {
-    //     std::cout << zit->first << ' ';
-    //     zit++;
-    // }
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
 
-    // nl;
+    nl;
 
     zmap.callInOrder();
 
