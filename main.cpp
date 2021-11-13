@@ -12,60 +12,60 @@
 #define MY_ALLOCATOR 0
 #define STATE 0
 
-template < typename T >
-void push_back_numbers(T &numbers, int numSize = int())
-{
-    // std::cout << GREEN << "[ ... Push back numbers (" << numSize << ") ... ]\n" << NCLR;
-    for (int i(0); i < numSize; i++)
-        numbers.push_back(i);
-}
+// template < typename T >
+// void push_back_numbers(T &numbers, int numSize = int())
+// {
+//     // std::cout << GREEN << "[ ... Push back numbers (" << numSize << ") ... ]\n" << NCLR;
+//     for (int i(0); i < numSize; i++)
+//         numbers.push_back(i);
+// }
 
-template < typename T >
-void pop_back_numbers(T &numbers, int times = int())
-{
-    std::cout << GREEN << "[ ... Pop back numbers (" << times << ") ... ]\n" << NCLR;
-    for (int i(0); i < times; i++)
-        numbers.pop_back();
-}
+// template < typename T >
+// void pop_back_numbers(T &numbers, int times = int())
+// {
+//     std::cout << GREEN << "[ ... Pop back numbers (" << times << ") ... ]\n" << NCLR;
+//     for (int i(0); i < times; i++)
+//         numbers.pop_back();
+// }
 
-template < typename T1, typename T2 >
-void print_each_element_and_size(T1 &std_numbers, T2 &my_numbers, int how = int())
-{
-    size_t i(0);
+// template < typename T1, typename T2 >
+// void print_each_element_and_size(T1 &std_numbers, T2 &my_numbers, int how = int())
+// {
+//     size_t i(0);
 
-    // std::cout << YELLOW << "\n[ ... Print each element size ... ]\n\n" << NCLR;
+//     // std::cout << YELLOW << "\n[ ... Print each element size ... ]\n\n" << NCLR;
 
-    if (how)
-    {
-        for (; i < std_numbers.size(); i++)
-            std::cout << std_numbers.at(i) << '\n';
-        std::cout << "[" << i << "]\n";
-        i = 0;
-        for (; i < my_numbers.size(); i++)
-            std::cout << my_numbers.at(i) << '\n';
-        std::cout << "[" << i << "]\n";
-        return ;
-    }
-    for (; i < std_numbers.size(); i++)
-        std::cout << std_numbers.at(i) << ' ';
-    std::cout << " [" << i << "] \n";
-    i = 0;
-    for (; i < my_numbers.size(); i++)
-        std::cout << my_numbers.at(i) << ' ';
-    std::cout << " [" << i << "] \n";
-}
+//     if (how)
+//     {
+//         for (; i < std_numbers.size(); i++)
+//             std::cout << std_numbers.at(i) << '\n';
+//         std::cout << "[" << i << "]\n";
+//         i = 0;
+//         for (; i < my_numbers.size(); i++)
+//             std::cout << my_numbers.at(i) << '\n';
+//         std::cout << "[" << i << "]\n";
+//         return ;
+//     }
+//     for (; i < std_numbers.size(); i++)
+//         std::cout << std_numbers.at(i) << ' ';
+//     std::cout << " [" << i << "] \n";
+//     i = 0;
+//     for (; i < my_numbers.size(); i++)
+//         std::cout << my_numbers.at(i) << ' ';
+//     std::cout << " [" << i << "] \n";
+// }
 
-template < typename T1, typename T2 >
-void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
-{
+// template < typename T1, typename T2 >
+// void print_size_and_capacity(T1 &std_numbers, T2 &my_numbers)
+// {
 
-    // std::cout << YELLOW << "\n[ ... Print size and capacity ... ]\n\n" << NCLR;
+//     // std::cout << YELLOW << "\n[ ... Print size and capacity ... ]\n\n" << NCLR;
 
-    std::cout << "    std size: " << std_numbers.size() << '\n'
-              << "     my size: " << my_numbers.size() << '\n'
-              << "std capacity: " << std_numbers.capacity() << '\n'
-              << " my capacity: " << my_numbers.capacity() << "\n\n";
-}
+//     std::cout << "    std size: " << std_numbers.size() << '\n'
+//               << "     my size: " << my_numbers.size() << '\n'
+//               << "std capacity: " << std_numbers.capacity() << '\n'
+//               << " my capacity: " << my_numbers.capacity() << "\n\n";
+// }
 
 // void test_one()
 // {
@@ -271,7 +271,6 @@ void test_four()
     std::map<int, int> smap_copy;
     ft::map<int, int> zmap;
     ft::map<int, int> zmap_copy;
-    
 
     smap.insert(std::pair<int, int>(50, 50));
     smap.insert(std::pair<int, int>(60, 60));
@@ -281,10 +280,10 @@ void test_four()
     smap.insert(std::pair<int, int>(40, 40));
     smap.insert(std::pair<int, int>(30, 30));
     smap.insert(std::pair<int, int>(65, 65));
-    // smap.insert(std::pair<int, int>(100, 100));
-    // smap.insert(std::pair<int, int>(5, 5));
-    // smap.insert(std::pair<int, int>(120, 120));
-    // smap.insert(std::pair<int, int>(34, 34));
+    smap.insert(std::pair<int, int>(100, 100));
+    smap.insert(std::pair<int, int>(5, 5));
+    smap.insert(std::pair<int, int>(120, 120));
+    smap.insert(std::pair<int, int>(34, 34));
 
     zmap.insert(std::pair<int, int>(50, 50));
     zmap.insert(std::pair<int, int>(60, 60));
@@ -294,10 +293,10 @@ void test_four()
     zmap.insert(std::pair<int, int>(40, 40));
     zmap.insert(std::pair<int, int>(30, 30));
     zmap.insert(std::pair<int, int>(65, 65));
-    // zmap.insert(std::pair<int, int>(100, 100));
-    // zmap.insert(std::pair<int, int>(5, 5));
-    // zmap.insert(std::pair<int, int>(120, 120));
-    // zmap.insert(std::pair<int, int>(34, 34));
+    zmap.insert(std::pair<int, int>(100, 100));
+    zmap.insert(std::pair<int, int>(5, 5));
+    zmap.insert(std::pair<int, int>(120, 120));
+    zmap.insert(std::pair<int, int>(34, 34));
 
     std::cout << "smap size: " << smap.size() << '\n';
     std::cout << "zmap size: " << zmap.size() << '\n';
@@ -346,8 +345,8 @@ void test_four()
 
     std::cout << "\n____________FIND___________\n\n";
 
-    std::cout << "smap find 40: " << (*smap.find(40)).first << '\n';
-    std::cout << "zmap find 40: " << (*zmap.find(40)).first << '\n';
+    std::cout << "smap find 40: " << (*smap.find(40)).second << '\n';
+    std::cout << "zmap find 40: " << (*zmap.find(40)).second << '\n';
 
     std::cout << "\n____________COPY___________\n\n";
 
@@ -431,52 +430,26 @@ void test_four()
 
     std::cout << "\n___________ERASE___________\n\n";
 
-    it = smap.begin();
-    zit = zmap.begin();
+    // it = smap.begin();
+    // zit = zmap.begin();
 
-    // std::cout << "smap erase return val = " << smap.erase(5) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(5) << '\n';
-    
-    // std::cout << "smap erase return val = " << smap.erase(10) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(10) << '\n';
+    std::cout << "smap erase return val = " << smap.erase(5) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(5) << '\n';
 
-    // std::cout << "smap erase return val = " << smap.erase(20) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(20) << '\n';
+    std::cout << "smap erase return val = " << smap.erase(30) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(30) << '\n';
 
-    // std::cout << "smap erase return val = " << smap.erase(30) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(30) << '\n';
+    std::cout << "smap erase return val = " << smap.erase(65) << '\n';
+    std::cout << "zmap erase return val = " << zmap.erase(65) << '\n';
 
-    // std::cout << "smap erase return val = " << smap.erase(40) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(40) << '\n';
-
-    // std::cout << "smap erase return val = " << smap.erase(50) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(50) << '\n';
-
-    // std::cout << "smap erase return val = " << smap.erase(60) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(60) << '\n';
-
-    // std::cout << "smap erase return val = " << smap.erase(65) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(65) << '\n';
-
-    // std::cout << "smap erase return val = " << smap.erase(100) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(100) << '\n';
-
-    // std::cout << "smap erase return val = " << smap.erase(70) << '\n';
-    // std::cout << "zmap erase return val = " << zmap.erase(70) << '\n';
-
-    // std::cout << "smap beg = " << smap.begin()->first << '\n';
-    // std::cout << "zmap beg = " << zmap.begin()->first << '\n';
-
-    // std::cout << "smap end = " << (--smap.end())->first << '\n';
-    // std::cout << "zmap end = " << (--zmap.end())->first << '\n';
-
-    
-    smap.erase(smap.begin(), smap.end());
-    zmap.erase(zmap.begin(), zmap.end());
+    // smap.erase(smap.begin(), smap.end());
+    // zmap.erase(zmap.begin(), zmap.end());
 
     // // std::cout << "smap size: " << smap.size() << '\n';
     // // std::cout << "zmap size: " << zmap.size() << '\n';
     
+    std::cout << "\n_______ALL ELEMENTS________\n\n";
+
     it = smap.begin();
     zit = zmap.begin();
 
@@ -496,7 +469,100 @@ void test_four()
 
     nl;
 
-    zmap.callInOrder();
+    // std::cout << "\n___________CLEAR___________\n\n";
+
+    // smap.clear();
+    // zmap.clear();
+
+    // std::cout << "smap and zmap have been cleared successfully\n\n";
+
+    std::cout << "\n_______ALL ELEMENTS________\n\n";
+
+    it = smap.begin();
+    zit = zmap.begin();
+
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
+
+    nl;
+
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    nl;
+
+    // std::cout << "should be nothing\n";
+
+    std::cout << "\n____________SWAP___________\n\n";
+
+    zmap_copy.insert(std::pair<int, int>(51, 51));
+    zmap_copy.insert(std::pair<int, int>(61, 61));
+    zmap_copy.insert(std::pair<int, int>(71, 71));
+    zmap_copy.insert(std::pair<int, int>(11, 11));
+    zmap_copy.insert(std::pair<int, int>(21, 21));
+    zmap_copy.insert(std::pair<int, int>(41, 41));
+    zmap_copy.insert(std::pair<int, int>(31, 31));
+    zmap_copy.insert(std::pair<int, int>(61, 61));
+    zmap_copy.insert(std::pair<int, int>(101, 101));
+    zmap_copy.insert(std::pair<int, int>(6, 6));
+    zmap_copy.insert(std::pair<int, int>(121, 121));
+    zmap_copy.insert(std::pair<int, int>(35, 35));
+
+    std::cout << "\n____ALL ELEMENTS BEFORE____\n\n";
+
+    zit = zmap.begin();
+    ft::map<int, int>::iterator zit_copy = zmap_copy.begin();
+
+    std::cout << "zmap copy: ";
+    while (zit_copy != zmap_copy.end())
+    {
+        std::cout << zit_copy->first << ' ';
+        zit_copy++;
+    }
+
+    nl;
+
+    std::cout << "zmap:      ";
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    nl;
+
+    zmap.swap(zmap_copy);
+
+    std::cout << "\n_____ALL ELEMENTS AFTER____\n\n";
+
+    zit = zmap.begin();
+    zit_copy = zmap_copy.begin();
+
+    std::cout << "zmap copy: ";
+    while (zit_copy != zmap_copy.end())
+    {
+        std::cout << zit_copy->first << ' ';
+        zit_copy++;
+    }
+
+    nl;
+
+    std::cout << "zmap:      ";
+    while (zit != zmap.end())
+    {
+        std::cout << zit->first << ' ';
+        zit++;
+    }
+
+    nl;
+
+    // zmap.callInOrder();
 
     // while (1);
 
