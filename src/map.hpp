@@ -325,9 +325,12 @@ namespace ft
                 insert(first, last);
             }
 
-            map(const map &x)
+            map(map &x) :
+                _root(nullptr),
+                _begin(nullptr),
+                _end(nullptr),
+                _size(0)
             {
-                // std::cout << "########";
                 *this = x;
             }
 
@@ -339,27 +342,25 @@ namespace ft
                 _root->height = 0;
             }
 
-            map &operator=(const map &x)
+            map &operator=(map &x)
             {
                 if (this != &x)
                 {
                     clear();
-                    insert(iterator(x._begin), iterator(x._end));
-
-                    // insert(x.begin(), x.end());   <-----  this shit doesn't worked and I really can't explain why ...
+                    insert(x.begin(), x.end());
                 }
                 return *this;
             }
 
-            iterator begin() { return _size ? iterator(_begin->parent) : iterator(_begin); }
-            const_iterator cbegin() const { return _size ? const_iterator(_begin->parent) : const_iterator(_begin); }
+            iterator begin() { return _size ? ++iterator(_begin) : iterator(_begin); }
+            const_iterator cbegin() const { return _size ? ++const_iterator(_begin) : const_iterator(_begin); }
             reverse_iterator rbegin() { return reverse_iterator(_end); }
             const_reverse_iterator crbegin() const { return const_reverse_iterator(_end); }
 
             iterator end() { return iterator(_end); }
             const_iterator cend() const { return const_iterator(_end); }
-            reverse_iterator rend() { return _size ? reverse_iterator(_begin->parent) : reverse_iterator(_begin); }
-            const_reverse_iterator crend() const { return _size ? const_reverse_iterator(_begin->parent) : const_reverse_iterator(_begin); }
+            reverse_iterator rend() { return _size ? ++reverse_iterator(_begin) : reverse_iterator(_begin); }
+            const_reverse_iterator crend() const { return _size ? ++const_reverse_iterator(_begin) : const_reverse_iterator(_begin); }
 
             bool empty() const { return _size; }
             size_type size() const { return _size; }
