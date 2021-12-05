@@ -499,68 +499,114 @@ void test_four()
 
     // std::cout << "should be nothing\n";
 
-    std::cout << "\n____________SWAP___________\n\n";
+    // std::cout << "\n____________SWAP___________\n\n";
 
-    zmap_copy.insert(std::pair<int, int>(51, 51));
-    zmap_copy.insert(std::pair<int, int>(61, 61));
-    zmap_copy.insert(std::pair<int, int>(71, 71));
-    zmap_copy.insert(std::pair<int, int>(11, 11));
-    zmap_copy.insert(std::pair<int, int>(21, 21));
-    zmap_copy.insert(std::pair<int, int>(41, 41));
-    zmap_copy.insert(std::pair<int, int>(31, 31));
-    zmap_copy.insert(std::pair<int, int>(61, 61));
-    zmap_copy.insert(std::pair<int, int>(101, 101));
-    zmap_copy.insert(std::pair<int, int>(6, 6));
-    zmap_copy.insert(std::pair<int, int>(121, 121));
-    zmap_copy.insert(std::pair<int, int>(35, 35));
+    // zmap_copy.insert(std::pair<int, int>(51, 51));
+    // zmap_copy.insert(std::pair<int, int>(61, 61));
+    // zmap_copy.insert(std::pair<int, int>(71, 71));
+    // zmap_copy.insert(std::pair<int, int>(11, 11));
+    // zmap_copy.insert(std::pair<int, int>(21, 21));
+    // zmap_copy.insert(std::pair<int, int>(41, 41));
+    // zmap_copy.insert(std::pair<int, int>(31, 31));
+    // zmap_copy.insert(std::pair<int, int>(61, 61));
+    // zmap_copy.insert(std::pair<int, int>(101, 101));
+    // zmap_copy.insert(std::pair<int, int>(6, 6));
+    // zmap_copy.insert(std::pair<int, int>(121, 121));
+    // zmap_copy.insert(std::pair<int, int>(35, 35));
 
-    std::cout << "\n____ALL ELEMENTS BEFORE____\n\n";
+    // std::cout << "\n____ALL ELEMENTS BEFORE____\n\n";
 
-    zit = zmap.begin();
-    ft::map<int, int>::iterator zit_copy = zmap_copy.begin();
+    // zit = zmap.begin();
+    // ft::map<int, int>::iterator zit_copy = zmap_copy.begin();
 
-    std::cout << "zmap copy: ";
-    while (zit_copy != zmap_copy.end())
-    {
-        std::cout << zit_copy->first << ' ';
-        zit_copy++;
-    }
+    // std::cout << "zmap copy: ";
+    // while (zit_copy != zmap_copy.end())
+    // {
+    //     std::cout << zit_copy->first << ' ';
+    //     zit_copy++;
+    // }
+
+    // nl;
+
+    // std::cout << "zmap:      ";
+    // while (zit != zmap.end())
+    // {
+    //     std::cout << zit->first << ' ';
+    //     zit++;
+    // }
+
+    // nl;
+
+    // zmap.swap(zmap_copy);
+
+    // std::cout << "\n_____ALL ELEMENTS AFTER____\n\n";
+
+    // zit = zmap.begin();
+    // zit_copy = zmap_copy.begin();
+
+    // std::cout << "zmap copy: ";
+    // while (zit_copy != zmap_copy.end())
+    // {
+    //     std::cout << zit_copy->first << ' ';
+    //     zit_copy++;
+    // }
+
+    // nl;
+
+    // std::cout << "zmap:      ";
+    // while (zit != zmap.end())
+    // {
+    //     std::cout << zit->first << ' ';
+    //     zit++;
+    // }
+
+    std::cout << "\n____LOWER / UPPER BOUND____\n\n";
+    
+    std::cout << "smap lower bound: " << smap.lower_bound(12)->second << '\n';
+    std::cout << "zmap lower bound: " << zmap.lower_bound(12)->second << '\n';
 
     nl;
 
-    std::cout << "zmap:      ";
+    std::cout << "smap upper bound: " << smap.upper_bound(20)->second << '\n';
+    std::cout << "zmap upper bound: " << zmap.upper_bound(20)->second << '\n';
+
+    nl;
+
+    it = smap.begin();
+    zit = zmap.begin();
+
+    std::cout << "s____________________________\n\n";
+    while (it != smap.end())
+    {
+        std::cout << it->first << ' ';
+        it++;
+    }
+    nl;
+    std::cout << "z____________________________\n\n";
     while (zit != zmap.end())
     {
         std::cout << zit->first << ' ';
         zit++;
     }
 
-    nl;
+    std::cout << "\n________EQUAL RANGE________\n\n";
 
-    zmap.swap(zmap_copy);
+    typedef std::pair<std::map<int, int>::iterator, std::map<int, int>::iterator> stdDoubleIntPair;
+    typedef std::pair<ft::map<int, int>::iterator, ft::map<int, int>::iterator> ftDoubleIntPair;
 
-    std::cout << "\n_____ALL ELEMENTS AFTER____\n\n";
+    stdDoubleIntPair std_ret = smap.equal_range(11);
+    ftDoubleIntPair ft_ret = zmap.equal_range(11);
 
-    zit = zmap.begin();
-    zit_copy = zmap_copy.begin();
-
-    std::cout << "zmap copy: ";
-    while (zit_copy != zmap_copy.end())
-    {
-        std::cout << zit_copy->first << ' ';
-        zit_copy++;
-    }
+    std::cout << std_ret.first->first << " => " << std_ret.first->second << '\n';
+    std::cout << std_ret.second->first << " => " << std_ret.second->second << '\n';
 
     nl;
 
-    std::cout << "zmap:      ";
-    while (zit != zmap.end())
-    {
-        std::cout << zit->first << ' ';
-        zit++;
-    }
+    std::cout << ft_ret.first->first << " => " << ft_ret.first->second << '\n';
+    std::cout << ft_ret.second->first << " => " << ft_ret.second->second << '\n';
 
-    nl;
+    std::map<int, int> new_smap(smap);
+    ft::map<int, int> new_zmap(zmap);
 
     // zmap.callInOrder();
 
