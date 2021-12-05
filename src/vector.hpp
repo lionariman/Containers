@@ -62,10 +62,10 @@ namespace ft
             iterator        operator+(int v) const              { return this->_ptr + v; }
             iterator        operator+(size_type v) const        { return this->_ptr + v; }
             iterator        operator+(difference_type v) const  { return this->_ptr + v; }
-            difference_type operator+(iterator &other) const    { return this->_ptr + other._ptr; }
             iterator        operator-(int v) const              { return this->_ptr - v; }
             iterator        operator-(size_type v) const        { return this->_ptr - v; }
             iterator        operator-(difference_type v) const  { return this->_ptr - v; }
+            difference_type operator+(iterator &other) const    { return this->_ptr + other._ptr; }
             difference_type operator-(iterator &other) const    { return this->_ptr - other._ptr; }
             iterator        &operator+=(difference_type &ptr)   { this->_ptr += ptr; return *this; }
             iterator        &operator-=(difference_type &ptr)   { this->_ptr -= ptr; return *this; }
@@ -112,10 +112,10 @@ namespace ft
             iterator        operator+(int v) const              { return this->_ptr - v; }
             iterator        operator+(size_type v) const        { return this->_ptr - v; }
             iterator        operator+(difference_type v) const  { return this->_ptr - v; }
-            difference_type operator+(iterator &other) const    { return this->_ptr - other._ptr; }
             iterator        operator-(int v) const              { return this->_ptr + v; }
             iterator        operator-(size_type v) const        { return this->_ptr + v; }
             iterator        operator-(difference_type v) const  { return this->_ptr + v; }
+            difference_type operator+(iterator &other) const    { return this->_ptr - other._ptr; }
             difference_type operator-(iterator &other) const    { return this->_ptr + other._ptr; }
             iterator        &operator+=(difference_type &ptr)   { this->_ptr -= ptr; return *this; }
             iterator        &operator-=(difference_type &ptr)   { this->_ptr += ptr; return *this; }
@@ -136,7 +136,7 @@ namespace ft
     {
     public:
         typedef typename std::size_t size_type;
-        typedef typename std::ptrdiff_t difference_type;
+        // typedef typename std::ptrdiff_t difference_type;
         typedef T value_type;
         typedef Allocator allocator_type;
         typedef typename allocator_type::reference reference;
@@ -147,7 +147,7 @@ namespace ft
         typedef ft::vector_iterator<const value_type> const_iterator;
         typedef ft::vector_reverse_iterator<value_type> reverse_iterator;
         typedef ft::vector_reverse_iterator<const value_type> const_reverse_iterator;
-        // typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+        typedef typename std::iterator_traits<iterator>::difference_type difference_type;
         
 
     private:
@@ -198,7 +198,7 @@ namespace ft
         }
 
         // copy
-        vector(vector const &x) { *this = x; }
+        vector(const vector &x) { *this = x; }
 
         ~vector()
         {
@@ -209,7 +209,7 @@ namespace ft
             this->_size = 0;
         }
 
-        vector &operator=(vector const &x)
+        vector &operator=(const vector &x)
         {
             if (this == &x) return *this;
             if (this->_size)
@@ -242,6 +242,8 @@ namespace ft
 
         const_iterator cbegin() const { return this->_box; }
         const_iterator cend() const { return this->_box + this->_size; }
+        const_reverse_iterator crbegin() const { return this->_box + this->_size -1; }
+        const_reverse_iterator crend() const { return this->_box - 1; }
 
         bool empty() const { return this->_size; }
 
@@ -346,7 +348,7 @@ namespace ft
         void assign(InputIterator first, InputIterator last,
         typename ft::enable_if<std::__is_input_iterator<InputIterator>::value>::type* = 0)
         {
-            difference_type n = distance(first, last);
+            difference_type n = first + last;
             if (n == 0)
                 return ;
             if (n < 0)
@@ -445,7 +447,7 @@ namespace ft
 
         iterator erase(iterator position)
         {
-            difference_type p = distance(begin(), position);
+            difference_type p = position - begin();
             if (p < 0) p = 0;
             this->_alloc.destroy(this->_box + static_cast<size_type>(p));
             for (size_type i = static_cast<size_type>(p); i < this->_size; i++)
@@ -459,8 +461,8 @@ namespace ft
 
         iterator erase(iterator first, iterator last)
         {
-            difference_type ps = distance(begin(), first);
-            difference_type ds = distance(first, last);
+            difference_type ps = last - begin();
+            difference_type ds = last - first;
             if (ps < 0) ps = 0;
             for (size_type i = static_cast<size_type>(ps); first != last; first++, i++)
                 this->_alloc.destroy(this->_box + i);
@@ -472,6 +474,8 @@ namespace ft
             this->_size -= static_cast<size_type>(ds);
             return this->_box + static_cast<size_type>(ps);
         }
+
+        allocator_type get_allocator() const { return this->_alloc; }
 
         void swap(vector &x)
         {
@@ -489,22 +493,48 @@ namespace ft
         }
     };
 
-    template <class T, class Alloc>
-    bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs == rhs;};
-
-    template <class T, class Alloc>
-    bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs != rhs;};
-    template <class T, class Alloc>
-    bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs < rhs;};
-    template <class T, class Alloc>
-    bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs <= rhs;};
-    template <class T, class Alloc>
-    bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs > rhs;};
-    template <class T, class Alloc>
-    bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {return lhs >= rhs;};
-
     template < class T, class Alloc >
     void swap(ft::vector<T, Alloc> &x, ft::vector<T, Alloc> &y) { x.swap(y); }
+
+    template <class T, class Alloc>
+    bool operator==(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        if (lhs.size() == rhs.size())
+            return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+        return false;
+    }
+
+    template <class T, class Alloc>
+    bool operator!=(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        return !(lhs == rhs);
+    }
+
+    template <class T, class Alloc>
+    bool operator<(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+
+    template <class T, class Alloc>
+    bool operator>(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        return ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
+    }
+
+    template <class T, class Alloc>
+    bool operator<=(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        if (lhs == rhs) return true;
+        return (lhs < rhs);
+    }
+
+    template <class T, class Alloc>
+    bool operator>=(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+    {
+        if (lhs == rhs) return true;
+        return (lhs > rhs);
+    }
 }
 
 #endif
