@@ -302,7 +302,6 @@ namespace ft
             }
 
         public:
-            // empty constructor
             explicit map(const key_compare &comp = key_compare(),
                          const allocator_type &alloc = allocator_type()) :
                 _root(nullptr),
@@ -312,12 +311,44 @@ namespace ft
                 _size(0),
                 _alloc(alloc) {}
 
+            template < class InputIterator>
+            map(InputIterator first, InputIterator last,
+                const key_compare &comp = key_compare(),
+                const allocator_type &alloc = allocator_type()) :
+                _root(nullptr),
+                _begin(nullptr),
+                _end(nullptr),
+                _comp(comp),
+                _size(0),
+                _alloc(alloc)
+            {
+                insert(first, last);
+            }
+
+            map(const map &x)
+            {
+                // std::cout << "########";
+                *this = x;
+            }
+
             ~map()
             {
                 if (_root == nullptr) return ;
                 deleteTree(_root);
                 _size = 0;
                 _root->height = 0;
+            }
+
+            map &operator=(const map &x)
+            {
+                if (this != &x)
+                {
+                    clear();
+                    insert(iterator(x._begin), iterator(x._end));
+
+                    // insert(x.begin(), x.end());   <-----  this shit doesn't worked and I really can't explain why ...
+                }
+                return *this;
             }
 
             iterator begin() { return _size ? iterator(_begin->parent) : iterator(_begin); }
@@ -746,10 +777,10 @@ namespace ft
 
             void swap(map &x)
             {
-                _node_pointer   tmp_root = _root;
-                _node_pointer   tmp_begin = _begin;
-                _node_pointer   tmp_end = _end;
-                size_type       tmp_size = _size;
+                _node_pointer tmp_root = _root;
+                _node_pointer tmp_begin = _begin;
+                _node_pointer tmp_end = _end;
+                size_type     tmp_size = _size;
 
                 _root = x._root;
                 _begin = x._begin;
@@ -762,7 +793,49 @@ namespace ft
                 x._size = tmp_size;
             }
 
-            
+            iterator lower_bound(const key_type &k)
+            {
+                _node_pointer found = findNode(_root, k);
+                if (keycmp(found->data->first, k) == 0)
+                    return iterator(found);
+                return ++iterator(found);
+            }
+
+            iterator upper_bound(const key_type &k)
+            {
+                _node_pointer found = findNode(_root, k);
+                if (keycmp(found->data->first, k) == 0)
+                    return ++iterator(found);
+                return ++iterator(found);
+            }
+
+            const_iterator lower_bound(const key_type &k) const
+            {
+                _node_pointer found = findNode(_root, k);
+                if (keycmp(found->data->first, k) == 0)
+                    return const_iterator(found);
+                return ++const_iterator(found);
+            }
+
+            const_iterator upper_bound(const key_type &k) const
+            {
+                _node_pointer found = findNode(_root, k);
+                if (keycmp(found->data->first, k) == 0)
+                    return ++const_iterator(found);
+                return ++const_iterator(found);
+            }
+
+            std::pair<iterator, iterator> equal_range(const key_type &k)
+            {
+                return std::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+            }
+
+            std::pair<const_iterator, const_iterator> equal_range(const key_type &k) const
+            {
+                return std::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+            }
+
+            allocator_type get_allocator() const { return _alloc; }
     };
 
     // ============================================================================
