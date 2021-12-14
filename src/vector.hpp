@@ -1,24 +1,6 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# define NCLR        "\033[0m"
-# define BLACK       "\033[0;30m"
-# define WHITE       "\033[0;37m"
-# define YELLOW      "\033[0;33m"
-# define RED         "\033[0;31m"
-# define GREEN       "\033[0;32m"
-# define CYAN        "\033[0;36m"
-# define BLUE        "\033[0;34m"
-# define PURPLE      "\033[0;35m"
-# define B_GRAY      "\033[1;30m"
-# define B_WHITE     "\033[1;37m"
-# define B_RED       "\033[1;31m"
-# define B_YELLOW    "\033[1;33m"
-# define B_GREEN     "\033[1;32m"
-# define B_CYAN      "\033[1;36m"
-# define B_BLUE      "\033[1;34m"
-# define B_PURPLE    "\033[1;35m"
-
 # include <iostream>
 # include <memory>
 # include <iterator>
@@ -45,37 +27,37 @@ namespace ft
         
         public:
             vector_iterator() : _ptr(NULL) {}
-            vector_iterator(vector_iterator const &other) { *this = other; }
+            vector_iterator(const vector_iterator &other) { *this = other; }
             vector_iterator(pointer ptr) : _ptr(ptr) {}
             ~vector_iterator() { this->_ptr = NULL; }
 
-            iterator &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
+            iterator &operator=(iterator const &other)             { this->_ptr = other._ptr; return *this; }
 
-            reference       operator*() const                   { return *this->_ptr; }
-            pointer         operator->() const                  { return this->_ptr; }
-            reference       operator[](difference_type &n)      { return this->_ptr[n]; }
+            reference       operator*() const                      { return *this->_ptr; }
+            pointer         operator->() const                     { return this->_ptr; }
+            reference       operator[](difference_type &n)         { return this->_ptr[n]; }
             
-            iterator        &operator++()                       { this->_ptr++; return *this; }
-            iterator        &operator--()                       { this->_ptr--; return *this; }
-            iterator        operator++(int)                     { return this->_ptr++; }
-            iterator        operator--(int)                     { return this->_ptr--; }
-            iterator        operator+(int v) const              { return this->_ptr + v; }
-            iterator        operator+(size_type v) const        { return this->_ptr + v; }
-            iterator        operator+(difference_type v) const  { return this->_ptr + v; }
-            iterator        operator-(int v) const              { return this->_ptr - v; }
-            iterator        operator-(size_type v) const        { return this->_ptr - v; }
-            iterator        operator-(difference_type v) const  { return this->_ptr - v; }
-            difference_type operator+(iterator &other) const    { return this->_ptr + other._ptr; }
-            difference_type operator-(iterator &other) const    { return this->_ptr - other._ptr; }
-            iterator        &operator+=(difference_type &ptr)   { this->_ptr += ptr; return *this; }
-            iterator        &operator-=(difference_type &ptr)   { this->_ptr -= ptr; return *this; }
+            iterator        &operator++()                          { this->_ptr++; return *this; }
+            iterator        &operator--()                          { this->_ptr--; return *this; }
+            iterator        operator++(int)                        { return this->_ptr++; }
+            iterator        operator--(int)                        { return this->_ptr--; }
+            iterator        operator+(int v) const                 { return this->_ptr + v; }
+            iterator        operator+(size_type v) const           { return this->_ptr + v; }
+            iterator        operator+(difference_type v) const     { return this->_ptr + v; }
+            iterator        operator-(int v) const                 { return this->_ptr - v; }
+            iterator        operator-(difference_type v) const     { return this->_ptr - v; }
+            iterator        operator-(size_type v) const           { return this->_ptr - v; }
+            difference_type operator+(const iterator &other) const { return this->_ptr + other._ptr; }
+            difference_type operator-(const iterator &other) const { return this->_ptr - other._ptr; }
+            iterator        &operator+=(difference_type &ptr)      { this->_ptr += ptr; return *this; }
+            iterator        &operator-=(difference_type &ptr)      { this->_ptr -= ptr; return *this; }
 
-            bool            operator==(iterator const &v) const { return this->_ptr == v._ptr; }
-            bool            operator!=(iterator const &v) const { return this->_ptr != v._ptr; }
-            bool            operator<(iterator const &v) const  { return this->_ptr < v._ptr; }
-            bool            operator>(iterator const &v) const  { return this->_ptr > v._ptr; }
-            bool            operator<=(iterator const &v) const { return this->_ptr <= v._ptr; }
-            bool            operator>=(iterator const &v) const { return this->_ptr >= v._ptr; }
+            bool            operator==(iterator const &v) const    { return this->_ptr == v._ptr; }
+            bool            operator!=(iterator const &v) const    { return this->_ptr != v._ptr; }
+            bool            operator<(iterator const &v) const     { return this->_ptr < v._ptr; }
+            bool            operator>(iterator const &v) const     { return this->_ptr > v._ptr; }
+            bool            operator<=(iterator const &v) const    { return this->_ptr <= v._ptr; }
+            bool            operator>=(iterator const &v) const    { return this->_ptr >= v._ptr; }
     };
 
     template< class T >
@@ -99,33 +81,33 @@ namespace ft
             vector_reverse_iterator(pointer ptr) : _ptr(ptr) {}
             ~vector_reverse_iterator() { this->_ptr = NULL; }
             
-            iterator        &operator=(iterator const &other) { this->_ptr = other._ptr; return *this; }
+            iterator        &operator=(iterator const &other)      { this->_ptr = other._ptr; return *this; }
 
-            reference       operator*() const { return *this->_ptr; }
-            pointer         operator->() const { return this->_ptr; }
-            reference       operator[](difference_type &n) { return this->_ptr[n]; }
+            reference       operator*() const                      { return *this->_ptr; }
+            pointer         operator->() const                     { return this->_ptr; }
+            reference       operator[](difference_type &n)         { return this->_ptr[n]; }
 
-            iterator        &operator++()                       { this->_ptr--; return *this; }
-            iterator        &operator--()                       { this->_ptr++; return *this; }
-            iterator        operator++(int)                     { return this->_ptr--; }
-            iterator        operator--(int)                     { return this->_ptr++; }
-            iterator        operator+(int v) const              { return this->_ptr - v; }
-            iterator        operator+(size_type v) const        { return this->_ptr - v; }
-            iterator        operator+(difference_type v) const  { return this->_ptr - v; }
-            iterator        operator-(int v) const              { return this->_ptr + v; }
-            iterator        operator-(size_type v) const        { return this->_ptr + v; }
-            iterator        operator-(difference_type v) const  { return this->_ptr + v; }
-            difference_type operator+(iterator &other) const    { return this->_ptr - other._ptr; }
-            difference_type operator-(iterator &other) const    { return this->_ptr + other._ptr; }
-            iterator        &operator+=(difference_type &ptr)   { this->_ptr -= ptr; return *this; }
-            iterator        &operator-=(difference_type &ptr)   { this->_ptr += ptr; return *this; }
+            iterator        &operator++()                          { this->_ptr--; return *this; }
+            iterator        &operator--()                          { this->_ptr++; return *this; }
+            iterator        operator++(int)                        { return this->_ptr--; }
+            iterator        operator--(int)                        { return this->_ptr++; }
+            iterator        operator+(int v) const                 { return this->_ptr - v; }
+            iterator        operator+(size_type v) const           { return this->_ptr - v; }
+            iterator        operator+(difference_type v) const     { return this->_ptr - v; }
+            iterator        operator-(int v) const                 { return this->_ptr + v; }
+            iterator        operator-(size_type v) const           { return this->_ptr + v; }
+            iterator        operator-(difference_type v) const     { return this->_ptr + v; }
+            difference_type operator+(const iterator &other) const { return this->_ptr - other._ptr; }
+            difference_type operator-(const iterator &other) const { return this->_ptr + other._ptr; }
+            iterator        &operator+=(difference_type &ptr)      { this->_ptr -= ptr; return *this; }
+            iterator        &operator-=(difference_type &ptr)      { this->_ptr += ptr; return *this; }
 
-            bool            operator==(iterator const &v) const { return this->_ptr == v._ptr; }
-            bool            operator!=(iterator const &v) const { return this->_ptr != v._ptr; }
-            bool            operator<(iterator const &v) const  { return this->_ptr < v._ptr; }
-            bool            operator>(iterator const &v) const  { return this->_ptr > v._ptr; }
-            bool            operator<=(iterator const &v) const { return this->_ptr <= v._ptr; }
-            bool            operator>=(iterator const &v) const { return this->_ptr >= v._ptr; }
+            bool            operator==(iterator const &v) const    { return this->_ptr == v._ptr; }
+            bool            operator!=(iterator const &v) const    { return this->_ptr != v._ptr; }
+            bool            operator<(iterator const &v) const     { return this->_ptr < v._ptr; }
+            bool            operator>(iterator const &v) const     { return this->_ptr > v._ptr; }
+            bool            operator<=(iterator const &v) const    { return this->_ptr <= v._ptr; }
+            bool            operator>=(iterator const &v) const    { return this->_ptr >= v._ptr; }
     };
 
     template <
