@@ -1,10 +1,27 @@
 #ifndef CLASS_PAIR_AND_FUNCTORS_HPP
 # define CLASS_PAIR_AND_FUNCTORS_HPP
 
+# define NCLR        "\033[0m"
+# define BLACK       "\033[0;30m"
+# define WHITE       "\033[0;37m"
+# define YELLOW      "\033[0;33m"
+# define RED         "\033[0;31m"
+# define GREEN       "\033[0;32m"
+# define CYAN        "\033[0;36m"
+# define BLUE        "\033[0;34m"
+# define PURPLE      "\033[0;35m"
+# define B_GRAY      "\033[1;30m"
+# define B_WHITE     "\033[1;37m"
+# define B_RED       "\033[1;31m"
+# define B_YELLOW    "\033[1;33m"
+# define B_GREEN     "\033[1;32m"
+# define B_CYAN      "\033[1;36m"
+# define B_BLUE      "\033[1;34m"
+# define B_PURPLE    "\033[1;35m"
+
 namespace ft
 {
     // =================================== PAIR ===================================
-
     template < class T1, class T2 > struct pair
     {
         public:
@@ -65,12 +82,10 @@ namespace ft
     {
         return !(lhs < rhs);
     }
-
     // ============================================================================
 
 
     // =================== FUNCTORS: LESS, GREATER AND COMPARE ====================
-
     template <class Arg1, class Arg2, class Result>
     struct binary_function
     {
@@ -121,6 +136,43 @@ namespace ft
     template < class T >
     struct enable_if < true, T > { typedef T type; };
 
+    // ============================================================================
+
+
+    // ================================== EQUAL ===================================
+    template <class InputT1, class InputT2>
+    bool equal(InputT1 first1, InputT1 last1, InputT2 first2)
+    {
+        for (; first1 != last1; ++first1, ++first2)
+            if (*first1 != *first2)
+                return false;
+        return true;
+    }
+    // ============================================================================
+
+
+    // ======================== LEXICOGRAPHICAL COMPARE ===========================
+    template <class InputT1, class InputT2>
+    bool lexicographical_compare(InputT1 first1, InputT1 last1, InputT2 first2, InputT2 last2)
+    {
+        for (; first1 != last1 and first2 != last2; ++first1, ++last2)
+        {
+            if (*first1 < *first2) return true;
+            if (*first2 < *first1) return false;
+        }
+        return (first1 == last1) and (first2 != last2);
+    }
+
+    template <class InputT1, class InputT2, class Compare>
+    bool lexicographical_compare(InputT1 first1, InputT1 last1, InputT2 first2, InputT2 last2, Compare comp)
+    {
+        for (; first1 != last1 and first2 != last2; ++first1, ++last2)
+        {
+            if (comp(*first1, *first2)) return true;
+            if (comp(*first2, *first1)) return false;
+        }
+        return (first1 == last1) and (first2 != last2);
+    }
     // ============================================================================
 }
 

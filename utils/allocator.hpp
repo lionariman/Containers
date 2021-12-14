@@ -15,16 +15,16 @@ namespace ft
             typedef size_t size_type;
             typedef std::ptrdiff_t difference_type;
 
-            // default constructor
+            // default
             allocator() throw() {}
 
-            allocator(allocator const &alloc) throw() { (void)alloc; }
+            allocator(allocator const &alloc) throw() { static_cast<void>(alloc); }
 
             ~allocator() throw() {}
 
-            // copy constructor
+            // copy
             template < class U >
-            allocator(allocator<U> const &alloc) throw() { (void)alloc; }
+            allocator(allocator<U> const &alloc) throw() { static_cast<void>(alloc); }
 
             // rebind allocator to type U
             template < class U >
@@ -37,7 +37,7 @@ namespace ft
             size_type max_size() const throw()
             {
                 size_type const big(18446744073709551615U);
-                return big / sizeof(value_type);
+                return (big / sizeof(value_type));
             }
 
             pointer allocate(size_type n)
@@ -45,22 +45,22 @@ namespace ft
                 pointer ret;
 
                 // allocate memory with global new
-                ret = (pointer)(::operator new(n * sizeof(value_type)));
+                ret = reinterpret_cast<pointer>(::operator new(n * sizeof(value_type)));
                 return ret;
             }
 
             void deallocate(pointer p, size_type n)
             {
+                static_cast<void>(n);
+
                 // deallocate memory with global delete
-                (void)n;
-                ::operator delete((void *)p);
+                ::operator delete(static_cast<void *>(p));
             }
 
             void construct(pointer p, const_reference value)
             {
-                // initialize memory with placement new
-                (void)value;
-                new ((void *)p) value_type(value);
+                static_cast<void>(value);
+                new (reinterpret_cast<void *>(p)) value_type(value);
             }
 
             void destroy(pointer p)
@@ -68,7 +68,6 @@ namespace ft
                 // destroy objects by calling their destructor
                 p->~value_type();
             }
-
     };
 }
 
